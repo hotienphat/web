@@ -48,7 +48,7 @@ const audioPlaylist = [
         artist: "Lady Gaga",
         // QUAN TRỌNG: Đường dẫn này phải chính xác so với vị trí file index.html
         // Sửa lỗi chính tả từ "Poker-Fcae.flac" thành "Poker-Face.flac"
-        src: "./Backround sound/Poker-Face.flac", 
+        src: "https://drive.google.com/file/d/16_jeqZGwO6P4EdXc4GYSlcxoSWdtznJr/view?usp=sharing", 
         // Sử dụng đường dẫn ảnh bìa từ file HTML của bạn
         albumArt: "./Backround sound/Ladygagapokerface.png" 
     },
