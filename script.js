@@ -46,19 +46,9 @@ const audioPlaylist = [
     {
         title: "Poker Face",
         artist: "Lady Gaga",
-        // QUAN TRỌNG: Đường dẫn này phải chính xác so với vị trí file index.html
-        // Sửa lỗi chính tả từ "Poker-Fcae.flac" thành "Poker-Face.flac"
         src: "https://files.catbox.moe/ykqqpn.flac", 
-        // Sử dụng đường dẫn ảnh bìa từ file HTML của bạn
         albumArt: "./Backround sound/Ladygagapokerface.png" 
     },
-    // Ví dụ thêm bài hát khác:
-    // {
-    //     title: "Bad Romance",
-    //     artist: "Lady Gaga",
-    //     src: "./Backround sound/Bad-Romance.mp3", // Make sure this file exists
-    //     albumArt: "./Backround sound/BadRomanceAlbumArt.png" // And this image too
-    // }
 ];
 let currentTrackIndex = 0;
 // --- END: MUSIC PLAYER CONFIGURATION ---
@@ -71,9 +61,6 @@ let volumeBtn, volumeSlider;
 let prevTrackBtn, nextTrackBtn;
 
 
-/**
- * Renders the shortcut sections and their items onto the page.
- */
 function renderShortcuts() {
     const container = document.getElementById('shortcutsContainer');
     if (!container) {
@@ -118,9 +105,6 @@ function renderShortcuts() {
     });
 }
 
-/**
- * Performs a search using the value from the search input.
- */
 function performSearch() {
     const searchInput = document.getElementById('searchInput');
     if (!searchInput) {
@@ -133,9 +117,6 @@ function performSearch() {
     }
 }
 
-/**
- * Initializes the music player elements and event listeners.
- */
 function initializeMusicPlayer() {
     audioPlayer = new Audio(); 
 
@@ -160,9 +141,9 @@ function initializeMusicPlayer() {
     }
     
     loadTrack(currentTrackIndex); 
-    // Initialize volume from slider and update icon
-    setVolume();
-
+    
+    // Thiết lập âm lượng và biểu tượng âm lượng ban đầu
+    setVolume(); // Quan trọng: gọi sau khi loadTrack và các element đã sẵn sàng
 
     playPauseMusicBtn.addEventListener('click', togglePlayPause);
     stopMusicBtn.addEventListener('click', stopAudio);
@@ -180,19 +161,25 @@ function initializeMusicPlayer() {
     updateTrackButtonsState(); 
 }
 
-/**
- * Loads a specific track into the audio player.
- * @param {number} trackIndex - The index of the track in the audioPlaylist.
- */
 function loadTrack(trackIndex) {
     if (trackIndex < 0 || trackIndex >= audioPlaylist.length) {
         console.error("Chỉ số bài hát không hợp lệ:", trackIndex);
         return;
     }
     const track = audioPlaylist[trackIndex];
+    // Lưu lại trạng thái âm lượng hiện tại trước khi thay đổi src
+    // vì một số trình duyệt có thể reset âm lượng khi src thay đổi.
+    const currentVolume = audioPlayer.volume;
+    const currentMutedState = audioPlayer.muted;
+
     audioPlayer.src = track.src; 
     
-    albumArtElement.src = track.albumArt; // Use album art from playlist
+    // Khôi phục lại trạng thái âm lượng sau khi src được đặt
+    audioPlayer.volume = currentVolume;
+    audioPlayer.muted = currentMutedState;
+
+
+    albumArtElement.src = track.albumArt; 
     albumArtElement.alt = track.title + " - Album Art";
     songTitleEl.textContent = track.title;
     songArtistEl.textContent = track.artist;
@@ -201,20 +188,17 @@ function loadTrack(trackIndex) {
     currentTimeEl.textContent = formatTime(0);
     durationEl.textContent = formatTime(audioPlayer.duration || 0); 
     
-    // Attempt to play if it was already playing (e.g., after track change)
-    // Browsers might block autoplay if there was no prior user interaction.
     if (!audioPlayer.paused) { 
       audioPlayer.play().catch(handlePlayError);
     }
 
     updatePlayPauseIcon(); 
     updateTrackButtonsState(); 
+    // Cập nhật lại biểu tượng âm lượng vì trạng thái có thể đã được khôi phục
+    updateVolumeIcon(); 
 }
 
 
-/**
- * Toggles play/pause state of the audio.
- */
 function togglePlayPause() {
     if (audioPlayer.paused || audioPlayer.ended) {
         audioPlayer.play().catch(handlePlayError); 
@@ -224,18 +208,12 @@ function togglePlayPause() {
     updatePlayPauseIcon(); 
 }
 
-/**
- * Stops the audio playback and resets its current time.
- */
 function stopAudio() {
     audioPlayer.pause();
     audioPlayer.currentTime = 0; 
     updatePlayPauseIcon(); 
 }
 
-/**
- * Updates the play/pause button icon based on the audio player's state.
- */
 function updatePlayPauseIcon() {
     if (!playPauseMusicBtn) return;
     if (audioPlayer.paused || audioPlayer.ended) {
@@ -245,9 +223,6 @@ function updatePlayPauseIcon() {
     }
 }
 
-/**
- * Updates the music progress bar and current time display.
- */
 function updateProgressBar() {
     if (audioPlayer.duration) { 
         musicProgressBar.value = audioPlayer.currentTime;
@@ -255,9 +230,6 @@ function updateProgressBar() {
     }
 }
 
-/**
- * Sets the audio duration display and progress bar max value.
- */
 function setAudioDuration() {
     if (audioPlayer.duration) {
         musicProgressBar.max = audioPlayer.duration;
@@ -265,54 +237,40 @@ function setAudioDuration() {
     }
 }
 
-/**
- * Allows seeking the audio track using the progress bar.
- */
 function seekAudio() {
     audioPlayer.currentTime = musicProgressBar.value;
 }
 
-/**
- * Formats time in seconds to a MM:SS string.
- * @param {number} timeInSeconds - The time in seconds.
- * @returns {string} Formatted time string.
- */
 function formatTime(timeInSeconds) {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = Math.floor(timeInSeconds % 60);
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 }
 
-/**
- * Handles errors during audio playback.
- * @param {Error} error - The playback error.
- */
 function handlePlayError(error) {
     console.error("Lỗi khi phát nhạc:", error.name, error.message);
-    // You might want to inform the user, e.g., if autoplay is blocked.
-    // alert("Không thể tự động phát nhạc. Vui lòng nhấn nút Play.");
     updatePlayPauseIcon(); 
 }
 
 /**
  * Sets the audio volume based on the volume slider.
- * This function now also handles unmuting if volume is > 0.
+ * Manages mute state based on volume level.
  */
 function setVolume() {
-    if (!audioPlayer || !volumeSlider) return; // Guard clause
+    if (!audioPlayer || !volumeSlider) {
+        // console.warn("setVolume: audioPlayer hoặc volumeSlider không tồn tại.");
+        return;
+    }
 
     const newVolume = parseFloat(volumeSlider.value);
     audioPlayer.volume = newVolume;
 
-    // If the volume is greater than 0 and the player is muted, unmute it.
-    // This ensures dragging the slider to increase volume will play sound.
-    if (newVolume > 0 && audioPlayer.muted) {
+    // Khi người dùng tương tác với thanh trượt âm lượng:
+    // Nếu âm lượng > 0, hãy bỏ tắt tiếng.
+    // Nếu âm lượng = 0, hãy tắt tiếng.
+    if (newVolume > 0) {
         audioPlayer.muted = false;
-    }
-
-    // If the volume is set to 0 by the slider, explicitly mute the player.
-    // This ensures the mute icon appears correctly.
-    if (newVolume === 0) {
+    } else { // newVolume === 0
         audioPlayer.muted = true;
     }
     
@@ -320,44 +278,43 @@ function setVolume() {
 }
 
 /**
- * Toggles the mute/unmute state.
+ * Toggles the mute/unmute state via the volume button.
+ * Handles cases where unmuting with volume at 0.
  */
 function toggleMute() {
-    if (!audioPlayer) return; // Guard clause
+    if (!audioPlayer) return;
 
-    audioPlayer.muted = !audioPlayer.muted;
+    audioPlayer.muted = !audioPlayer.muted; // Đảo ngược trạng thái tắt tiếng
     
-    // If unmuting and volume is 0, set volume to a default (e.g., 0.5 or previous non-zero)
-    // Otherwise, if you unmute at 0 volume, you still won't hear anything.
+    // Nếu vừa BẬT tiếng (audioPlayer.muted === false) VÀ âm lượng hiện tại là 0
     if (!audioPlayer.muted && audioPlayer.volume === 0) {
-        audioPlayer.volume = 0.5; // Default volume when unmuting from 0
-        volumeSlider.value = audioPlayer.volume; // Update slider position
+        audioPlayer.volume = 0.5; // Đặt âm lượng về một mức mặc định có thể nghe được
+        if (volumeSlider) {
+            volumeSlider.value = audioPlayer.volume.toString(); // Cập nhật vị trí thanh trượt
+        }
     }
+    // Nếu đang TẮT tiếng, hoặc BẬT tiếng với âm lượng > 0, thanh trượt không cần thay đổi ở đây.
+    
     updateVolumeIcon();
 }
 
-/**
- * Updates the volume button icon based on volume and mute state.
- */
 function updateVolumeIcon() {
-    if(!volumeBtn || !audioPlayer) return; // Guard clause
+    if(!volumeBtn || !audioPlayer) return; 
     volumeBtn.innerHTML = ''; 
     const icon = document.createElement('i');
     icon.classList.add('fas');
 
+    // Biểu tượng sẽ là 'tắt tiếng' nếu audioPlayer.muted là true HOẶC audioPlayer.volume là 0
     if (audioPlayer.muted || audioPlayer.volume === 0) {
-        icon.classList.add('fa-volume-xmark'); // Mute icon
+        icon.classList.add('fa-volume-xmark');
     } else if (audioPlayer.volume < 0.5) {
-        icon.classList.add('fa-volume-low');   // Low volume icon
+        icon.classList.add('fa-volume-low');
     } else {
-        icon.classList.add('fa-volume-high');  // High volume icon
+        icon.classList.add('fa-volume-high');
     }
     volumeBtn.appendChild(icon);
 }
 
-/**
- * Plays the next track in the playlist.
- */
 function playNextTrack() {
     currentTrackIndex = (currentTrackIndex + 1) % audioPlaylist.length;
     loadTrack(currentTrackIndex);
@@ -366,9 +323,6 @@ function playNextTrack() {
     }
 }
 
-/**
- * Plays the previous track in the playlist.
- */
 function playPrevTrack() {
     currentTrackIndex = (currentTrackIndex - 1 + audioPlaylist.length) % audioPlaylist.length;
     loadTrack(currentTrackIndex);
@@ -377,9 +331,6 @@ function playPrevTrack() {
     }
 }
 
-/**
- * Updates the enabled/disabled state of prev/next track buttons.
- */
 function updateTrackButtonsState() {
     if(!prevTrackBtn || !nextTrackBtn) return;
     if (audioPlaylist.length <= 1) {
@@ -397,7 +348,6 @@ function updateTrackButtonsState() {
 }
 
 
-// --- Event Listeners and Initializations ---
 document.addEventListener('DOMContentLoaded', () => {
     renderShortcuts(); 
     initializeMusicPlayer(); 
