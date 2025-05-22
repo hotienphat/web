@@ -1,0 +1,164 @@
+/* General body styles from user's file */
+body {
+    font-family: 'Inter', sans-serif; 
+    background-color: #111827; 
+    color: #e5e7eb; 
+    margin: 0; 
+}
+
+.search-input::placeholder {
+    color: #9ca3af;
+}
+.search-input:focus {
+    border-color: #8b5cf6; 
+    box-shadow: 0 0 0 2px #8b5cf6;
+}
+.shortcut-button {
+    background-color: #1f2937; 
+    border: 1px solid #374151; 
+    transition: all 0.3s ease;
+}
+.shortcut-button:hover {
+    background-color: #374151;
+    border-color: #8b5cf6; 
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3); 
+}
+.section-title {
+    color: #a78bfa; 
+}
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #1f2937;
+}
+::-webkit-scrollbar-thumb {
+    background: #4f46e5; 
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #6366f1;
+}
+.logo-text {
+    font-weight: bold;
+    font-size: 1.75rem; 
+    color: #c4b5fd; 
+    text-shadow: 0 0 8px rgba(196, 181, 253, 0.5); 
+}
+/* Styles for search container button from user's file */
+.search-container button { /* Assuming this class is on the button or its parent */
+    background-color: #4f46e5; 
+}
+.search-container button:hover {
+    background-color: #6366f1;
+}
+
+.image-placeholder {
+    background-image: url('./Backround sound/avt.png');
+    background-size: contain; /* Thay đổi ở đây */
+    background-position: top;
+    background-repeat: no-repeat; /* Thêm dòng này nếu bạn dùng 'contain' để tránh lặp lại ảnh */
+    min-height: 300px;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* --- STYLES FOR DETAILED MUSIC PLAYER --- */
+#musicPlayerContainer {
+    box-shadow: 0 -4px 15px rgba(139, 92, 246, 0.2); /* Subtle purple top shadow */
+}
+
+.music-control-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+.music-control-button:active {
+    transform: scale(0.9); /* Slight shrink effect on click */
+}
+
+/* Custom styling for range inputs (progress bar and volume slider) */
+/* Common styles for all browsers for the thumb */
+.music-progress-bar::-webkit-slider-thumb,
+.music-volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 14px; /* Width of the thumb */
+    height: 14px; /* Height of the thumb */
+    background: #a78bfa; /* Purple thumb */
+    border-radius: 50%; /* Circular thumb */
+    cursor: pointer; /* Pointer cursor on hover */
+    margin-top: -5px; /* Adjust to center thumb on track (for WebKit) */
+}
+
+.music-progress-bar::-moz-range-thumb,
+.music-volume-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: #a78bfa;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none; /* Remove border for Firefox */
+}
+
+.music-progress-bar::-ms-thumb,
+.music-volume-slider::-ms-thumb {
+    width: 14px;
+    height: 14px;
+    background: #a78bfa;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 0; /* Remove border for IE/Edge */
+    margin-top: 0px; /* IE/Edge might need different centering */
+}
+
+/* Common styles for all browsers for the track */
+.music-progress-bar::-webkit-slider-runnable-track,
+.music-volume-slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    background: #4a5568; /* Darker track */
+    border-radius: 2px;
+}
+
+.music-progress-bar::-moz-range-track,
+.music-volume-slider::-moz-range-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    background: #4a5568;
+    border-radius: 2px;
+}
+
+.music-progress-bar::-ms-track,
+.music-volume-slider::-ms-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    background: transparent; /* IE/Edge track is typically transparent */
+    border-color: transparent;
+    color: transparent;
+}
+
+/* For IE/Edge, style the fill before and after the thumb */
+.music-progress-bar::-ms-fill-lower,
+.music-volume-slider::-ms-fill-lower {
+    background: #a78bfa; /* Color for the part of the track before the thumb */
+    border-radius: 2px;
+}
+.music-progress-bar::-ms-fill-upper,
+.music-volume-slider::-ms-fill-upper {
+    background: #4a5568; /* Color for the part of the track after the thumb */
+    border-radius: 2px;
+}
+
+/* Ensure the progress bar itself has a defined height for consistent thumb centering */
+#musicProgressBar, #volumeSlider {
+    height: 14px; /* Match thumb height or slightly more to contain it visually */
+    display: flex; 
+    align-items: center; 
+}
