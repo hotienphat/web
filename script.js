@@ -160,6 +160,9 @@ function initializeMusicPlayer() {
     }
     
     loadTrack(currentTrackIndex); 
+    // Initialize volume from slider and update icon
+    setVolume();
+
 
     playPauseMusicBtn.addEventListener('click', togglePlayPause);
     stopMusicBtn.addEventListener('click', stopAudio);
@@ -292,10 +295,27 @@ function handlePlayError(error) {
 }
 
 /**
- * Sets the audio volume.
+ * Sets the audio volume based on the volume slider.
+ * This function now also handles unmuting if volume is > 0.
  */
 function setVolume() {
-    audioPlayer.volume = volumeSlider.value;
+    if (!audioPlayer || !volumeSlider) return; // Guard clause
+
+    const newVolume = parseFloat(volumeSlider.value);
+    audioPlayer.volume = newVolume;
+
+    // If the volume is greater than 0 and the player is muted, unmute it.
+    // This ensures dragging the slider to increase volume will play sound.
+    if (newVolume > 0 && audioPlayer.muted) {
+        audioPlayer.muted = false;
+    }
+
+    // If the volume is set to 0 by the slider, explicitly mute the player.
+    // This ensures the mute icon appears correctly.
+    if (newVolume === 0) {
+        audioPlayer.muted = true;
+    }
+    
     updateVolumeIcon();
 }
 
@@ -303,7 +323,16 @@ function setVolume() {
  * Toggles the mute/unmute state.
  */
 function toggleMute() {
+    if (!audioPlayer) return; // Guard clause
+
     audioPlayer.muted = !audioPlayer.muted;
+    
+    // If unmuting and volume is 0, set volume to a default (e.g., 0.5 or previous non-zero)
+    // Otherwise, if you unmute at 0 volume, you still won't hear anything.
+    if (!audioPlayer.muted && audioPlayer.volume === 0) {
+        audioPlayer.volume = 0.5; // Default volume when unmuting from 0
+        volumeSlider.value = audioPlayer.volume; // Update slider position
+    }
     updateVolumeIcon();
 }
 
@@ -311,16 +340,17 @@ function toggleMute() {
  * Updates the volume button icon based on volume and mute state.
  */
 function updateVolumeIcon() {
-    if(!volumeBtn) return;
+    if(!volumeBtn || !audioPlayer) return; // Guard clause
     volumeBtn.innerHTML = ''; 
     const icon = document.createElement('i');
     icon.classList.add('fas');
+
     if (audioPlayer.muted || audioPlayer.volume === 0) {
-        icon.classList.add('fa-volume-xmark');
+        icon.classList.add('fa-volume-xmark'); // Mute icon
     } else if (audioPlayer.volume < 0.5) {
-        icon.classList.add('fa-volume-low');
+        icon.classList.add('fa-volume-low');   // Low volume icon
     } else {
-        icon.classList.add('fa-volume-high');
+        icon.classList.add('fa-volume-high');  // High volume icon
     }
     volumeBtn.appendChild(icon);
 }
@@ -331,10 +361,7 @@ function updateVolumeIcon() {
 function playNextTrack() {
     currentTrackIndex = (currentTrackIndex + 1) % audioPlaylist.length;
     loadTrack(currentTrackIndex);
-    // Do not automatically play here, let loadTrack handle it based on previous state,
-    // or require user to press play for the new track if autoplay is an issue.
-    // For a better UX, if a song was playing, the next one should also play.
-    if(!audioPlayer.paused || audioPlaylist.length === 1){ // if it was playing or only one song
+    if(!audioPlayer.paused || audioPlaylist.length === 1){ 
         audioPlayer.play().catch(handlePlayError);
     }
 }
@@ -358,7 +385,6 @@ function updateTrackButtonsState() {
     if (audioPlaylist.length <= 1) {
         prevTrackBtn.disabled = true;
         nextTrackBtn.disabled = true;
-        // Add Tailwind classes for disabled state if not already handled by browser
         prevTrackBtn.classList.add('opacity-50', 'cursor-not-allowed');
         nextTrackBtn.classList.add('opacity-50', 'cursor-not-allowed');
 
@@ -374,10 +400,10 @@ function updateTrackButtonsState() {
 // --- Event Listeners and Initializations ---
 document.addEventListener('DOMContentLoaded', () => {
     renderShortcuts(); 
-    initializeMusicPlayer(); // Initialize the detailed music player
+    initializeMusicPlayer(); 
 
     const searchButton = document.getElementById('searchButton'); 
-    if (searchButton) { // Check if searchButton exists
+    if (searchButton) { 
         searchButton.addEventListener('click', performSearch); 
     } else {
         console.warn("Search button with id 'searchButton' not found in HTML.");
