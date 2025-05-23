@@ -4,7 +4,6 @@ body {
     background-color: #111827; 
     color: #e5e7eb; 
     margin: 0; 
-    /* Custom cursor will be applied via html, body rule below for better coverage */
 }
 
 .search-input::placeholder {
@@ -47,45 +46,66 @@ body {
     color: #c4b5fd; 
     text-shadow: 0 0 8px rgba(196, 181, 253, 0.5); 
 }
-/* Styles for search container button from user's file */
-.search-container button { /* Assuming this class is on the button or its parent */
+.search-container button { 
     background-color: #4f46e5;
     display: flex;
-    align-items: center; /* Căn giữa theo chiều dọc */
+    align-items: center; 
 }
 .search-container button:hover {
     background-color: #6366f1;
 }
 
+.image-placeholder-container {
+    /* This class is on the parent of .image-placeholder and #lyricsOverlay */
+    /* Tailwind classes used: relative rounded-lg overflow-hidden shadow-xl flex-auto */
+    /* No specific CSS needed here unless overriding Tailwind */
+}
+
 .image-placeholder {
     background-image: url('./Backround sound/avt.png');
-    background-size: cover; /* Changed to cover to fill dimensions */
-    background-position: center; /* Center the image */
+    background-size: cover; 
+    background-position: center; 
     background-repeat: no-repeat;
-    min-height: 300px; /* Remains from original */
-    /* width will be determined by flex-auto in the container */
-    border-radius: 0.5rem; /* Tailwind rounded-lg */
-    overflow: hidden;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    min-height: 300px; 
+    /* Removed border-radius, overflow, box-shadow as they are on the parent .image-placeholder-container (via Tailwind classes) */
 }
 
 /* Styles for Music Visualizer Canvas */
 #musicVisualizer {
     display: block;
-    width: 60px; /* Default width for the visualizer strip */
-    /* Height will be set by JavaScript to match the avatar placeholder */
-    /* Fallback height if JS fails or before JS runs */
-    height: 300px; 
-    background-color: rgba(31, 41, 55, 0.7); /* bg-slate-800 with some transparency */
-    border: 1px solid #374151; /* border-slate-700 */
-    border-radius: 0.5rem; /* Tailwind rounded-lg */
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); /* shadow-lg */
+    width: 60px; 
+    height: 300px; /* Fallback, JS will try to match avatar height */
+    background-color: rgba(31, 41, 55, 0.7); 
+    border: 1px solid #374151; 
+    border-radius: 0.5rem; 
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
+}
+
+/* --- STYLES FOR LYRICS --- */
+#lyricsOverlay {
+    /* Tailwind classes handle most styling:
+       absolute bottom-0 left-0 right-0 h-1/3 
+       bg-black bg-opacity-50 backdrop-blur-md
+       flex flex-col items-center justify-center p-2 md:p-3 text-center
+       transition-opacity duration-500 opacity-0 pointer-events-none 
+    */
+}
+
+#currentLyric.active {
+    opacity: 1;
+    transform: translateY(0);
+    color: #f0f0f0; /* Slightly brighter white for active lyric */
+    text-shadow: 0 0 6px rgba(220, 190, 255, 0.7), 0 0 12px rgba(200, 170, 255, 0.5); /* Subtle purple glow */
+}
+
+#nextLyric.visible {
+    opacity: 0.7; /* Next lyric is slightly less opaque */
 }
 
 
 /* --- STYLES FOR DETAILED MUSIC PLAYER --- */
 #musicPlayerContainer {
-    box-shadow: 0 -4px 15px rgba(139, 92, 246, 0.2); /* Subtle purple top shadow */
+    box-shadow: 0 -4px 15px rgba(139, 92, 246, 0.2); 
 }
 
 .music-control-button {
@@ -95,21 +115,19 @@ body {
     transition: color 0.2s ease-in-out, transform 0.1s ease-in-out;
 }
 .music-control-button:active {
-    transform: scale(0.9); /* Slight shrink effect on click */
+    transform: scale(0.9); 
 }
 
-/* Custom styling for range inputs (progress bar and volume slider) */
-/* Common styles for all browsers for the thumb */
 .music-progress-bar::-webkit-slider-thumb,
 .music-volume-slider::-webkit-slider-thumb {
-    -webkit-appearance: none; /* Override default look */
+    -webkit-appearance: none; 
     appearance: none;
-    width: 14px; /* Width of the thumb */
-    height: 14px; /* Height of the thumb */
-    background: #a78bfa; /* Purple thumb */
-    border-radius: 50%; /* Circular thumb */
-    cursor: pointer; /* Pointer cursor on hover */
-    margin-top: -5px; /* Adjust to center thumb on track (for WebKit) */
+    width: 14px; 
+    height: 14px; 
+    background: #a78bfa; 
+    border-radius: 50%; 
+    cursor: pointer; 
+    margin-top: -5px; 
 }
 
 .music-progress-bar::-moz-range-thumb,
@@ -119,7 +137,7 @@ body {
     background: #a78bfa;
     border-radius: 50%;
     cursor: pointer;
-    border: none; /* Remove border for Firefox */
+    border: none; 
 }
 
 .music-progress-bar::-ms-thumb,
@@ -129,17 +147,16 @@ body {
     background: #a78bfa;
     border-radius: 50%;
     cursor: pointer;
-    border: 0; /* Remove border for IE/Edge */
-    margin-top: 0px; /* IE/Edge might need different centering */
+    border: 0; 
+    margin-top: 0px; 
 }
 
-/* Common styles for all browsers for the track */
 .music-progress-bar::-webkit-slider-runnable-track,
 .music-volume-slider::-webkit-slider-runnable-track {
     width: 100%;
     height: 4px;
     cursor: pointer;
-    background: #4a5568; /* Darker track */
+    background: #4a5568; 
     border-radius: 2px;
 }
 
@@ -157,56 +174,47 @@ body {
     width: 100%;
     height: 4px;
     cursor: pointer;
-    background: transparent; /* IE/Edge track is typically transparent */
+    background: transparent; 
     border-color: transparent;
     color: transparent;
 }
 
-/* For IE/Edge, style the fill before and after the thumb */
 .music-progress-bar::-ms-fill-lower,
 .music-volume-slider::-ms-fill-lower {
-    background: #a78bfa; /* Color for the part of the track before the thumb */
+    background: #a78bfa; 
     border-radius: 2px;
 }
 .music-progress-bar::-ms-fill-upper,
 .music-volume-slider::-ms-fill-upper {
-    background: #4a5568; /* Color for the part of the track after the thumb */
+    background: #4a5568; 
     border-radius: 2px;
 }
 
-/* Ensure the progress bar itself has a defined height for consistent thumb centering */
 #musicProgressBar, #volumeSlider {
-    height: 14px; /* Match thumb height or slightly more to contain it visually */
+    height: 14px; 
     display: flex; 
     align-items: center; 
 }
 
 /* --- START: CUSTOM CURSOR STYLES --- */
 html, body {
-    /* Con trỏ hình dấu chấm nhỏ màu tím cho toàn bộ trang.
-       '8 8' là tọa độ hotspot (điểm nóng) của con trỏ, tính từ góc trên bên trái của ảnh SVG (16x16), giúp con trỏ chỉ đúng vào vị trí mong muốn.
-       'auto' là con trỏ dự phòng nếu trình duyệt không hỗ trợ con trỏ tùy chỉnh. */
-    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><circle cx="8" cy="8" r="3" fill="%23c4b5fd" opacity="0.85"/></svg>') 8 8, auto;
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" width="16" height="16"><circle cx="8" cy="8" r="3" fill="%23c4b5fd" opacity="0.85"/></svg>') 8 8, auto;
 }
 
 a,
 button,
-.shortcut-button,       /* Áp dụng cho các nút shortcut hiện có */
-.music-control-button,  /* Áp dụng cho các nút điều khiển nhạc hiện có */
-#searchButton,          /* Áp dụng cho nút tìm kiếm hiện có */
-input[type="range"],    /* Áp dụng cho thanh trượt */
-label,                  /* Áp dụng cho các nhãn có thể nhấp */
-select,                 /* Áp dụng cho các menu thả xuống */
-input[type="checkbox"], /* Áp dụng cho checkbox */
-input[type="radio"]     /* Áp dụng cho radio button */
+.shortcut-button,      
+.music-control-button, 
+#searchButton,         
+input[type="range"],   
+label,                 
+select,                
+input[type="checkbox"],
+input[type="radio"]    
 {
-    /* Con trỏ hình mũi tên tùy chỉnh màu tím.
-       '4 2' là tọa độ hotspot, căn chỉnh đầu mũi tên.
-       'pointer' là con trỏ dự phòng. */
-    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23a78bfa" d="M5.41,22.58C5.08,22.91,4.55,22.91,4.22,22.58C3.89,22.25,3.89,21.72,4.22,21.39L12.83,12.78C13.16,12.45,13.16,11.92,12.83,11.59L4.22,3.01C3.89,2.68,3.89,2.15,4.22,1.82C4.55,1.49,5.08,1.49,5.41,1.82L14.02,10.43C15.04,11.45,15.04,13.00,14.02,14.02L5.41,22.58Z" transform="rotate(-45 12 12)"/></svg>') 4 2, pointer;
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" width="24" height="24" viewBox="0 0 24 24"><path fill="%23a78bfa" d="M5.41,22.58C5.08,22.91,4.55,22.91,4.22,22.58C3.89,22.25,3.89,21.72,4.22,21.39L12.83,12.78C13.16,12.45,13.16,11.92,12.83,11.59L4.22,3.01C3.89,2.68,3.89,2.15,4.22,1.82C4.55,1.49,5.08,1.49,5.41,1.82L14.02,10.43C15.04,11.45,15.04,13.00,14.02,14.02L5.41,22.58Z" transform="rotate(-45 12 12)"/></svg>') 4 2, pointer;
 }
 
-/* Giữ lại con trỏ văn bản tiêu chuẩn cho các trường nhập liệu để đảm bảo trải nghiệm người dùng tốt */
 input[type="text"],
 textarea {
     cursor: text;
