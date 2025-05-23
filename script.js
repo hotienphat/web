@@ -47,7 +47,7 @@ const audioPlaylist = [
         title: "Poker Face",
         artist: "Lady Gaga",
         src: "https://files.catbox.moe/ykqqpn.flac", 
-        albumArt: "./Backround sound/Ladygagapokerface.png" 
+        albumArt: "./Backround sound/Phepmaulogo.jpg" 
     },
     // Add more tracks here if needed
 ];
