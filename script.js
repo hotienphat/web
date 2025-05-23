@@ -57,33 +57,47 @@ let currentTrackIndex = 0;
 // --- START: LYRICS CONFIGURATION ---
 const songLyrics = {
     "Phép Màu (Đàn Cá Gỗ OST)": [
-        // Thời gian được tính bằng giây, cần điều chỉnh chính xác cho khớp nhạc
-        { time: 0, text: "..." }, // Dòng trống hoặc dấu ... cho đoạn intro nếu có
-        { time: 14.2, text: "Hoàng hôn dần buông, nắng theo chân em đến đây" },
-        { time: 17.8, text: "Nhẹ nhàng mây trôi, cuốn theo em bao ngất ngây" },
-        { time: 21.3, text: "Nụ cười em trao, khiến anh như đang обомлеть" }, // (obomlet' - tiếng Nga)
-        { time: 24.8, text: "Chẳng thể kiềm lòng, muốn ôm em trong phút giây" },
-        { time: 28.3, text: "Và anh chỉ muốn thấy em cười mỗi ngày" },
-        { time: 31.8, text: "Muốn được cùng em tay nắm tay đi hết quãng đời này" },
-        { time: 35.5, text: "Dù bao gian khó, sóng gió chẳng đổi thay" },
-        { time: 39.0, text: "Vì tình yêu anh trao em là thật đấy" },
-        { time: 42.5, text: "Em có biết không em ơi?" },
-        { time: 45.5, text: "Từ ngày em đến thế giới anh như thêm tuyệt vời" },
-        { time: 49.5, text: "Là phép màu ông trời ban cho anh đấy người ơi" },
-        { time: 53.0, text: "Nguyện yêu em mãi, chẳng bao giờ cách xa rời" },
-        { time: 56.8, text: "Cầm tay anh nhé, mình cùng nhau bước đi" },
-        { time: 60.3, text: "Qua bao thăng trầm, chẳng hề lo nghĩ suy" },
-        { time: 63.8, text: "Vì anh đã có em, người anh yêu nhất đời" },
-        { time: 67.0, text: "Mình cùng nhau vẽ nên câu chuyện tình yêu tuyệt vời." },
-        // Thêm lời nếu bài hát dài hơn
-        { time: 300, text: "" } // Dòng trống cuối cùng để đảm bảo dòng cuối được hiển thị đủ lâu
+        // THỜI GIAN (time) LÀ ƯỚC TÍNH - CẦN ĐIỀU CHỈNH CHÍNH XÁC THEO NHẠC
+        { time: 0, text: "..." }, // Cho đoạn nhạc dạo nếu có
+        { time: 5.0, text: "Ngày thay đêm" },
+        { time: 7.5, text: "Vội trôi giấc mơ êm đềm" },
+        { time: 10.5, text: "Tôi lênh đênh trên biển vắng" },
+        { time: 14.0, text: "Hoàng hôn chờ em chưa buông nắng" },
+        { time: 18.0, text: "Đừng tìm nhau" },
+        { time: 20.5, text: "Vào hôm gió mưa tơi bời" },
+        { time: 24.0, text: "Sợ lời sắp nói vỡ tan thương đau" },
+        { time: 28.0, text: "Hẹn kiếp sau có nhau trọn đời" },
+        { time: 32.5, text: "Liệu người có còn ở đây với tôi thật lâu" },
+        { time: 37.0, text: "Ngày rộng tháng dài sợ mai không còn thấy nhau" },
+        { time: 41.5, text: "Ngày em đến áng mây xanh thêm" },
+        { time: 45.0, text: "Ngày em đi nắng vương cuối thềm" },
+        { time: 48.5, text: "Thiếu em tôi sợ bơ vơ, vắng em như tàn cơn mơ" },
+        { time: 54.0, text: "Chẳng phải phép màu vậy sao chúng ta gặp nhau" },
+        { time: 58.5, text: "Một người khẽ cười, người kia cũng dịu nỗi đau" },
+        { time: 63.0, text: "Gọi tôi thức giấc cơn ngủ mê" },
+        { time: 66.5, text: "Dìu tôi đi lúc quên lối về" },
+        { time: 70.0, text: "Quãng đời mai sau luôn cạnh nhau" },
+        { time: 74.5, text: "Rồi ngày mai" },
+        { time: 77.0, text: "Còn ai với ai ở lại" },
+        { time: 80.0, text: "Vẫn căng buồm ra khơi" },
+        { time: 83.0, text: "Theo làn gió mới" },
+        { time: 86.5, text: "Vì biết đâu mọi thứ chưa bắt đầu" },
+        { time: 91.0, text: "Liệu người có còn ở đây với tôi thật lâu" },
+        { time: 95.5, text: "Ngày rộng tháng dài sợ mai không còn thấy nhau" },
+        { time: 100.0, text: "Ngày em đến áng mây xanh thêm" },
+        { time: 103.5, text: "Ngày em đi nắng vương cuối thềm" },
+        { time: 107.0, text: "Thiếu em tôi sợ bơ vơ, vắng em như tàn cơn mơ" },
+        { time: 112.5, text: "Chẳng phải phép màu vậy sao chúng ta gặp nhau" },
+        { time: 117.0, text: "Một người khẽ cười, người kia cũng dịu nỗi đau" },
+        { time: 121.5, text: "Gọi tôi thức giấc cơn ngủ mê" },
+        { time: 125.0, text: "Dìu tôi đi lúc quên lối về" },
+        { time: 128.5, text: "Quãng đời thanh xuân sao em cho tôi giữ lấy, giữ lấy" },
+        { time: 300, text: "" } // Dòng trống cuối cùng, đảm bảo dòng cuối được hiển thị đủ
     ]
-    // Bạn có thể thêm lời cho các bài hát khác ở đây nếu audioPlaylist có nhiều bài
-    // "Tên Bài Hát Khác": [ {time: 0, text: "Lời bài hát..."}, ... ]
 };
 
-let lyricsDisplayContainer; // DOM element cho vùng chứa lời
-let currentLyrics = []; // Mảng chứa lời của bài hát hiện tại
+let lyricsDisplayContainer; 
+let currentLyrics = []; 
 // --- END: LYRICS CONFIGURATION ---
 
 
@@ -242,7 +256,6 @@ function loadTrack(trackIndex) {
     updateTrackButtonsState(); 
     updateVolumeIcon(); 
 
-    // Tải lời bài hát cho track mới
     loadLyricsForTrack();
 }
 
@@ -282,7 +295,7 @@ function stopAudio() {
             visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
         }
     }
-    clearLyricsDisplay(); // Xóa lời khi dừng nhạc
+    clearLyricsDisplay(); 
 }
 
 /**
@@ -304,7 +317,6 @@ function updateProgressBar() {
     if (audioPlayer.duration && !isNaN(audioPlayer.duration)) { 
         musicProgressBar.value = audioPlayer.currentTime;
         currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
-        // Cập nhật lời bài hát cùng với progress bar
         updateLyricsDisplay(); 
     }
 }
@@ -324,7 +336,7 @@ function setAudioDuration() {
  */
 function seekAudio() {
     audioPlayer.currentTime = musicProgressBar.value;
-    updateLyricsDisplay(); // Cập nhật lời ngay khi tua nhạc
+    updateLyricsDisplay(); 
 }
 
 /**
@@ -529,32 +541,21 @@ function drawVisualizerLoop() {
 }
 
 // --- LYRICS DISPLAY FUNCTIONS ---
-/**
- * Khởi tạo các thành phần cho việc hiển thị lời bài hát.
- */
 function initializeLyricsDisplay() {
     lyricsDisplayContainer = document.getElementById('lyricsDisplayContainer');
     if (!lyricsDisplayContainer) {
         console.warn("Không tìm thấy vùng chứa lời bài hát (lyricsDisplayContainer).");
         return;
     }
-
-    // Gắn các event listener cần thiết cho audioPlayer để cập nhật lời
     if (audioPlayer) {
-        // `timeupdate` đã có `updateLyricsDisplay` trong `updateProgressBar`
-        // audioPlayer.addEventListener('timeupdate', updateLyricsDisplay); // Đã có trong updateProgressBar
-        audioPlayer.addEventListener('loadeddata', loadLyricsForTrack); // Khi dữ liệu bài hát được tải
-        audioPlayer.addEventListener('play', updateLyricsDisplay); // Cập nhật khi nhấn play (phòng trường hợp pause giữa lời)
-        audioPlayer.addEventListener('ended', clearLyricsDisplay); // Xóa lời khi hết bài
-        audioPlayer.addEventListener('emptied', clearLyricsDisplay); // Xóa lời khi đổi src (ví dụ: load bài mới)
-        // `seeked` event có thể hữu ích nếu `input` trên progress bar không đủ
+        audioPlayer.addEventListener('loadeddata', loadLyricsForTrack); 
+        audioPlayer.addEventListener('play', updateLyricsDisplay); 
+        audioPlayer.addEventListener('ended', clearLyricsDisplay); 
+        audioPlayer.addEventListener('emptied', clearLyricsDisplay); 
         audioPlayer.addEventListener('seeked', updateLyricsDisplay);
     }
 }
 
-/**
- * Tải lời cho bài hát hiện tại đang được phát.
- */
 function loadLyricsForTrack() {
     if (!audioPlayer || !songTitleEl || !audioPlaylist[currentTrackIndex]) {
         currentLyrics = [];
@@ -563,58 +564,48 @@ function loadLyricsForTrack() {
     }
     const trackTitle = audioPlaylist[currentTrackIndex].title;
     currentLyrics = songLyrics[trackTitle] || [];
-    clearLyricsDisplay(); // Xóa lời cũ
-    updateLyricsDisplay(); // Hiển thị lời ban đầu nếu có (ví dụ: nếu bài hát bắt đầu giữa chừng)
+    clearLyricsDisplay(); 
+    updateLyricsDisplay(); 
 }
 
-/**
- * Xóa toàn bộ nội dung trong vùng hiển thị lời bài hát.
- */
 function clearLyricsDisplay() {
     if (lyricsDisplayContainer) {
         lyricsDisplayContainer.innerHTML = '';
     }
 }
 
-/**
- * Cập nhật và hiển thị các dòng lời bài hát dựa trên thời gian hiện tại của audioPlayer.
- */
 function updateLyricsDisplay() {
     if (!audioPlayer || !lyricsDisplayContainer || !currentLyrics || currentLyrics.length === 0) {
-        if (lyricsDisplayContainer) lyricsDisplayContainer.innerHTML = ''; // Xóa nếu không có lời
+        if (lyricsDisplayContainer) lyricsDisplayContainer.innerHTML = ''; 
         return;
     }
 
     const currentTime = audioPlayer.currentTime;
     let activeLineIndex = -1;
 
-    // Tìm index của dòng lời đang active
     for (let i = 0; i < currentLyrics.length; i++) {
         if (currentTime >= currentLyrics[i].time) {
-            if (i + 1 < currentLyrics.length) { // Nếu không phải dòng cuối
+            if (i + 1 < currentLyrics.length) { 
                 if (currentTime < currentLyrics[i+1].time) {
                     activeLineIndex = i;
                     break;
                 }
-            } else { // Nếu là dòng cuối cùng
+            } else { 
                 activeLineIndex = i;
                 break;
             }
         }
     }
     
-    // Xử lý trường hợp đặc biệt: trước dòng lời đầu tiên có time > 0, nhưng có dòng time: 0 (thường là intro "...")
-    if (activeLineIndex === -1 && currentLyrics.length > 0 && currentLyrics[0].time === 0 && currentTime < (currentLyrics[1]?.time || currentLyrics[0].time + 3 )) { // Giả sử dòng intro kéo dài 3s nếu không có dòng kế
+    if (activeLineIndex === -1 && currentLyrics.length > 0 && currentLyrics[0].time === 0 && currentTime < (currentLyrics[1]?.time || currentLyrics[0].time + 3 )) { 
          activeLineIndex = 0;
     }
 
-
-    lyricsDisplayContainer.innerHTML = ''; // Xóa các dòng lời cũ
+    lyricsDisplayContainer.innerHTML = ''; 
 
     if (activeLineIndex !== -1) {
         const activeLyricData = currentLyrics[activeLineIndex];
         
-        // Chỉ hiển thị nếu lời không phải là "..." hoặc rỗng
         if (activeLyricData && activeLyricData.text && activeLyricData.text.trim() !== "" && activeLyricData.text.trim() !== "...") {
             const pActive = document.createElement('p');
             pActive.textContent = activeLyricData.text;
@@ -622,7 +613,6 @@ function updateLyricsDisplay() {
             lyricsDisplayContainer.appendChild(pActive);
         }
 
-        // Hiển thị dòng kế tiếp (upcoming) nếu có và không phải "..."
         const upcomingLineIndex = activeLineIndex + 1;
         if (upcomingLineIndex < currentLyrics.length) {
             const upcomingLyricData = currentLyrics[upcomingLineIndex];
@@ -634,18 +624,15 @@ function updateLyricsDisplay() {
             }
         }
     } else if (currentLyrics.length > 0 && currentTime < currentLyrics[0].time) {
-        // Nếu thời gian hiện tại nhỏ hơn thời gian của dòng lời đầu tiên (và dòng đó không phải "...")
-        // thì hiển thị dòng đầu tiên như một dòng "sắp tới"
         const firstLyricData = currentLyrics[0];
         if (firstLyricData && firstLyricData.text && firstLyricData.text.trim() !== "" && firstLyricData.text.trim() !== "...") {
             const pFirstUpcoming = document.createElement('p');
             pFirstUpcoming.textContent = firstLyricData.text;
-            pFirstUpcoming.className = 'lyric-line upcoming-1'; // Kiểu dáng như dòng sắp tới
+            pFirstUpcoming.className = 'lyric-line upcoming-1'; 
             lyricsDisplayContainer.appendChild(pFirstUpcoming);
         }
     }
 }
-
 
 // --- DOMContentLoaded ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -656,9 +643,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initializeVisualizerCanvas();
     }
     
-    // Khởi tạo hiển thị lời bài hát SAU KHI trình phát nhạc đã được khởi tạo
     initializeLyricsDisplay();
-
 
     const searchButton = document.getElementById('searchButton'); 
     if (searchButton) { 
