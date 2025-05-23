@@ -4,6 +4,7 @@ body {
     background-color: #111827; 
     color: #e5e7eb; 
     margin: 0; 
+    /* Custom cursor will be applied via html, body rule below for better coverage */
 }
 
 .search-input::placeholder {
@@ -162,3 +163,35 @@ body {
     display: flex; 
     align-items: center; 
 }
+
+/* --- START: CUSTOM CURSOR STYLES --- */
+html, body {
+    /* Con trỏ hình dấu chấm nhỏ màu tím cho toàn bộ trang.
+       '8 8' là tọa độ hotspot (điểm nóng) của con trỏ, tính từ góc trên bên trái của ảnh SVG (16x16), giúp con trỏ chỉ đúng vào vị trí mong muốn.
+       'auto' là con trỏ dự phòng nếu trình duyệt không hỗ trợ con trỏ tùy chỉnh. */
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><circle cx="8" cy="8" r="3" fill="%23c4b5fd" opacity="0.85"/></svg>') 8 8, auto;
+}
+
+a,
+button,
+.shortcut-button,       /* Áp dụng cho các nút shortcut hiện có */
+.music-control-button,  /* Áp dụng cho các nút điều khiển nhạc hiện có */
+#searchButton,          /* Áp dụng cho nút tìm kiếm hiện có */
+input[type="range"],    /* Áp dụng cho thanh trượt */
+label,                  /* Áp dụng cho các nhãn có thể nhấp */
+select,                 /* Áp dụng cho các menu thả xuống */
+input[type="checkbox"], /* Áp dụng cho checkbox */
+input[type="radio"]     /* Áp dụng cho radio button */
+{
+    /* Con trỏ hình mũi tên tùy chỉnh màu tím.
+       '4 2' là tọa độ hotspot, căn chỉnh đầu mũi tên.
+       'pointer' là con trỏ dự phòng. */
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23a78bfa" d="M5.41,22.58C5.08,22.91,4.55,22.91,4.22,22.58C3.89,22.25,3.89,21.72,4.22,21.39L12.83,12.78C13.16,12.45,13.16,11.92,12.83,11.59L4.22,3.01C3.89,2.68,3.89,2.15,4.22,1.82C4.55,1.49,5.08,1.49,5.41,1.82L14.02,10.43C15.04,11.45,15.04,13.00,14.02,14.02L5.41,22.58Z" transform="rotate(-45 12 12)"/></svg>') 4 2, pointer;
+}
+
+/* Giữ lại con trỏ văn bản tiêu chuẩn cho các trường nhập liệu để đảm bảo trải nghiệm người dùng tốt */
+input[type="text"],
+textarea {
+    cursor: text;
+}
+/* --- END: CUSTOM CURSOR STYLES --- */
