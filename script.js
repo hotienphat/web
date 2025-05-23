@@ -2,12 +2,12 @@
 const shortcutSections = [
     {
         title: "MẠNG XÃ HỘI",
-        iconPrefix: "fab",
+        iconPrefix: "fab", 
         shortcuts: [
             { name: "Facebook", url: "https://www.facebook.com/KaedeharaKazuha0805", icon: "facebook" },
             { name: "Messenger", url: "https://messenger.com", icon: "facebook-messenger" },
             { name: "Instagram", url: "https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Fhotien_boyneh%2F&is_from_rle", icon: "instagram" },
-            { name: "Threads", url: "https://www.threads.net/@hotien_boyneh", icon: "threads" },
+            { name: "Threads", url: "https://www.threads.net/@hotien_boyneh", icon: "threads" }, 
         ]
     },
     {
@@ -15,14 +15,14 @@ const shortcutSections = [
         iconPrefix: "fab",
         shortcuts: [
             { name: "Youtube", url: "https://youtube.com", icon: "youtube" },
-            { name: "Gmail", url: "https://mail.google.com", icon: "google" },
+            { name: "Gmail", url: "https://mail.google.com", icon: "google" }, 
             { name: "Drive", url: "https://drive.google.com", icon: "google-drive" },
             { name: "Tìm kiếm", url: "https://google.com", icon: "google" }
         ]
     },
     {
         title: "GÓC HỌC TẬP",
-        iconPrefix: "fas",
+        iconPrefix: "fas", 
         shortcuts: [
             { name: "Trung Tâm GDTX", url: "https://txdaknong.daknong.edu.vn/", icon: "school" },
             { name: "Random của FOT", url: "https://hotienphat.github.io/GDTX/", icon: "shuffle" },
@@ -35,27 +35,76 @@ const shortcutSections = [
             { name: "Genshin Impact", url: "https://genshin.hoyoverse.com/", icon: "gamepad" },
             { name: "Valorant", url: "https://playvalorant.com/", icon: "gamepad" },
             { name: "Honkai: Star Rail", url: "https://hsr.hoyoverse.com/", icon: "rocket" },
-            { name: "Spotify", url: "https://spotify.com", icon: "spotify", iconPrefixOverride: "fab" },
+            { name: "Spotify", url: "https://spotify.com", icon: "spotify", iconPrefixOverride: "fab" }, 
         ]
     },
 ];
 // --- END: EDIT SHORTCUTS HERE ---
+
+// --- START: LYRICS CONFIGURATION ---
+// Lời bài hát Phép Màu (Đàn Cá Gỗ OST)
+// Thời gian (time) tính bằng giây. Bạn có thể cần điều chỉnh cho chính xác.
+const phepMauLyrics = [
+    { time: 0, text: "Bài hát: Phép Màu" },
+    { time: 5, text: "Mounter x MAYDAYs, Minh Tốc" }, // Giới thiệu ca sĩ/tên bài
+    { time: 14.5, text: "Ngoài hiên mưa rơi, mưa vẫn rơi" },
+    { time: 18.0, text: "Trong lòng em, nhớ anh không nguôi" },
+    { time: 21.5, text: "Tình yêu này, vẫn luôn đong đầy" },
+    { time: 25.0, text: "Dù cho, bão giông vây quanh" },
+    { time: 28.5, text: "Em vẫn tin, có phép màu" },
+    { time: 32.0, text: "Sẽ đưa anh, đến bên em" },
+    { time: 35.5, text: "Cầm tay em, mình cùng nhau" },
+    { time: 39.0, text: "Đi hết, quãng đường dài" },
+    { time: 42.5, text: "Phép màu, là khi có anh" },
+    { time: 46.0, text: "Phép màu, sưởi ấm tim em" },
+    { time: 49.5, text: "Phép màu, xóa tan giá băng" },
+    { time: 53.0, text: "Cho tình yêu, mãi xanh ngời" },
+    { time: 56.5, text: "Dù mai sau, có ra sao" },
+    { time: 60.0, text: "Em vẫn yêu, chỉ riêng anh" },
+    { time: 63.5, text: "Nguyện cùng anh, xây đắp tương lai" },
+    { time: 67.0, text: "Hạnh phúc mãi, không xa rời" },
+    // Verse 2 (Tiếp tục thêm lời nếu có)
+    { time: 85.0, text: "Ngày anh đến, như nắng mai" },
+    { time: 88.5, text: "Xua tan đi, những đêm đông dài" },
+    { time: 92.0, text: "Nụ cười anh, ấm áp dịu dàng" },
+    { time: 95.5, text: "Làm tim em, xuyến xao bồi hồi" },
+    { time: 99.0, text: "Em ước mong, thời gian ngừng trôi" },
+    { time: 102.5, text: "Để khoảnh khắc, này mãi thôi" },
+    { time: 106.0, text: "Được bên anh, được yêu anh" },
+    { time: 109.5, text: "Là điều em, hằng ước ao" },
+    // Chorus
+    { time: 113.0, text: "Phép màu, là khi có anh" },
+    { time: 116.5, text: "Phép màu, sưởi ấm tim em" },
+    { time: 120.0, text: "Phép màu, xóa tan giá băng" },
+    { time: 123.5, text: "Cho tình yêu, mãi xanh ngời" },
+    { time: 127.0, text: "Dù mai sau, có ra sao" },
+    { time: 130.5, text: "Em vẫn yêu, chỉ riêng anh" },
+    { time: 134.0, text: "Nguyện cùng anh, xây đắp tương lai" },
+    { time: 137.5, text: "Hạnh phúc mãi, không xa rời" },
+    // Outro
+    { time: 144.5, text: "Oh oh oh, phép màu tình yêu" },
+    { time: 151.5, text: "Oh oh oh, có anh bên đời" },
+    { time: 158.0, text: "Phép màu..." },
+    { time: 165.0, text: "" } // Dòng trống để xóa lời ở cuối bài
+];
+// --- END: LYRICS CONFIGURATION ---
 
 // --- START: MUSIC PLAYER CONFIGURATION ---
 const audioPlaylist = [
     {
         title: "Phép Màu (Đàn Cá Gỗ OST)",
         artist: "Mounter x MAYDAYs, Minh Tốc | Official MV",
-        src: "./Backround sound/phepmau.mp3",
-        albumArt: "./Backround sound/Phepmaulogo.jpg"
+        src: "./Backround sound/phepmau.mp3", 
+        albumArt: "./Backround sound/Phepmaulogo.jpg",
+        lyrics: phepMauLyrics // Gán lời bài hát cho track này
     },
-    // Add more tracks here if needed
+    // Thêm các bài hát khác vào đây nếu muốn, mỗi bài có thể có hoặc không có key 'lyrics'
 ];
 let currentTrackIndex = 0;
 // --- END: MUSIC PLAYER CONFIGURATION ---
 
 // --- Global variables for the music player ---
-let audioPlayer;
+let audioPlayer; 
 let playPauseMusicBtn, stopMusicBtn, musicProgressBar, albumArtElement, currentTimeEl, durationEl;
 let songTitleEl, songArtistEl;
 let volumeBtn, volumeSlider;
@@ -67,8 +116,15 @@ let analyser;
 let sourceNode;
 let visualizerCanvas, visualizerCtx;
 let dataArray;
-let rafId; // requestAnimationFrame ID
-let isVisualizerInitialized = false; // Flag to check if visualizer is set up
+let rafId;
+let isVisualizerInitialized = false;
+
+// --- Global variables for Lyrics Display ---
+let avatarLyricsContainer, lyricsTextScroller;
+let currentLyricsData = []; // Sẽ chứa lời của bài hát hiện tại
+let currentLyricIndex = -1; // Chỉ số của dòng lời hiện tại
+let lyricsSystemInitialized = false; // Đánh dấu hệ thống lời đã sẵn sàng chưa
+
 
 /**
  * Renders shortcut sections and their items into the DOM.
@@ -79,14 +135,14 @@ function renderShortcuts() {
         console.error("Shortcut container not found!");
         return;
     }
-    container.innerHTML = ''; // Clear existing shortcuts
+    container.innerHTML = ''; 
 
     shortcutSections.forEach(section => {
         const sectionDiv = document.createElement('div');
-        sectionDiv.className = 'p-6 bg-slate-800 rounded-xl shadow-lg'; // Added shadow for depth
+        sectionDiv.className = 'p-6 bg-slate-800 rounded-xl shadow-lg'; 
 
         const titleElement = document.createElement('h2');
-        titleElement.className = 'text-2xl font-semibold mb-6 section-title tracking-wider'; // Enhanced title styling
+        titleElement.className = 'text-2xl font-semibold mb-6 section-title tracking-wider'; 
         titleElement.textContent = section.title;
         sectionDiv.appendChild(titleElement);
 
@@ -96,9 +152,9 @@ function renderShortcuts() {
         section.shortcuts.forEach(shortcut => {
             const link = document.createElement('a');
             link.href = shortcut.url;
-            link.target = "_blank"; // Open in new tab
+            link.target = "_blank"; 
             link.rel = "noopener noreferrer";
-            link.className = 'shortcut-button p-4 rounded-lg text-center flex flex-col items-center justify-center h-32'; // Fixed height for consistency
+            link.className = 'shortcut-button p-4 rounded-lg text-center flex flex-col items-center justify-center h-32'; 
 
             const iconElement = document.createElement('i');
             const prefix = shortcut.iconPrefixOverride || section.iconPrefix || 'fas';
@@ -109,7 +165,7 @@ function renderShortcuts() {
             nameSpan.className = 'text-sm font-medium';
             nameSpan.textContent = shortcut.name;
             link.appendChild(nameSpan);
-
+            
             gridDiv.appendChild(link);
         });
         sectionDiv.appendChild(gridDiv);
@@ -136,8 +192,8 @@ function performSearch() {
  * Initializes the main music player components and event listeners.
  */
 function initializeMusicPlayer() {
-    audioPlayer = new Audio(); // Create audio element
-    audioPlayer.crossOrigin = "anonymous"; // For visualizer if loading from different origin
+    audioPlayer = new Audio(); 
+    audioPlayer.crossOrigin = "anonymous";
 
     playPauseMusicBtn = document.getElementById('playPauseMusicBtn');
     stopMusicBtn = document.getElementById('stopMusicBtn');
@@ -152,33 +208,36 @@ function initializeMusicPlayer() {
     prevTrackBtn = document.getElementById('prevTrackBtn');
     nextTrackBtn = document.getElementById('nextTrackBtn');
 
-    // Check if all essential elements are found
     const essentialElements = [playPauseMusicBtn, stopMusicBtn, musicProgressBar, albumArtElement, currentTimeEl, durationEl, songTitleEl, songArtistEl, volumeBtn, volumeSlider, prevTrackBtn, nextTrackBtn];
     if (essentialElements.some(el => !el)) {
         console.error("Một hoặc nhiều phần tử của trình phát nhạc không được tìm thấy trong DOM!");
         const playerContainer = document.getElementById('musicPlayerContainer');
-        if(playerContainer) playerContainer.style.display = 'none'; // Hide player if elements are missing
-        return; // Stop initialization
+        if(playerContainer) playerContainer.style.display = 'none';
+        return; 
     }
+    
+    loadTrack(currentTrackIndex); 
+    setVolume();
 
-    loadTrack(currentTrackIndex); // Load the initial track
-    setVolume(); // Set initial volume
-
-    // Event Listeners
     playPauseMusicBtn.addEventListener('click', togglePlayPause);
     stopMusicBtn.addEventListener('click', stopAudio);
-    musicProgressBar.addEventListener('input', seekAudio); // Use 'input' for live seeking
-    audioPlayer.addEventListener('timeupdate', updateProgressBar); // Update progress bar as audio plays
-    audioPlayer.addEventListener('loadedmetadata', setAudioDuration); // Set duration once metadata is loaded
-    audioPlayer.addEventListener('ended', playNextTrackHandler); // Play next track when current one ends
+    musicProgressBar.addEventListener('input', seekAudio); 
+    audioPlayer.addEventListener('timeupdate', () => {
+        updateProgressBar();
+        if (lyricsSystemInitialized) { // Chỉ cập nhật lời nếu hệ thống đã sẵn sàng
+            updateLyricsDisplay();
+        }
+    }); 
+    audioPlayer.addEventListener('loadedmetadata', setAudioDuration); 
+    audioPlayer.addEventListener('ended', playNextTrackHandler);
 
     volumeSlider.addEventListener('input', setVolume);
     volumeBtn.addEventListener('click', toggleMute);
 
-    prevTrackBtn.addEventListener('click', playPrevTrackHandler); // Play previous track
-    nextTrackBtn.addEventListener('click', playNextTrackHandler); // Play next track
-
-    updateTrackButtonsState(); // Set initial state of prev/next buttons
+    prevTrackBtn.addEventListener('click', playPrevTrackHandler);
+    nextTrackBtn.addEventListener('click', playNextTrackHandler);
+    
+    updateTrackButtonsState(); 
 }
 
 /**
@@ -191,42 +250,42 @@ function loadTrack(trackIndex) {
         return;
     }
     const track = audioPlaylist[trackIndex];
-    const currentVolume = audioPlayer.volume; // Preserve current volume
-    const currentMutedState = audioPlayer.muted; // Preserve muted state
+    const currentVolume = audioPlayer.volume; 
+    const currentMutedState = audioPlayer.muted;
 
-    audioPlayer.src = track.src; // Set the source for the new track
-    audioPlayer.volume = currentVolume; // Restore volume
-    audioPlayer.muted = currentMutedState; // Restore muted state
+    audioPlayer.src = track.src; 
+    audioPlayer.volume = currentVolume;
+    audioPlayer.muted = currentMutedState;
 
-    // Update UI elements
-    albumArtElement.src = track.albumArt; // Update album art
+    albumArtElement.src = track.albumArt; 
     albumArtElement.alt = track.title + " - Album Art";
-    songTitleEl.textContent = track.title; // Update song title
-    songArtistEl.textContent = track.artist; // Update song artist
-
-    // Reset progress bar and time displays
+    songTitleEl.textContent = track.title;
+    songArtistEl.textContent = track.artist;
+    
     musicProgressBar.value = 0;
     currentTimeEl.textContent = formatTime(0);
-    durationEl.textContent = formatTime(audioPlayer.duration || 0); // Use 0 if duration is not yet available
+    durationEl.textContent = formatTime(audioPlayer.duration || 0); 
 
-    updatePlayPauseIcon(); // Update play/pause button icon
-    updateTrackButtonsState(); // Update prev/next button states
-    updateVolumeIcon(); // Update volume icon
-
-    loadLyricsForTrack();
+    // Cập nhật lời bài hát cho track mới
+    currentLyricsData = track.lyrics || []; // Lấy lời từ track object, hoặc mảng rỗng nếu không có
+    if (lyricsSystemInitialized) {
+        renderLyricsForCurrentTrack(); // Hiển thị lời cho track mới
+    }
+    
+    updatePlayPauseIcon(); 
+    updateTrackButtonsState(); 
+    updateVolumeIcon(); 
 }
 
 /**
  * Toggles play/pause state of the audio player.
  */
 function togglePlayPause() {
-    // Initialize visualizer if not already done and audio is present
     if (!isVisualizerInitialized && audioPlayer) {
         setupAudioGraph();
     }
 
     if (audioPlayer.paused || audioPlayer.ended) {
-        // Resume AudioContext if suspended (common in browsers after page load)
         if (audioContext && audioContext.state === 'suspended') {
             audioContext.resume().then(() => {
                 audioPlayer.play().catch(handlePlayError);
@@ -237,7 +296,7 @@ function togglePlayPause() {
     } else {
         audioPlayer.pause();
     }
-    updatePlayPauseIcon(); // Update button icon
+    updatePlayPauseIcon(); 
 }
 
 /**
@@ -245,16 +304,15 @@ function togglePlayPause() {
  */
 function stopAudio() {
     audioPlayer.pause();
-    audioPlayer.currentTime = 0; // Reset to the beginning
-    updatePlayPauseIcon(); // Update button icon
-    if (rafId) { // Stop visualizer animation loop
+    audioPlayer.currentTime = 0; 
+    updatePlayPauseIcon(); 
+    if (rafId) {
         cancelAnimationFrame(rafId);
         rafId = null;
         if(visualizerCtx && visualizerCanvas) {
             visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
         }
     }
-    clearLyricsDisplay(); // Clear lyrics
 }
 
 /**
@@ -273,10 +331,9 @@ function updatePlayPauseIcon() {
  * Updates the music progress bar and current time display.
  */
 function updateProgressBar() {
-    if (audioPlayer.duration && !isNaN(audioPlayer.duration)) { // Ensure duration is a valid number
+    if (audioPlayer.duration && !isNaN(audioPlayer.duration)) { 
         musicProgressBar.value = audioPlayer.currentTime;
         currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
-        updateLyricsDisplay(); // Update lyrics based on current time
     }
 }
 
@@ -295,7 +352,6 @@ function setAudioDuration() {
  */
 function seekAudio() {
     audioPlayer.currentTime = musicProgressBar.value;
-    updateLyricsDisplay(); // Update lyrics after seeking
 }
 
 /**
@@ -314,14 +370,11 @@ function formatTime(timeInSeconds) {
 function handlePlayError(error) {
     console.error("Lỗi khi phát nhạc:", error.name, error.message);
     if (error.name === 'NotAllowedError') {
-        // This error occurs if autoplay is blocked by the browser
         console.warn("Autoplay blocked by browser. User interaction required.");
-        // Optionally, display a message to the user here
     } else if (error.name === 'AbortError') {
-        // This can happen if a new track is loaded while the previous one was trying to play
         console.info("Playback aborted, possibly due to new track load or stop action.");
     }
-    updatePlayPauseIcon(); // Ensure UI is consistent
+    updatePlayPauseIcon(); 
 }
 
 /**
@@ -331,7 +384,7 @@ function setVolume() {
     if (!audioPlayer || !volumeSlider) return;
     const newVolume = parseFloat(volumeSlider.value);
     audioPlayer.volume = newVolume;
-    audioPlayer.muted = (newVolume === 0); // Mute if volume is 0
+    audioPlayer.muted = (newVolume === 0);
     updateVolumeIcon();
 }
 
@@ -340,10 +393,9 @@ function setVolume() {
  */
 function toggleMute() {
     if (!audioPlayer) return;
-    audioPlayer.muted = !audioPlayer.muted; // Toggle muted state
-    // If unmuting and volume was 0, set a default volume
+    audioPlayer.muted = !audioPlayer.muted; 
     if (!audioPlayer.muted && audioPlayer.volume === 0) {
-        audioPlayer.volume = 0.5; // Default volume
+        audioPlayer.volume = 0.5; 
         if (volumeSlider) volumeSlider.value = audioPlayer.volume.toString();
     }
     updateVolumeIcon();
@@ -353,8 +405,8 @@ function toggleMute() {
  * Updates the volume button icon.
  */
 function updateVolumeIcon() {
-    if(!volumeBtn || !audioPlayer) return; // Ensure elements exist
-    volumeBtn.innerHTML = ''; // Clear previous icon
+    if(!volumeBtn || !audioPlayer) return; 
+    volumeBtn.innerHTML = ''; 
     const icon = document.createElement('i');
     icon.classList.add('fas');
     if (audioPlayer.muted || audioPlayer.volume === 0) {
@@ -373,8 +425,7 @@ function updateVolumeIcon() {
 function playNextTrackHandler() {
     currentTrackIndex = (currentTrackIndex + 1) % audioPlaylist.length;
     loadTrack(currentTrackIndex);
-    // Only play if it was playing before or if there's only one track and it ended
-    if(!audioPlayer.paused || audioPlaylist.length === 1){
+    if(!audioPlayer.paused || audioPlaylist.length === 1){ 
         audioPlayer.play().catch(handlePlayError);
     }
 }
@@ -385,8 +436,7 @@ function playNextTrackHandler() {
 function playPrevTrackHandler() {
     currentTrackIndex = (currentTrackIndex - 1 + audioPlaylist.length) % audioPlaylist.length;
     loadTrack(currentTrackIndex);
-    // Only play if it was playing before or if there's only one track
-     if(!audioPlayer.paused || audioPlaylist.length === 1){
+    if(!audioPlayer.paused || audioPlaylist.length === 1){
          audioPlayer.play().catch(handlePlayError);
     }
 }
@@ -399,7 +449,6 @@ function updateTrackButtonsState() {
     const disableButtons = audioPlaylist.length <= 1;
     prevTrackBtn.disabled = disableButtons;
     nextTrackBtn.disabled = disableButtons;
-    // Add visual cue for disabled state
     [prevTrackBtn, nextTrackBtn].forEach(btn => {
         btn.classList.toggle('opacity-50', disableButtons);
         btn.classList.toggle('cursor-not-allowed', disableButtons);
@@ -408,27 +457,27 @@ function updateTrackButtonsState() {
 
 // --- MUSIC VISUALIZER FUNCTIONS ---
 function setupAudioGraph() {
-    if (isVisualizerInitialized || !audioPlayer) return; // Don't re-initialize or if no audio player
+    if (isVisualizerInitialized || !audioPlayer) return;
     try {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         analyser = audioContext.createAnalyser();
-        analyser.fftSize = 256; // Adjust for detail vs performance
+        analyser.fftSize = 256; 
         sourceNode = audioContext.createMediaElementSource(audioPlayer);
-        sourceNode.connect(analyser);        // Connect source to analyser
-        analyser.connect(audioContext.destination); // Connect analyser to output (speakers)
+        sourceNode.connect(analyser);
+        analyser.connect(audioContext.destination);
         dataArray = new Uint8Array(analyser.frequencyBinCount);
-        isVisualizerInitialized = true; // Set flag
+        isVisualizerInitialized = true;
         console.log("Audio graph for visualizer initialized.");
     } catch (e) {
         console.error("Lỗi khởi tạo AudioContext hoặc Analyser cho visualizer:", e);
-        if (visualizerCanvas) visualizerCanvas.style.display = 'none'; // Hide visualizer on error
-        isVisualizerInitialized = false; // Reset flag
+        if (visualizerCanvas) visualizerCanvas.style.display = 'none';
+        isVisualizerInitialized = false;
     }
 }
 
 function initializeVisualizerCanvas() {
     visualizerCanvas = document.getElementById('musicVisualizer');
-    const imagePlaceholder = document.querySelector('.image-placeholder'); // Get the avatar container
+    const imagePlaceholder = document.querySelector('.image-placeholder');
 
     if (!visualizerCanvas || !imagePlaceholder) {
         console.error("Visualizer: Không tìm thấy canvas hoặc image placeholder.");
@@ -437,26 +486,22 @@ function initializeVisualizerCanvas() {
     }
     visualizerCtx = visualizerCanvas.getContext('2d');
 
-    // Function to set canvas dimensions based on the avatar image placeholder
     function setCanvasDimensions() {
         if (!imagePlaceholder || !visualizerCanvas) return;
         const avatarRect = imagePlaceholder.getBoundingClientRect();
-        visualizerCanvas.height = avatarRect.height > 0 ? avatarRect.height : 300; // Use placeholder height or default
-        visualizerCanvas.width = 60; // Fixed width for the side visualizer
-        // Clear canvas if not playing or paused
+        visualizerCanvas.height = avatarRect.height > 0 ? avatarRect.height : 300;
+        visualizerCanvas.width = 60;
         if (visualizerCtx && (!rafId || audioPlayer.paused)) {
              visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
         }
     }
-    setCanvasDimensions(); // Set initial dimensions
-    window.addEventListener('resize', setCanvasDimensions); // Adjust on window resize
+    setCanvasDimensions();
+    window.addEventListener('resize', setCanvasDimensions);
 
-    // Start visualizer on play
     audioPlayer.addEventListener('play', () => {
-        if (!isVisualizerInitialized) { // Setup graph if not done
+        if (!isVisualizerInitialized) {
             setupAudioGraph();
         }
-        // Resume AudioContext if needed and start drawing
         if (isVisualizerInitialized && audioContext && audioContext.state === 'suspended') {
             audioContext.resume().then(() => {
                 if (!rafId) drawVisualizerLoop();
@@ -466,7 +511,6 @@ function initializeVisualizerCanvas() {
         }
     });
 
-    // Stop visualizer on pause
     audioPlayer.addEventListener('pause', () => {
         if (rafId) {
             cancelAnimationFrame(rafId);
@@ -474,7 +518,6 @@ function initializeVisualizerCanvas() {
         }
     });
 
-    // Clear visualizer on ended
     audioPlayer.addEventListener('ended', () => {
         if (rafId) {
             cancelAnimationFrame(rafId);
@@ -487,157 +530,158 @@ function initializeVisualizerCanvas() {
 }
 
 function drawVisualizerLoop() {
-    // Ensure everything is ready before drawing
     if (!isVisualizerInitialized || !analyser || !visualizerCtx || !dataArray || !visualizerCanvas) {
-        if (rafId) cancelAnimationFrame(rafId); // Stop loop if something is missing
+        if (rafId) cancelAnimationFrame(rafId);
         rafId = null;
         return;
     }
-    rafId = requestAnimationFrame(drawVisualizerLoop); // Continue the loop
-    analyser.getByteFrequencyData(dataArray); // Get frequency data
-    visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height); // Clear canvas
-
-    const numBars = 32; // Number of bars (horizontal for this setup)
-    const barThickness = (visualizerCanvas.height / numBars) * 0.75; // Thickness of each bar
-    const barSpacing = (visualizerCanvas.height / numBars) * 0.25; // Spacing between bars
-    let currentY = barSpacing / 2; // Starting Y position for the first bar
-
-    const bufferLength = analyser.frequencyBinCount; // Number of data points
-
+    rafId = requestAnimationFrame(drawVisualizerLoop);
+    analyser.getByteFrequencyData(dataArray);
+    visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+    const numBars = 32;
+    const barThickness = (visualizerCanvas.height / numBars) * 0.75; 
+    const barSpacing = (visualizerCanvas.height / numBars) * 0.25; 
+    let currentY = barSpacing / 2;
+    const bufferLength = analyser.frequencyBinCount;
     for (let i = 0; i < numBars; i++) {
-        // Map bar index to dataArray index (sample lower frequencies for more visible movement)
         const dataArrayIndex = Math.min(bufferLength - 1, Math.floor((i / numBars) * (bufferLength * 0.75)));
-        const barLengthFraction = dataArray[dataArrayIndex] / 255.0; // Normalize data to 0-1
-        let barLength = barLengthFraction * visualizerCanvas.width; // Calculate bar length
-
-        // Ensure a minimum visible length for very low values if there's some sound
+        const barLengthFraction = dataArray[dataArrayIndex] / 255.0;
+        let barLength = barLengthFraction * visualizerCanvas.width;
         if (barLength < 1 && dataArray[dataArrayIndex] > 0) barLength = 1;
-        if (barLength > visualizerCanvas.width) barLength = visualizerCanvas.width; // Cap at canvas width
-
-        visualizerCtx.fillStyle = '#a78bfa'; // Bar color (Tailwind purple-400)
-        visualizerCtx.fillRect(0, currentY, barLength, barThickness); // Draw the bar from left
-
-        currentY += barThickness + barSpacing; // Move to the next bar's Y position
+        if (barLength > visualizerCanvas.width) barLength = visualizerCanvas.width;
+        visualizerCtx.fillStyle = '#a78bfa'; 
+        visualizerCtx.fillRect(0, currentY, barLength, barThickness);
+        currentY += barThickness + barSpacing;
     }
 }
 
 // --- LYRICS DISPLAY FUNCTIONS ---
-function initializeLyricsDisplay() {
-    lyricsDisplayContainer = document.getElementById('lyricsDisplayContainer');
-    if (!lyricsDisplayContainer) {
-        console.warn("Không tìm thấy vùng chứa lời bài hát (lyricsDisplayContainer).");
+/**
+ * Initializes the lyrics display system.
+ */
+function initializeLyricsSystem() {
+    avatarLyricsContainer = document.getElementById('avatarLyricsContainer');
+    lyricsTextScroller = document.getElementById('lyricsTextScroller');
+
+    if (!avatarLyricsContainer || !lyricsTextScroller) {
+        console.error("Lyrics container (#avatarLyricsContainer) or scroller (#lyricsTextScroller) not found in HTML!");
+        lyricsSystemInitialized = false;
         return;
     }
-    // Event listeners for lyrics updates
-    if (audioPlayer) {
-        audioPlayer.addEventListener('loadeddata', loadLyricsForTrack); // When new track data is loaded
-        audioPlayer.addEventListener('play', updateLyricsDisplay); // When playback starts/resumes
-        audioPlayer.addEventListener('ended', clearLyricsDisplay); // Clear lyrics when track ends
-        audioPlayer.addEventListener('emptied', clearLyricsDisplay); // Clear when audio source is removed
-        audioPlayer.addEventListener('seeked', updateLyricsDisplay); // Update lyrics after seeking
+    lyricsSystemInitialized = true;
+    console.log("Lyrics system initialized.");
+    // Initial rendering of lyrics will happen in loadTrack
+}
+
+/**
+ * Renders all lyric lines for the current track into the scroller.
+ * Called when a new track is loaded.
+ */
+function renderLyricsForCurrentTrack() {
+    if (!lyricsSystemInitialized || !lyricsTextScroller) return;
+
+    lyricsTextScroller.innerHTML = ''; // Xóa lời cũ
+    currentLyricIndex = -1; // Reset chỉ số dòng lời hiện tại
+    lyricsTextScroller.style.transform = 'translateY(0px)'; // Reset vị trí cuộn
+
+    if (currentLyricsData && currentLyricsData.length > 0) {
+        currentLyricsData.forEach((lyricLine, index) => {
+            const p = document.createElement('p');
+            p.classList.add('lyric-line');
+            // Sử dụng textContent để tránh XSS, và đảm bảo có nội dung (dù là khoảng trắng)
+            p.textContent = lyricLine.text && lyricLine.text.trim() !== "" ? lyricLine.text : " "; 
+            p.dataset.index = index; // Lưu chỉ số để dễ dàng tham chiếu
+            lyricsTextScroller.appendChild(p);
+        });
+        // Cập nhật hiển thị ban đầu (ví dụ: dòng đầu tiên trước khi nhạc bắt đầu)
+        updateLyricsDisplay(true); // true để buộc cập nhật
+    } else {
+        // Hiển thị thông báo nếu không có lời cho bài hát này
+        const p = document.createElement('p');
+        p.classList.add('lyric-line');
+        p.textContent = "Lời bài hát không có sẵn";
+        lyricsTextScroller.appendChild(p);
     }
 }
 
-function loadLyricsForTrack() {
-    if (!audioPlayer || !songTitleEl || !audioPlaylist[currentTrackIndex]) {
-        currentLyrics = [];
-        clearLyricsDisplay();
-        return;
-    }
-    const trackTitle = audioPlaylist[currentTrackIndex].title;
-    currentLyrics = songLyrics[trackTitle] || []; // Get lyrics for the current song or an empty array
-    clearLyricsDisplay(); // Clear previous lyrics
-    updateLyricsDisplay(); // Display initial lyrics if any
-}
-
-function clearLyricsDisplay() {
-    if (lyricsDisplayContainer) {
-        lyricsDisplayContainer.innerHTML = '';
-    }
-}
-
-function updateLyricsDisplay() {
-    if (!audioPlayer || !lyricsDisplayContainer || !currentLyrics || currentLyrics.length === 0) {
-        if (lyricsDisplayContainer) lyricsDisplayContainer.innerHTML = ''; // Clear if no lyrics or player
-        return;
+/**
+ * Updates the highlighted lyric line and scrolls the view.
+ * Called on audioPlayer.timeupdate and when lyrics are first rendered.
+ * @param {boolean} forceUpdate - If true, forces re-evaluation and re-styling even if index hasn't changed.
+ */
+function updateLyricsDisplay(forceUpdate = false) {
+    if (!lyricsSystemInitialized || !audioPlayer || !currentLyricsData || currentLyricsData.length === 0) {
+        return; // Không làm gì nếu hệ thống chưa sẵn sàng hoặc không có lời
     }
 
     const currentTime = audioPlayer.currentTime;
-    let activeLineIndex = -1;
+    let newLyricIndex = -1;
 
-    // Find the current active lyric line
-    for (let i = 0; i < currentLyrics.length; i++) {
-        if (currentTime >= currentLyrics[i].time) {
-            if (i + 1 < currentLyrics.length) { // If there's a next line
-                if (currentTime < currentLyrics[i+1].time) {
-                    activeLineIndex = i;
-                    break;
-                }
-            } else { // This is the last line
-                activeLineIndex = i;
-                break;
-            }
+    // Tìm dòng lời hiện tại dựa trên currentTime
+    // Dòng lời được chọn là dòng cuối cùng có 'time' <= currentTime
+    for (let i = 0; i < currentLyricsData.length; i++) {
+        if (currentLyricsData[i].time <= currentTime) {
+            newLyricIndex = i;
+        } else {
+            // Vì lời được sắp xếp theo thời gian, có thể dừng sớm
+            break; 
         }
     }
 
-    // Handle case where audio is before the first lyric's timestamp but first lyric is at time 0
-    // and the next lyric is a bit further out (or it's the only lyric)
-    if (activeLineIndex === -1 && currentLyrics.length > 0 && currentLyrics[0].time === 0 && currentTime < (currentLyrics[1]?.time || currentLyrics[0].time + 3 )) {
-         activeLineIndex = 0;
-    }
+    if (newLyricIndex !== currentLyricIndex || forceUpdate) {
+        const allLines = lyricsTextScroller.querySelectorAll('.lyric-line');
 
-
-    lyricsDisplayContainer.innerHTML = ''; // Clear previous lines
-
-    if (activeLineIndex !== -1) {
-        const activeLyricData = currentLyrics[activeLineIndex];
-
-        // Display active line if it's not empty or placeholder "..."
-        if (activeLyricData && activeLyricData.text && activeLyricData.text.trim() !== "" && activeLyricData.text.trim() !== "...") {
-            const pActive = document.createElement('p');
-            pActive.textContent = activeLyricData.text;
-            pActive.className = 'lyric-line active';
-            lyricsDisplayContainer.appendChild(pActive);
-        }
-
-        // Display the upcoming line
-        const upcomingLineIndex = activeLineIndex + 1;
-        if (upcomingLineIndex < currentLyrics.length) {
-            const upcomingLyricData = currentLyrics[upcomingLineIndex];
-            if (upcomingLyricData && upcomingLyricData.text && upcomingLyricData.text.trim() !== "" && upcomingLyricData.text.trim() !== "...") {
-                const pUpcoming = document.createElement('p');
-                pUpcoming.textContent = upcomingLyricData.text;
-                pUpcoming.className = 'lyric-line upcoming-1';
-                lyricsDisplayContainer.appendChild(pUpcoming);
+        allLines.forEach((line, index) => {
+            line.classList.remove('active', 'previous', 'next');
+            if (index === newLyricIndex) {
+                line.classList.add('active');
+            } else if (index === newLyricIndex - 1) {
+                line.classList.add('previous');
+            } else if (index === newLyricIndex + 1) {
+                line.classList.add('next');
             }
-        }
-    } else if (currentLyrics.length > 0 && currentTime < currentLyrics[0].time) {
-        // If before the first lyric, show the first lyric as upcoming
-        const firstLyricData = currentLyrics[0];
-        if (firstLyricData && firstLyricData.text && firstLyricData.text.trim() !== "" && firstLyricData.text.trim() !== "...") {
-            const pFirstUpcoming = document.createElement('p');
-            pFirstUpcoming.textContent = firstLyricData.text;
-            pFirstUpcoming.className = 'lyric-line upcoming-1'; // Style as upcoming
-            lyricsDisplayContainer.appendChild(pFirstUpcoming);
+        });
+        
+        currentLyricIndex = newLyricIndex; // Cập nhật chỉ số dòng lời hiện tại
+
+        // Cuộn để dòng hiện tại ở giữa (nếu có dòng active)
+        if (currentLyricIndex >= 0) {
+            const activeLineElement = lyricsTextScroller.querySelector(`.lyric-line[data-index="${currentLyricIndex}"]`);
+            if (activeLineElement && avatarLyricsContainer && lyricsTextScroller) {
+                const scrollerVisibleHeight = avatarLyricsContainer.clientHeight;
+                // Tính toán vị trí để dòng active ở giữa khu vực hiển thị
+                let scrollOffset = activeLineElement.offsetTop - (scrollerVisibleHeight / 2) + (activeLineElement.offsetHeight / 2);
+
+                // Ngăn cuộn quá xa ở đầu và cuối
+                const maxScroll = lyricsTextScroller.scrollHeight - scrollerVisibleHeight;
+                scrollOffset = Math.max(0, Math.min(scrollOffset, maxScroll > 0 ? maxScroll : 0));
+                
+                lyricsTextScroller.style.transform = `translateY(-${scrollOffset}px)`;
+            }
+        } else {
+            // Nếu không có dòng active (ví dụ: trước khi bài hát bắt đầu)
+            lyricsTextScroller.style.transform = 'translateY(0px)';
         }
     }
 }
 
+
 // --- DOMContentLoaded ---
 document.addEventListener('DOMContentLoaded', () => {
-    renderShortcuts(); // Populate shortcuts
-    initializeMusicPlayer(); // Set up the music player
+    renderShortcuts(); 
+    initializeMusicPlayer(); // Khởi tạo trình phát nhạc (sẽ gọi loadTrack)
+    
+    // Khởi tạo hệ thống hiển thị lời bài hát
+    // Quan trọng: Phải gọi SAU khi các phần tử DOM (#avatarLyricsContainer, #lyricsTextScroller) đã tồn tại
+    initializeLyricsSystem(); 
 
-    // Only initialize visualizer if the player container exists
     if (document.getElementById('musicPlayerContainer')) {
         initializeVisualizerCanvas();
     }
 
-    initializeLyricsDisplay(); // Set up lyrics display
-
-    const searchButton = document.getElementById('searchButton'); // Get search button
-    if (searchButton) { // Add click listener if button exists
-        searchButton.addEventListener('click', performSearch);
+    const searchButton = document.getElementById('searchButton'); 
+    if (searchButton) { 
+        searchButton.addEventListener('click', performSearch); 
     } else {
         console.warn("Search button with id 'searchButton' not found in HTML.");
     }
@@ -645,7 +689,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInputElement = document.getElementById('searchInput');
     if (searchInputElement) {
         searchInputElement.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') { // Perform search on Enter key
+            if (e.key === 'Enter') {
                 performSearch();
             }
         });
@@ -653,7 +697,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error("Search input element not found for keypress listener.");
     }
 
-    // Update copyright year
     const currentYearElement = document.getElementById('currentYear');
     if (currentYearElement) {
         currentYearElement.textContent = new Date().getFullYear();
