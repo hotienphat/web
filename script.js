@@ -55,45 +55,46 @@ let currentTrackIndex = 0;
 // --- END: MUSIC PLAYER CONFIGURATION ---
 
 // --- START: LYRICS CONFIGURATION ---
+// LƯU Ý: CÁC MỐC THỜI GIAN DƯỚI ĐÂY LÀ ƯỚC LƯỢNG VÀ CÓ THỂ CẦN ĐIỀU CHỈNH THÊM
 const songLyrics = {
     "Phép Màu (Đàn Cá Gỗ OST)": [
-        { time: 0, text: "..." }, // For intro music if any
-        { time: 5.0, text: "Ngày thay lá mới" },
-        { time: 7.5, text: "Vội trôi giữa nơi đây" },
-        { time: 10.5, text: "Vội len lỏi trên biển vàng" },
-        { time: 14.0, text: "Hoang hon che lối chưa buông nắng vương" },
-        { time: 18.0, text: "Dừng tìm nhau" },
-        { time: 20.5, text: "Hẹn cơn gió qua mùa đồi lau" },
-        { time: 24.0, text: "Sợ lời gấp nói vội tan trường đâu" },
+        { time: 0, text: "..." }, // For intro music
+        { time: 5.0, text: "Ngày thay đêm" },
+        { time: 7.5, text: "Vội trôi giấc mơ êm đềm" },
+        { time: 10.5, text: "Tôi lênh đênh trên biển vắng" },
+        { time: 14.0, text: "Hoàng hôn chờ em chưa buông nắng" },
+        { time: 18.0, text: "Đừng tìm nhau" },
+        { time: 20.5, text: "Vào hôm gió mưa tơi bời" },
+        { time: 24.0, text: "Sợ lời sắp nói vỡ tan thương đau" },
         { time: 28.0, text: "Hẹn kiếp sau có nhau trọn đời" },
         { time: 32.5, text: "Liệu người có còn ở đây với tôi thật lâu" },
-        { time: 37.0, text: "Ngày rưng rưng đốt sợ mai không còn thấy nhau" },
-        { time: 41.5, text: "Ngày em đến áng mây xanh thắm" },
+        { time: 37.0, text: "Ngày rộng tháng dài sợ mai không còn thấy nhau" },
+        { time: 41.5, text: "Ngày em đến áng mây xanh thêm" },
         { time: 45.0, text: "Ngày em đi nắng vương cuối thềm" },
-        { time: 48.5, text: "Thương em tôi hát ru, ru tiếng em nhỏ nhẹ còn run" },
-        { time: 54.0, text: "Chẳng phải điều gì may vá cho chúng ta gặp nhau" },
-        { time: 58.5, text: "Vậy mà người khẽ cười, người kia cũng đau nơi đâu" },
-        { time: 63.0, text: "Đôi khi thức giấc cơn ngủ quên" }, // 1:03.0
-        { time: 66.5, text: "Đôi khi vội đi tìm, tôi đang tìm em giữa kí ức" }, // 1:06.5
-        { time: 70.0, text: "Quên đi ngày mai sau luôn cạnh nhau" }, // 1:10.0
-        { time: 74.5, text: "Thôi ngủ mai" }, // 1:14.5
-        { time: 77.0, text: "Còn ai với ai đợi lại" }, // 1:17.0
-        { time: 80.0, text: "Vầng dương cũng phai nhoà kí ức" }, // 1:20.0
-        { time: 83.0, text: "Theo làn gió đi" }, // 1:23.0
-        { time: 86.5, text: "Vỗ về kiếp đau một chút thôi" }, // 1:26.5
-        { time: 91.0, text: "Liệu người có còn ở đây với tôi thật lâu" }, // 1:31.0
-        { time: 95.5, text: "Ngày rưng rưng đốt sợ mai không còn thấy nhau" }, // 1:35.5
-        { time: 100.0, text: "Ngày em đến áng mây xanh thắm" }, // 1:40.0
-        { time: 103.5, text: "Ngày em đi nắng vương cuối thềm" }, // 1:43.5
+        { time: 48.5, text: "Thiếu em tôi sợ bơ vơ, vắng em như tàn cơn mơ" },
+        { time: 54.0, text: "Chẳng phải phép màu vậy sao chúng ta gặp nhau" },
+        { time: 58.5, text: "Một người khẽ cười, người kia cũng dịu nỗi đau" },
+        { time: 63.0, text: "Gọi tôi thức giấc cơn ngủ mê" },
+        { time: 66.5, text: "Dìu tôi đi lúc quên lối về" },
+        { time: 70.0, text: "Quãng đời mai sau luôn cạnh nhau" },
+        { time: 74.5, text: "Rồi ngày mai" },
+        { time: 77.0, text: "Còn ai với ai ở lại" },
+        { time: 80.0, text: "Vẫn căng buồm ra khơi" },
+        { time: 83.0, text: "Theo làn gió mới" },
+        { time: 86.5, text: "Vì biết đâu mọi thứ chưa bắt đầu" },
+        // Điệp khúc lặp lại - thời gian có thể cần điều chỉnh nhiều
+        { time: 91.0, text: "Liệu người có còn ở đây với tôi thật lâu" },
+        { time: 95.5, text: "Ngày rộng tháng dài sợ mai không còn thấy nhau" },
+        { time: 100.0, text: "Ngày em đến áng mây xanh thêm" },
+        { time: 103.5, text: "Ngày em đi nắng vương cuối thềm" },
         { time: 107.0, text: "Thiếu em tôi sợ bơ vơ, vắng em như tàn cơn mơ" },
         { time: 112.5, text: "Chẳng phải phép màu vậy sao chúng ta gặp nhau" },
         { time: 117.0, text: "Một người khẽ cười, người kia cũng dịu nỗi đau" },
         { time: 121.5, text: "Gọi tôi thức giấc cơn ngủ mê" },
         { time: 125.0, text: "Dìu tôi đi lúc quên lối về" },
         { time: 128.5, text: "Quãng đời thanh xuân sao em cho tôi giữ lấy, giữ lấy" },
-        // Add more lyrics with timestamps as needed
-        // Ensure the last entry has a very large timestamp or handle the end of lyrics appropriately
-        { time: 300, text: "" } // Example: Empty text for a long duration to clear lyrics
+        // Add a final empty text to ensure the last lyric line is displayed long enough
+        { time: 300, text: "" } // Adjust time if the song is longer
     ]
 };
 
