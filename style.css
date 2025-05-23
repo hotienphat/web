@@ -57,14 +57,29 @@ body {
 
 .image-placeholder {
     background-image: url('./Backround sound/avt.png');
-    background-size: contain; /* Thay đổi ở đây */
-    background-position: top;
-    background-repeat: no-repeat; /* Thêm dòng này nếu bạn dùng 'contain' để tránh lặp lại ảnh */
-    min-height: 300px;
-    border-radius: 1rem;
+    background-size: cover; /* Changed to cover to fill dimensions */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat;
+    min-height: 300px; /* Remains from original */
+    /* width will be determined by flex-auto in the container */
+    border-radius: 0.5rem; /* Tailwind rounded-lg */
     overflow: hidden;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
+
+/* Styles for Music Visualizer Canvas */
+#musicVisualizer {
+    display: block;
+    width: 60px; /* Default width for the visualizer strip */
+    /* Height will be set by JavaScript to match the avatar placeholder */
+    /* Fallback height if JS fails or before JS runs */
+    height: 300px; 
+    background-color: rgba(31, 41, 55, 0.7); /* bg-slate-800 with some transparency */
+    border: 1px solid #374151; /* border-slate-700 */
+    border-radius: 0.5rem; /* Tailwind rounded-lg */
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); /* shadow-lg */
+}
+
 
 /* --- STYLES FOR DETAILED MUSIC PLAYER --- */
 #musicPlayerContainer {
