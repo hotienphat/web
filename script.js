@@ -46,7 +46,7 @@ const audioPlaylist = [
     {
         title: "Phép Màu (Đàn Cá Gỗ OST)",
         artist: "Mounter x MAYDAYs, Minh Tốc | Official MV",
-        src: "https://files.catbox.moe/ykqqpn.flac", 
+        src: "./Backround sound/phepmau.mp3", 
         albumArt: "./Backround sound/Phepmaulogo.jpg" 
     },
     // Add more tracks here if needed
