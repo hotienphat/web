@@ -44,8 +44,8 @@ const shortcutSections = [
 // --- START: MUSIC PLAYER CONFIGURATION ---
 const audioPlaylist = [
     {
-        title: "Phép Màu (Đàn Cá Gỗ OST)",
-        artist: "Mounter x MAYDAYs, Minh Tốc | Official MV",
+        title: "Poker Face",
+        artist: "Lady Gaga",
         src: "./Backround sound/phepmau.mp3", 
         albumArt: "./Backround sound/Phepmaulogo.jpg" 
     },
@@ -53,53 +53,6 @@ const audioPlaylist = [
 ];
 let currentTrackIndex = 0;
 // --- END: MUSIC PLAYER CONFIGURATION ---
-
-// --- START: LYRICS CONFIGURATION ---
-const songLyrics = {
-    "Phép Màu (Đàn Cá Gỗ OST)": [
-        // THỜI GIAN (time) LÀ ƯỚC TÍNH - CẦN ĐIỀU CHỈNH CHÍNH XÁC THEO NHẠC
-        { time: 0, text: "..." }, // Cho đoạn nhạc dạo nếu có
-        { time: 5.0, text: "Ngày thay đêm" },
-        { time: 7.5, text: "Vội trôi giấc mơ êm đềm" },
-        { time: 10.5, text: "Tôi lênh đênh trên biển vắng" },
-        { time: 14.0, text: "Hoàng hôn chờ em chưa buông nắng" },
-        { time: 18.0, text: "Đừng tìm nhau" },
-        { time: 20.5, text: "Vào hôm gió mưa tơi bời" },
-        { time: 24.0, text: "Sợ lời sắp nói vỡ tan thương đau" },
-        { time: 28.0, text: "Hẹn kiếp sau có nhau trọn đời" },
-        { time: 32.5, text: "Liệu người có còn ở đây với tôi thật lâu" },
-        { time: 37.0, text: "Ngày rộng tháng dài sợ mai không còn thấy nhau" },
-        { time: 41.5, text: "Ngày em đến áng mây xanh thêm" },
-        { time: 45.0, text: "Ngày em đi nắng vương cuối thềm" },
-        { time: 48.5, text: "Thiếu em tôi sợ bơ vơ, vắng em như tàn cơn mơ" },
-        { time: 54.0, text: "Chẳng phải phép màu vậy sao chúng ta gặp nhau" },
-        { time: 58.5, text: "Một người khẽ cười, người kia cũng dịu nỗi đau" },
-        { time: 63.0, text: "Gọi tôi thức giấc cơn ngủ mê" },
-        { time: 66.5, text: "Dìu tôi đi lúc quên lối về" },
-        { time: 70.0, text: "Quãng đời mai sau luôn cạnh nhau" },
-        { time: 74.5, text: "Rồi ngày mai" },
-        { time: 77.0, text: "Còn ai với ai ở lại" },
-        { time: 80.0, text: "Vẫn căng buồm ra khơi" },
-        { time: 83.0, text: "Theo làn gió mới" },
-        { time: 86.5, text: "Vì biết đâu mọi thứ chưa bắt đầu" },
-        { time: 91.0, text: "Liệu người có còn ở đây với tôi thật lâu" },
-        { time: 95.5, text: "Ngày rộng tháng dài sợ mai không còn thấy nhau" },
-        { time: 100.0, text: "Ngày em đến áng mây xanh thêm" },
-        { time: 103.5, text: "Ngày em đi nắng vương cuối thềm" },
-        { time: 107.0, text: "Thiếu em tôi sợ bơ vơ, vắng em như tàn cơn mơ" },
-        { time: 112.5, text: "Chẳng phải phép màu vậy sao chúng ta gặp nhau" },
-        { time: 117.0, text: "Một người khẽ cười, người kia cũng dịu nỗi đau" },
-        { time: 121.5, text: "Gọi tôi thức giấc cơn ngủ mê" },
-        { time: 125.0, text: "Dìu tôi đi lúc quên lối về" },
-        { time: 128.5, text: "Quãng đời thanh xuân sao em cho tôi giữ lấy, giữ lấy" },
-        { time: 300, text: "" } // Dòng trống cuối cùng, đảm bảo dòng cuối được hiển thị đủ
-    ]
-};
-
-let lyricsDisplayContainer; 
-let currentLyrics = []; 
-// --- END: LYRICS CONFIGURATION ---
-
 
 // --- Global variables for the music player ---
 let audioPlayer; 
@@ -109,13 +62,13 @@ let volumeBtn, volumeSlider;
 let prevTrackBtn, nextTrackBtn;
 
 // --- Global variables for Music Visualizer ---
-let audioContext; 
-let analyser; 
-let sourceNode; 
-let visualizerCanvas, visualizerCtx; 
-let dataArray; 
-let rafId; 
-let isVisualizerInitialized = false; 
+let audioContext; // The AudioContext instance
+let analyser; // The AnalyserNode
+let sourceNode; // The MediaElementAudioSourceNode (connects audio element to analyser)
+let visualizerCanvas, visualizerCtx; // Canvas and its 2D rendering context
+let dataArray; // Uint8Array to store frequency data
+let rafId; // requestAnimationFrame ID for controlling animation loop
+let isVisualizerInitialized = false; // Flag to ensure one-time initialization of audio graph
 
 /**
  * Renders shortcut sections and their items into the DOM.
@@ -184,8 +137,9 @@ function performSearch() {
  */
 function initializeMusicPlayer() {
     audioPlayer = new Audio(); 
-    audioPlayer.crossOrigin = "anonymous";
+    audioPlayer.crossOrigin = "anonymous"; // Crucial for Web Audio API with external sources
 
+    // Cache DOM elements for the player
     playPauseMusicBtn = document.getElementById('playPauseMusicBtn');
     stopMusicBtn = document.getElementById('stopMusicBtn');
     musicProgressBar = document.getElementById('musicProgressBar');
@@ -199,29 +153,31 @@ function initializeMusicPlayer() {
     prevTrackBtn = document.getElementById('prevTrackBtn');
     nextTrackBtn = document.getElementById('nextTrackBtn');
 
+    // Check if all essential player elements are present
     const essentialElements = [playPauseMusicBtn, stopMusicBtn, musicProgressBar, albumArtElement, currentTimeEl, durationEl, songTitleEl, songArtistEl, volumeBtn, volumeSlider, prevTrackBtn, nextTrackBtn];
     if (essentialElements.some(el => !el)) {
         console.error("Một hoặc nhiều phần tử của trình phát nhạc không được tìm thấy trong DOM!");
         const playerContainer = document.getElementById('musicPlayerContainer');
-        if(playerContainer) playerContainer.style.display = 'none'; 
+        if(playerContainer) playerContainer.style.display = 'none'; // Hide player if incomplete
         return; 
     }
     
-    loadTrack(currentTrackIndex); 
-    setVolume(); 
+    loadTrack(currentTrackIndex); // Load the initial track
+    setVolume(); // Set initial volume based on slider
 
+    // Attach event listeners for player controls
     playPauseMusicBtn.addEventListener('click', togglePlayPause);
     stopMusicBtn.addEventListener('click', stopAudio);
     musicProgressBar.addEventListener('input', seekAudio); 
     audioPlayer.addEventListener('timeupdate', updateProgressBar); 
     audioPlayer.addEventListener('loadedmetadata', setAudioDuration); 
-    audioPlayer.addEventListener('ended', playNextTrackHandler); 
+    audioPlayer.addEventListener('ended', playNextTrackHandler); // Renamed to avoid conflict
 
     volumeSlider.addEventListener('input', setVolume);
     volumeBtn.addEventListener('click', toggleMute);
 
-    prevTrackBtn.addEventListener('click', playPrevTrackHandler); 
-    nextTrackBtn.addEventListener('click', playNextTrackHandler); 
+    prevTrackBtn.addEventListener('click', playPrevTrackHandler); // Renamed
+    nextTrackBtn.addEventListener('click', playNextTrackHandler); // Renamed
     
     updateTrackButtonsState(); 
 }
@@ -236,18 +192,20 @@ function loadTrack(trackIndex) {
         return;
     }
     const track = audioPlaylist[trackIndex];
-    const currentVolume = audioPlayer.volume; 
-    const currentMutedState = audioPlayer.muted;
+    const currentVolume = audioPlayer.volume; // Preserve volume
+    const currentMutedState = audioPlayer.muted; // Preserve mute state
 
     audioPlayer.src = track.src; 
-    audioPlayer.volume = currentVolume; 
-    audioPlayer.muted = currentMutedState; 
+    audioPlayer.volume = currentVolume; // Restore volume
+    audioPlayer.muted = currentMutedState; // Restore mute state
 
+    // Update track information display
     albumArtElement.src = track.albumArt; 
     albumArtElement.alt = track.title + " - Album Art";
     songTitleEl.textContent = track.title;
     songArtistEl.textContent = track.artist;
     
+    // Reset progress bar and time displays
     musicProgressBar.value = 0;
     currentTimeEl.textContent = formatTime(0);
     durationEl.textContent = formatTime(audioPlayer.duration || 0); 
@@ -255,19 +213,20 @@ function loadTrack(trackIndex) {
     updatePlayPauseIcon(); 
     updateTrackButtonsState(); 
     updateVolumeIcon(); 
-
-    loadLyricsForTrack();
 }
 
 /**
  * Toggles play/pause state of the audio player.
+ * Initializes AudioContext and Analyser on the first user interaction (play).
  */
 function togglePlayPause() {
+    // Initialize AudioContext and Analyser on first user interaction (play)
     if (!isVisualizerInitialized && audioPlayer) {
         setupAudioGraph();
     }
 
     if (audioPlayer.paused || audioPlayer.ended) {
+        // Resume AudioContext if it was suspended (common browser behavior)
         if (audioContext && audioContext.state === 'suspended') {
             audioContext.resume().then(() => {
                 audioPlayer.play().catch(handlePlayError);
@@ -283,19 +242,20 @@ function togglePlayPause() {
 
 /**
  * Stops the audio, resets current time, and updates UI.
+ * Also stops the visualizer animation.
  */
 function stopAudio() {
     audioPlayer.pause();
     audioPlayer.currentTime = 0; 
     updatePlayPauseIcon(); 
-    if (rafId) { 
+    if (rafId) { // Stop visualizer animation
         cancelAnimationFrame(rafId);
         rafId = null;
+        // Clear the canvas when stopping
         if(visualizerCtx && visualizerCanvas) {
             visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
         }
     }
-    clearLyricsDisplay(); 
 }
 
 /**
@@ -304,9 +264,9 @@ function stopAudio() {
 function updatePlayPauseIcon() {
     if (!playPauseMusicBtn) return;
     if (audioPlayer.paused || audioPlayer.ended) {
-        playPauseMusicBtn.innerHTML = '<i class="fas fa-play fa-lg"></i>';
+        playPauseMusicBtn.innerHTML = '<i class="fas fa-play"></i>';
     } else {
-        playPauseMusicBtn.innerHTML = '<i class="fas fa-pause fa-lg"></i>';
+        playPauseMusicBtn.innerHTML = '<i class="fas fa-pause"></i>';
     }
 }
 
@@ -317,12 +277,12 @@ function updateProgressBar() {
     if (audioPlayer.duration && !isNaN(audioPlayer.duration)) { 
         musicProgressBar.value = audioPlayer.currentTime;
         currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
-        updateLyricsDisplay(); 
     }
 }
 
 /**
- * Sets the maximum value for the progress bar and total duration display.
+ * Sets the maximum value for the progress bar and total duration display
+ * once audio metadata is loaded.
  */
 function setAudioDuration() {
     if (audioPlayer.duration && !isNaN(audioPlayer.duration)) {
@@ -336,11 +296,12 @@ function setAudioDuration() {
  */
 function seekAudio() {
     audioPlayer.currentTime = musicProgressBar.value;
-    updateLyricsDisplay(); 
 }
 
 /**
  * Formats time in seconds to a mm:ss string.
+ * @param {number} timeInSeconds - The time in seconds.
+ * @returns {string} Formatted time string.
  */
 function formatTime(timeInSeconds) {
     if (isNaN(timeInSeconds) || timeInSeconds < 0) timeInSeconds = 0;
@@ -351,10 +312,14 @@ function formatTime(timeInSeconds) {
 
 /**
  * Handles errors during audio playback.
+ * @param {Error} error - The playback error object.
  */
 function handlePlayError(error) {
     console.error("Lỗi khi phát nhạc:", error.name, error.message);
     if (error.name === 'NotAllowedError') {
+        // Consider using a less intrusive notification if alert is disruptive
+        // For example, a small message bar within the player UI.
+        // alert("Trình duyệt đã chặn tự động phát nhạc. Vui lòng nhấn nút Play để bắt đầu.");
         console.warn("Autoplay blocked by browser. User interaction required.");
     } else if (error.name === 'AbortError') {
         console.info("Playback aborted, possibly due to new track load or stop action.");
@@ -363,22 +328,25 @@ function handlePlayError(error) {
 }
 
 /**
- * Sets the audio volume.
+ * Sets the audio volume based on the volume slider and updates the mute state.
  */
 function setVolume() {
     if (!audioPlayer || !volumeSlider) return;
     const newVolume = parseFloat(volumeSlider.value);
     audioPlayer.volume = newVolume;
+    // If volume is adjusted, unmute if user sets volume > 0
+    // If volume is set to 0, mute.
     audioPlayer.muted = (newVolume === 0);
     updateVolumeIcon();
 }
 
 /**
- * Toggles the mute/unmute state.
+ * Toggles the mute/unmute state of the audio player.
  */
 function toggleMute() {
     if (!audioPlayer) return;
     audioPlayer.muted = !audioPlayer.muted; 
+    // If unmuting and volume was 0, set to a default audible level
     if (!audioPlayer.muted && audioPlayer.volume === 0) {
         audioPlayer.volume = 0.5; 
         if (volumeSlider) volumeSlider.value = audioPlayer.volume.toString();
@@ -387,7 +355,7 @@ function toggleMute() {
 }
 
 /**
- * Updates the volume button icon.
+ * Updates the volume button icon based on volume and mute state.
  */
 function updateVolumeIcon() {
     if(!volumeBtn || !audioPlayer) return; 
@@ -410,6 +378,7 @@ function updateVolumeIcon() {
 function playNextTrackHandler() {
     currentTrackIndex = (currentTrackIndex + 1) % audioPlaylist.length;
     loadTrack(currentTrackIndex);
+    // If the player was playing, attempt to play the new track.
     if(!audioPlayer.paused || audioPlaylist.length === 1){ 
         audioPlayer.play().catch(handlePlayError);
     }
@@ -441,25 +410,46 @@ function updateTrackButtonsState() {
 }
 
 // --- MUSIC VISUALIZER FUNCTIONS ---
+
+/**
+ * Sets up the AudioContext, AnalyserNode, and connects the audio element.
+ * This should be called once, typically on the first user interaction that plays audio.
+ */
 function setupAudioGraph() {
-    if (isVisualizerInitialized || !audioPlayer) return; 
+    if (isVisualizerInitialized || !audioPlayer) return; // Already initialized or no audio player
+
     try {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         analyser = audioContext.createAnalyser();
+        // fftSize determines the number of bins in the frequency data. Must be a power of 2.
+        // Default is 2048. Smaller values (e.g., 256) are less detailed but more performant.
         analyser.fftSize = 256; 
+
+        // Create a MediaElementSourceNode from the existing audioPlayer element.
+        // This node is the source of audio data for the analyser.
+        // IMPORTANT: This can only be done ONCE per audio element and AudioContext.
         sourceNode = audioContext.createMediaElementSource(audioPlayer);
-        sourceNode.connect(analyser);       
-        analyser.connect(audioContext.destination); 
+        
+        sourceNode.connect(analyser);       // Connect source to analyser
+        analyser.connect(audioContext.destination); // Connect analyser to output (speakers)
+
+        // dataArray will hold the frequency data (byte values from 0 to 255).
+        // frequencyBinCount is half of fftSize.
         dataArray = new Uint8Array(analyser.frequencyBinCount);
-        isVisualizerInitialized = true; 
+        isVisualizerInitialized = true; // Mark as initialized
         console.log("Audio graph for visualizer initialized.");
+
     } catch (e) {
         console.error("Lỗi khởi tạo AudioContext hoặc Analyser cho visualizer:", e);
-        if (visualizerCanvas) visualizerCanvas.style.display = 'none'; 
-        isVisualizerInitialized = false; 
+        if (visualizerCanvas) visualizerCanvas.style.display = 'none'; // Hide visualizer if setup fails
+        isVisualizerInitialized = false; // Reset flag on failure
     }
 }
 
+
+/**
+ * Initializes the visualizer canvas, sets its dimensions, and adds event listeners.
+ */
 function initializeVisualizerCanvas() {
     visualizerCanvas = document.getElementById('musicVisualizer');
     const imagePlaceholder = document.querySelector('.image-placeholder');
@@ -471,20 +461,27 @@ function initializeVisualizerCanvas() {
     }
     visualizerCtx = visualizerCanvas.getContext('2d');
 
+    // Function to set canvas dimensions based on the avatar placeholder.
     function setCanvasDimensions() {
         if (!imagePlaceholder || !visualizerCanvas) return;
+        // Use getBoundingClientRect for more accurate dimensions, especially if box-sizing is different.
         const avatarRect = imagePlaceholder.getBoundingClientRect();
-        visualizerCanvas.height = avatarRect.height > 0 ? avatarRect.height : 300; 
-        visualizerCanvas.width = 60; 
+        visualizerCanvas.height = avatarRect.height > 0 ? avatarRect.height : 300; // Fallback height
+        visualizerCanvas.width = 60; // Fixed width for the visualizer strip
+
+        // When canvas is resized, clear it to avoid old drawings if visualizer is not active
         if (visualizerCtx && (!rafId || audioPlayer.paused)) {
              visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
         }
     }
-    setCanvasDimensions(); 
+    setCanvasDimensions(); // Set initial dimensions
+
+    // Adjust canvas dimensions on window resize.
     window.addEventListener('resize', setCanvasDimensions);
 
+    // Event listeners to start/stop visualizer drawing loop based on audio player state.
     audioPlayer.addEventListener('play', () => {
-        if (!isVisualizerInitialized) { 
+        if (!isVisualizerInitialized) { // If graph not set up (e.g. first play ever)
             setupAudioGraph();
         }
         if (isVisualizerInitialized && audioContext && audioContext.state === 'suspended') {
@@ -514,137 +511,71 @@ function initializeVisualizerCanvas() {
     });
 }
 
+/**
+ * The main drawing loop for the music visualizer.
+ * Uses requestAnimationFrame for smooth animation.
+ * Bars are now drawn horizontally, extending to the right.
+ */
 function drawVisualizerLoop() {
+    // Ensure all necessary components are available before drawing.
     if (!isVisualizerInitialized || !analyser || !visualizerCtx || !dataArray || !visualizerCanvas) {
         if (rafId) cancelAnimationFrame(rafId);
         rafId = null;
         return;
     }
-    rafId = requestAnimationFrame(drawVisualizerLoop); 
-    analyser.getByteFrequencyData(dataArray); 
-    visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height); 
-    const numBars = 32; 
+
+    rafId = requestAnimationFrame(drawVisualizerLoop); // Continue the loop
+
+    analyser.getByteFrequencyData(dataArray); // Populate dataArray with current frequency data.
+
+    visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height); // Clear the canvas
+
+    const numBars = 32; // Increased number of horizontal bars for a smoother look
+    // Calculate thickness and spacing for horizontal bars
+    // Adjust proportions if needed, e.g., 0.8 for thickness and 0.2 for spacing
     const barThickness = (visualizerCanvas.height / numBars) * 0.75; 
     const barSpacing = (visualizerCanvas.height / numBars) * 0.25; 
-    let currentY = barSpacing / 2; 
-    const bufferLength = analyser.frequencyBinCount; 
+    let currentY = barSpacing / 2; // Initial y position for the top edge of the first bar.
+
+    const bufferLength = analyser.frequencyBinCount; // Number of data points from analyser
+
     for (let i = 0; i < numBars; i++) {
+        // Map current bar index 'i' to an index in the 'dataArray'.
         const dataArrayIndex = Math.min(bufferLength - 1, Math.floor((i / numBars) * (bufferLength * 0.75)));
-        const barLengthFraction = dataArray[dataArrayIndex] / 255.0; 
-        let barLength = barLengthFraction * visualizerCanvas.width; 
-        if (barLength < 1 && dataArray[dataArrayIndex] > 0) barLength = 1; 
-        if (barLength > visualizerCanvas.width) barLength = visualizerCanvas.width; 
-        visualizerCtx.fillStyle = '#a78bfa'; 
-        visualizerCtx.fillRect(0, currentY, barLength, barThickness);
-        currentY += barThickness + barSpacing; 
-    }
-}
-
-// --- LYRICS DISPLAY FUNCTIONS ---
-function initializeLyricsDisplay() {
-    lyricsDisplayContainer = document.getElementById('lyricsDisplayContainer');
-    if (!lyricsDisplayContainer) {
-        console.warn("Không tìm thấy vùng chứa lời bài hát (lyricsDisplayContainer).");
-        return;
-    }
-    if (audioPlayer) {
-        audioPlayer.addEventListener('loadeddata', loadLyricsForTrack); 
-        audioPlayer.addEventListener('play', updateLyricsDisplay); 
-        audioPlayer.addEventListener('ended', clearLyricsDisplay); 
-        audioPlayer.addEventListener('emptied', clearLyricsDisplay); 
-        audioPlayer.addEventListener('seeked', updateLyricsDisplay);
-    }
-}
-
-function loadLyricsForTrack() {
-    if (!audioPlayer || !songTitleEl || !audioPlaylist[currentTrackIndex]) {
-        currentLyrics = [];
-        clearLyricsDisplay();
-        return;
-    }
-    const trackTitle = audioPlaylist[currentTrackIndex].title;
-    currentLyrics = songLyrics[trackTitle] || [];
-    clearLyricsDisplay(); 
-    updateLyricsDisplay(); 
-}
-
-function clearLyricsDisplay() {
-    if (lyricsDisplayContainer) {
-        lyricsDisplayContainer.innerHTML = '';
-    }
-}
-
-function updateLyricsDisplay() {
-    if (!audioPlayer || !lyricsDisplayContainer || !currentLyrics || currentLyrics.length === 0) {
-        if (lyricsDisplayContainer) lyricsDisplayContainer.innerHTML = ''; 
-        return;
-    }
-
-    const currentTime = audioPlayer.currentTime;
-    let activeLineIndex = -1;
-
-    for (let i = 0; i < currentLyrics.length; i++) {
-        if (currentTime >= currentLyrics[i].time) {
-            if (i + 1 < currentLyrics.length) { 
-                if (currentTime < currentLyrics[i+1].time) {
-                    activeLineIndex = i;
-                    break;
-                }
-            } else { 
-                activeLineIndex = i;
-                break;
-            }
-        }
-    }
-    
-    if (activeLineIndex === -1 && currentLyrics.length > 0 && currentLyrics[0].time === 0 && currentTime < (currentLyrics[1]?.time || currentLyrics[0].time + 3 )) { 
-         activeLineIndex = 0;
-    }
-
-    lyricsDisplayContainer.innerHTML = ''; 
-
-    if (activeLineIndex !== -1) {
-        const activeLyricData = currentLyrics[activeLineIndex];
         
-        if (activeLyricData && activeLyricData.text && activeLyricData.text.trim() !== "" && activeLyricData.text.trim() !== "...") {
-            const pActive = document.createElement('p');
-            pActive.textContent = activeLyricData.text;
-            pActive.className = 'lyric-line active';
-            lyricsDisplayContainer.appendChild(pActive);
-        }
+        const barLengthFraction = dataArray[dataArrayIndex] / 255.0; // Normalize data to 0-1 range.
+        let barLength = barLengthFraction * visualizerCanvas.width; // Length of the bar, extending to the right.
+        
+        // Ensure a minimum bar length to show something, if there's any sound.
+        if (barLength < 1 && dataArray[dataArrayIndex] > 0) barLength = 1; // Min length of 1px if sound present
+        if (barLength > visualizerCanvas.width) barLength = visualizerCanvas.width; // Cap length at canvas width.
 
-        const upcomingLineIndex = activeLineIndex + 1;
-        if (upcomingLineIndex < currentLyrics.length) {
-            const upcomingLyricData = currentLyrics[upcomingLineIndex];
-            if (upcomingLyricData && upcomingLyricData.text && upcomingLyricData.text.trim() !== "" && upcomingLyricData.text.trim() !== "...") {
-                const pUpcoming = document.createElement('p');
-                pUpcoming.textContent = upcomingLyricData.text;
-                pUpcoming.className = 'lyric-line upcoming-1';
-                lyricsDisplayContainer.appendChild(pUpcoming);
-            }
-        }
-    } else if (currentLyrics.length > 0 && currentTime < currentLyrics[0].time) {
-        const firstLyricData = currentLyrics[0];
-        if (firstLyricData && firstLyricData.text && firstLyricData.text.trim() !== "" && firstLyricData.text.trim() !== "...") {
-            const pFirstUpcoming = document.createElement('p');
-            pFirstUpcoming.textContent = firstLyricData.text;
-            pFirstUpcoming.className = 'lyric-line upcoming-1'; 
-            lyricsDisplayContainer.appendChild(pFirstUpcoming);
-        }
+        // Style for the bars (using the theme's purple color)
+        visualizerCtx.fillStyle = '#a78bfa'; 
+
+        // Draw horizontal bar from left (x=0) to right.
+        // fillRect(x, y, width, height) -> fillRect(0, currentY, barLength, barThickness)
+        visualizerCtx.fillRect(0, currentY, barLength, barThickness);
+
+        currentY += barThickness + barSpacing; // Move to the starting y position for the next bar.
     }
 }
+
 
 // --- DOMContentLoaded ---
+// This event fires when the initial HTML document has been completely loaded and parsed,
+// without waiting for stylesheets, images, and subframes to finish loading.
 document.addEventListener('DOMContentLoaded', () => {
     renderShortcuts(); 
-    initializeMusicPlayer(); 
+    initializeMusicPlayer(); // Initializes audioPlayer and its controls
 
-    if (document.getElementById('musicPlayerContainer')) { 
+    // Initialize visualizer specific components (canvas setup, etc.)
+    // The AudioContext and Analyser graph (setupAudioGraph) will be set up on the first play event.
+    if (document.getElementById('musicPlayerContainer')) { // Only if player exists
         initializeVisualizerCanvas();
     }
-    
-    initializeLyricsDisplay();
 
+    // Search functionality
     const searchButton = document.getElementById('searchButton'); 
     if (searchButton) { 
         searchButton.addEventListener('click', performSearch); 
@@ -663,6 +594,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error("Search input element not found for keypress listener.");
     }
 
+    // Footer year
     const currentYearElement = document.getElementById('currentYear');
     if (currentYearElement) {
         currentYearElement.textContent = new Date().getFullYear();
