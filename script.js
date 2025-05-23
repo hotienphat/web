@@ -44,8 +44,8 @@ const shortcutSections = [
 // --- START: MUSIC PLAYER CONFIGURATION ---
 const audioPlaylist = [
     {
-        title: "Poker Face",
-        artist: "Lady Gaga",
+        title: "Phép Màu (Đàn Cá Gỗ OST)",
+        artist: "Mounter x MAYDAYs, Minh Tốc | Official MV",
         src: "https://files.catbox.moe/ykqqpn.flac", 
         albumArt: "./Backround sound/Phepmaulogo.jpg" 
     },
