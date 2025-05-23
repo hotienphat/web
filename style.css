@@ -62,9 +62,9 @@ body {
     background-repeat: no-repeat;
     min-height: 300px;
     border-radius: 0.5rem;
-    overflow: hidden; /* Giữ lại overflow hidden nếu cần cho image, nhưng lyrics container sẽ có overflow riêng */
+    overflow: hidden; 
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    position: relative; /* Quan trọng: Để định vị #avatarLyricsContainer */
+    position: relative; 
 }
 
 /* Styles for Music Visualizer Canvas */
@@ -203,45 +203,45 @@ textarea {
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 8px 12px; /* Điều chỉnh padding cho phù hợp */
-    background-color: rgba(17, 24, 39, 0.5); /* Nền mờ tối hơn một chút (bg-slate-900 with opacity) */
-    backdrop-filter: blur(6px); /* Hiệu ứng blur */
-    -webkit-backdrop-filter: blur(6px); /* Cho Safari */
-    max-height: 80px; /* Giới hạn chiều cao, khoảng 2-3 dòng lời. Điều chỉnh nếu cần. */
-    overflow: hidden; /* Quan trọng cho hiệu ứng cuộn */
+    padding: 8px 12px; 
+    background-color: rgba(17, 24, 39, 0.5); 
+    backdrop-filter: blur(6px); 
+    -webkit-backdrop-filter: blur(6px); 
+    max-height: 100px; /* Đã tăng từ 80px lên 100px để phần mờ cao hơn */
+    overflow: hidden; 
     text-align: center;
-    border-bottom-left-radius: 0.5rem; /* Bo góc dưới cho khớp với avatar */
+    border-bottom-left-radius: 0.5rem; 
     border-bottom-right-radius: 0.5rem;
     box-sizing: border-box;
 }
 
 #lyricsTextScroller {
-    position: relative; /* Để cuộn bằng transform */
-    transition: transform 0.5s ease-in-out; /* Hiệu ứng cuộn mượt */
+    position: relative; 
+    transition: transform 0.5s ease-in-out; 
 }
 
 .lyric-line {
-    font-size: 0.75rem; /* Cỡ chữ nhỏ hơn cho lời bài hát */
-    color: rgba(209, 213, 219, 0.65); /* Màu chữ xám nhạt, hơi mờ (text-gray-300 with opacity) */
-    padding: 1px 0; /* Khoảng cách nhỏ giữa các dòng */
-    line-height: 1.5; /* Chiều cao dòng */
+    font-size: 0.75rem; 
+    color: rgba(209, 213, 219, 0.65); 
+    padding: 1px 0; 
+    line-height: 1.5; 
     transition: opacity 0.4s ease-in-out, color 0.4s ease-in-out, font-weight 0.4s ease-in-out, transform 0.3s ease-in-out;
-    white-space: nowrap; /* Ngăn lời bài hát xuống dòng không mong muốn */
+    white-space: nowrap; 
     overflow: hidden;
-    text-overflow: ellipsis; /* Hiển thị '...' nếu quá dài */
-    will-change: opacity, color, transform; /* Tối ưu hóa hiệu suất transition */
+    text-overflow: ellipsis; 
+    will-change: opacity, color, transform; 
 }
 
 .lyric-line.active {
-    color: #c4b5fd; /* Màu tím nhạt nổi bật (purple-300) */
+    color: #c4b5fd; 
     opacity: 1;
-    font-weight: 600; /* In đậm hơn một chút */
-    transform: scale(1.05); /* Hơi phóng to dòng hiện tại */
+    font-weight: 600; 
+    transform: scale(1.05); 
 }
 
 .lyric-line.previous,
 .lyric-line.next {
-    opacity: 0.5; /* Mờ hơn cho các dòng lân cận */
+    opacity: 0.5; 
     transform: scale(0.95);
 }
 /* --- END: AVATAR LYRICS STYLES --- */
