@@ -56,53 +56,52 @@ let currentTrackIndex = 0;
 
 // --- START: LYRICS CONFIGURATION ---
 // LƯU Ý: CÁC MỐC THỜI GIAN DƯỚI ĐÂY LÀ ƯỚC LƯỢNG VÀ CÓ THỂ CẦN ĐIỀU CHỈNH THÊM
-const songLyrics = {
-    "Phép Màu (Đàn Cá Gỗ OST)": [
-  { startTime: "0:00", endTime: "0:18", lyric: "Intro (Nhạc dạo)" },
-  { startTime: "0:19", endTime: "0:23", lyric: "Ngày thay đêm, vội trôi giấc mơ êm đềm" },
-  { startTime: "0:24", endTime: "0:28", lyric: "Tôi lênh đênh trên biển vắng" },
-  { startTime: "0:28", endTime: "0:32", lyric: "Hoàng hôn chờ em chưa buông nắng" },
-  { startTime: "0:32", endTime: "0:34", lyric: "Đừng tìm nhau" },
-  { startTime: "0:35", endTime: "0:38", lyric: "Vào hôm gió mưa tơi bời" },
-  { startTime: "0:38", endTime: "0:42", lyric: "Sợ lời sắp nói vỡ tan thương đau" },
-  { startTime: "0:42", endTime: "0:47", lyric: "Hẹn kiếp sau có nhau trọn đời" },
-  { startTime: "0:47", endTime: "0:52", lyric: "Liệu người có còn ở đây với tôi thật lâu?" },
-  { startTime: "0:52", endTime: "0:56", lyric: "Ngày rộng tháng dài, sợ mai không còn thấy nhau" },
-  { startTime: "0:56", endTime: "1:01", lyric: "Ngày em đến áng mây xanh thêm" },
-  { startTime: "1:01", endTime: "1:05", lyric: "Ngày em đi nắng vương cuối thềm" },
-  { startTime: "1:05", endTime: "1:09", lyric: "Thiếu em tôi sợ bơ vơ, vắng em như tàn cơn mơ" },
-  { startTime: "1:09", endTime: "1:14", lyric: "Chẳng phải phép màu, vậy sao chúng ta gặp nhau?" },
-  { startTime: "1:14", endTime: "1:19", lyric: "Một người khẽ cười, người kia cũng dịu nỗi đau" },
-  { startTime: "1:19", endTime: "1:23", lyric: "Gọi tôi thức giấc cơn ngủ mê" },
-  { startTime: "1:23", endTime: "1:27", lyric: "Dìu tôi đi lúc quên lối về" },
-  { startTime: "1:27", endTime: "1:32", lyric: "Quãng đời mai sau luôn cạnh nhau" },
-  { startTime: "1:32", endTime: "1:37", lyric: "- Nhạc dạo -" },
-  { startTime: "1:37", endTime: "1:41", lyric: "Rồi ngày mai, còn ai với ai ở lại?" },
-  { startTime: "1:41", endTime: "1:46", lyric: "Vẫn căng buồm ra khơi, theo làn gió mới" },
-  { startTime: "1:46", endTime: "1:53", lyric: "Vì biết đâu mọi thứ chưa bắt đầu" },
-  { startTime: "1:53", endTime: "2:00", lyric: "Hà há ha hà, hà há hà" },
-  { startTime: "2:00", endTime: "2:05", lyric: "Liệu người có còn ở đây với tôi thật lâu?" },
-  { startTime: "2:05", endTime: "2:09", lyric: "Ngày rộng tháng dài, sợ mai không còn thấy nhau" },
-  { startTime: "2:09", endTime: "2:13", lyric: "Ngày em đến áng mây xanh thêm" },
-  { startTime: "2:13", endTime: "2:18", lyric: "Ngày em đi nắng vương cuối thềm" },
-  { startTime: "2:18", endTime: "2:22", lyric: "Thiếu em tôi sợ bơ vơ, vắng em như tàn cơn mơ" },
-  { startTime: "2:22", endTime: "2:27", lyric: "Chẳng phải phép màu, vậy sao chúng ta gặp nhau?" },
-  { startTime: "2:27", endTime: "2:31", lyric: "Một người khẽ cười, người kia cũng dịu nỗi đau" },
-  { startTime: "2:31", endTime: "2:36", lyric: "Gọi tôi thức giấc cơn ngủ mê" },
-  { startTime: "2:36", endTime: "2:40", lyric: "Dìu tôi đi lúc quên lối về" },
-  { startTime: "2:40", endTime: "2:46", lyric: "Quãng đời thanh xuân, sao em cho tôi giữ lấy, giữ lấy!" },
-  { startTime: "2:46", endTime: "2:52", lyric: "- Guitar solo -" },
-  { startTime: "2:52", endTime: "2:55", lyric: "Qua bao khổ đau vẫn bên cạnh nhau!" },
-  { startTime: "2:55", endTime: "3:00", lyric: "Chẳng phải phép màu, vậy sao chúng ta gặp nhau?" },
-  { startTime: "3:00", endTime: "3:04", lyric: "Một người khẽ cười, người kia cũng dịu nỗi đau" },
-  { startTime: "3:04", endTime: "3:09", lyric: "Gọi tôi thức giấc cơn ngủ mê" },
-  { startTime: "3:09", endTime: "3:13", lyric: "Dìu tôi đi lúc quên lối về" },
-  { startTime: "3:13", endTime: "3:22", lyric: "Quãng đời mai sau luôn cạnh nhau" },
-  { startTime: "3:22", endTime: "3:27", lyric: "Quãng đời mai sau luôn cạnh nhau" },
-  { startTime: "3:27", endTime: "3:31", lyric: "Quãng đời mai sau..." },
-  { startTime: "3:31", endTime: "3:38", lyric: "Luôn cạnh nhau..." },
-  { startTime: "3:38", endTime: "Hết", lyric: "Outro (Nhạc kết)" }
-    ]
+const phepMauLyrics = [
+  { startTime: 0, endTime: 18, lyric: "(Nhạc dạo)" },
+  { startTime: 19, endTime: 23, lyric: "Ngày thay đêm, vội trôi giấc mơ êm đềm" },
+  { startTime: 24, endTime: 28, lyric: "Tôi lênh đênh trên biển vắng" },
+  { startTime: 28, endTime: 32, lyric: "Hoàng hôn chờ em chưa buông nắng" },
+  { startTime: 32, endTime: 34, lyric: "Đừng tìm nhau" },
+  { startTime: 35, endTime: 38, lyric: "Vào hôm gió mưa tơi bời" },
+  { startTime: 38, endTime: 42, lyric: "Sợ lời sắp nói vỡ tan thương đau" },
+  { startTime: 42, endTime: 47, lyric: "Hẹn kiếp sau có nhau trọn đời" },
+  { startTime: 47, endTime: 52, lyric: "Liệu người có còn ở đây với tôi thật lâu?" },
+  { startTime: 52, endTime: 56, lyric: "Ngày rộng tháng dài, sợ mai không còn thấy nhau" },
+  { startTime: 56, endTime: 101, lyric: "Ngày em đến áng mây xanh thêm" }, // Adjusted from 1:01
+  { startTime: 101, endTime: 105, lyric: "Ngày em đi nắng vương cuối thềm" }, // Adjusted from 1:01 and 1:05
+  { startTime: 105, endTime: 109, lyric: "Thiếu em tôi sợ bơ vơ, vắng em như tàn cơn mơ" }, // Adjusted from 1:05 and 1:09
+  { startTime: 109, endTime: 114, lyric: "Chẳng phải phép màu, vậy sao chúng ta gặp nhau?" }, // Adjusted from 1:09 and 1:14
+  { startTime: 114, endTime: 119, lyric: "Một người khẽ cười, người kia cũng dịu nỗi đau" }, // Adjusted from 1:14 and 1:19
+  { startTime: 119, endTime: 123, lyric: "Gọi tôi thức giấc cơn ngủ mê" }, // Adjusted from 1:19 and 1:23
+  { startTime: 123, endTime: 127, lyric: "Dìu tôi đi lúc quên lối về" }, // Adjusted from 1:23 and 1:27
+  { startTime: 127, endTime: 132, lyric: "Quãng đời mai sau luôn cạnh nhau" }, // Adjusted from 1:27 and 1:32
+  { startTime: 132, endTime: 137, lyric: "(Nhạc dạo)" }, // Adjusted from 1:32
+  { startTime: 137, endTime: 141, lyric: "Rồi ngày mai, còn ai với ai ở lại?" }, // Adjusted from 1:37 and 1:41
+  { startTime: 141, endTime: 146, lyric: "Vẫn căng buồm ra khơi, theo làn gió mới" }, // Adjusted from 1:41 and 1:46
+  { startTime: 146, endTime: 153, lyric: "Vì biết đâu mọi thứ chưa bắt đầu" }, // Adjusted from 1:46 and 1:53
+  { startTime: 153, endTime: 200, lyric: "Hà há ha hà, hà há hà" }, // Adjusted from 1:53 and 2:00
+  { startTime: 200, endTime: 205, lyric: "Liệu người có còn ở đây với tôi thật lâu?" }, // Adjusted from 2:00 and 2:05
+  { startTime: 205, endTime: 209, lyric: "Ngày rộng tháng dài, sợ mai không còn thấy nhau" }, // Adjusted from 2:05 and 2:09
+  { startTime: 209, endTime: 213, lyric: "Ngày em đến áng mây xanh thêm" }, // Adjusted from 2:09 and 2:13
+  { startTime: 213, endTime: 218, lyric: "Ngày em đi nắng vương cuối thềm" }, // Adjusted from 2:13 and 2:18
+  { startTime: 218, endTime: 222, lyric: "Thiếu em tôi sợ bơ vơ, vắng em như tàn cơn mơ" }, // Adjusted from 2:18 and 2:22
+  { startTime: 222, endTime: 227, lyric: "Chẳng phải phép màu, vậy sao chúng ta gặp nhau?" }, // Adjusted from 2:22 and 2:27
+  { startTime: 227, endTime: 231, lyric: "Một người khẽ cười, người kia cũng dịu nỗi đau" }, // Adjusted from 2:27 and 2:31
+  { startTime: 231, endTime: 236, lyric: "Gọi tôi thức giấc cơn ngủ mê" }, // Adjusted from 2:31 and 2:36
+  { startTime: 236, endTime: 240, lyric: "Dìu tôi đi lúc quên lối về" }, // Adjusted from 2:36 and 2:40
+  { startTime: 240, endTime: 246, lyric: "Quãng đời thanh xuân, sao em cho tôi giữ lấy, giữ lấy!" }, // Adjusted from 2:40 and 2:46
+  { startTime: 246, endTime: 252, lyric: "(Guitar solo)" }, // Adjusted from 2:46
+  { startTime: 252, endTime: 255, lyric: "Qua bao khổ đau vẫn bên cạnh nhau!" }, // Adjusted from 2:52 and 2:55
+  { startTime: 255, endTime: 300, lyric: "Chẳng phải phép màu, vậy sao chúng ta gặp nhau?" }, // Adjusted from 2:55 and 3:00
+  { startTime: 300, endTime: 304, lyric: "Một người khẽ cười, người kia cũng dịu nỗi đau" }, // Adjusted from 3:00 and 3:04
+  { startTime: 304, endTime: 309, lyric: "Gọi tôi thức giấc cơn ngủ mê" }, // Adjusted from 3:04 and 3:09
+  { startTime: 309, endTime: 313, lyric: "Dìu tôi đi lúc quên lối về" }, // Adjusted from 3:09 and 3:13
+  { startTime: 313, endTime: 322, lyric: "Quãng đời mai sau luôn cạnh nhau" }, // Adjusted from 3:13 and 3:22
+  { startTime: 322, endTime: 327, lyric: "Quãng đời mai sau luôn cạnh nhau" }, // Adjusted from 3:22 and 3:27
+  { startTime: 327, endTime: 331, lyric: "Quãng đời mai sau..." }, // Adjusted from 3:27 and 3:31
+  { startTime: 331, endTime: 338, lyric: "Luôn cạnh nhau..." }, // Adjusted from 3:31 and 3:38
+  { startTime: 338, endTime: 345, lyric: "(Nhạc kết)" } // Approximate end time for outro
+];
 };
 
 let lyricsDisplayContainer;
