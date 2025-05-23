@@ -65,8 +65,9 @@ body {
     min-height: 300px; /* Remains from original */
     /* width will be determined by flex-auto in the container */
     border-radius: 0.5rem; /* Tailwind rounded-lg */
-    overflow: hidden;
+    overflow: hidden; /* Đảm bảo lyrics container không tràn ra ngoài nếu có bo tròn */
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    position: relative; /* Quan trọng cho việc định vị tuyệt đối của #lyricsDisplayContainer */
 }
 
 /* Styles for Music Visualizer Canvas */
@@ -183,32 +184,69 @@ body {
 
 /* --- START: CUSTOM CURSOR STYLES --- */
 html, body {
-    /* Con trỏ hình dấu chấm nhỏ màu tím cho toàn bộ trang.
-       '8 8' là tọa độ hotspot (điểm nóng) của con trỏ, tính từ góc trên bên trái của ảnh SVG (16x16), giúp con trỏ chỉ đúng vào vị trí mong muốn.
-       'auto' là con trỏ dự phòng nếu trình duyệt không hỗ trợ con trỏ tùy chỉnh. */
     cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><circle cx="8" cy="8" r="3" fill="%23c4b5fd" opacity="0.85"/></svg>') 8 8, auto;
 }
 
 a,
 button,
-.shortcut-button,       /* Áp dụng cho các nút shortcut hiện có */
-.music-control-button,  /* Áp dụng cho các nút điều khiển nhạc hiện có */
-#searchButton,          /* Áp dụng cho nút tìm kiếm hiện có */
-input[type="range"],    /* Áp dụng cho thanh trượt */
-label,                  /* Áp dụng cho các nhãn có thể nhấp */
-select,                 /* Áp dụng cho các menu thả xuống */
-input[type="checkbox"], /* Áp dụng cho checkbox */
-input[type="radio"]     /* Áp dụng cho radio button */
+.shortcut-button,
+.music-control-button,
+#searchButton,
+input[type="range"],
+label,
+select,
+input[type="checkbox"],
+input[type="radio"]
 {
-    /* Con trỏ hình mũi tên tùy chỉnh màu tím.
-       '4 2' là tọa độ hotspot, căn chỉnh đầu mũi tên.
-       'pointer' là con trỏ dự phòng. */
     cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23a78bfa" d="M5.41,22.58C5.08,22.91,4.55,22.91,4.22,22.58C3.89,22.25,3.89,21.72,4.22,21.39L12.83,12.78C13.16,12.45,13.16,11.92,12.83,11.59L4.22,3.01C3.89,2.68,3.89,2.15,4.22,1.82C4.55,1.49,5.08,1.49,5.41,1.82L14.02,10.43C15.04,11.45,15.04,13.00,14.02,14.02L5.41,22.58Z" transform="rotate(-45 12 12)"/></svg>') 4 2, pointer;
 }
 
-/* Giữ lại con trỏ văn bản tiêu chuẩn cho các trường nhập liệu để đảm bảo trải nghiệm người dùng tốt */
 input[type="text"],
 textarea {
     cursor: text;
 }
 /* --- END: CUSTOM CURSOR STYLES --- */
+
+/* --- START: LYRICS DISPLAY STYLES --- */
+#lyricsDisplayContainer {
+    background: rgba(17, 24, 39, 0.6); /* bg-slate-900 with opacity, slightly more opaque */
+    backdrop-filter: blur(3px); /* Độ mờ nhẹ */
+    -webkit-backdrop-filter: blur(3px); /* Cho Safari */
+    color: #cbd5e1; /* text-slate-300, थोड़ा हल्का */
+    max-height: 35%; /* Giới hạn chiều cao để không che quá nhiều avatar */
+    overflow-y: hidden; /* Ẩn thanh cuộn nếu lời quá dài (JS sẽ quản lý số dòng) */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Căn lời bài hát xuống dưới cùng của container */
+    align-items: center; /* Căn giữa theo chiều ngang */
+    pointer-events: none; /* Cho phép click xuyên qua nếu cần */
+    border-bottom-left-radius: 0.5rem; /* Bo góc dưới cho khớp với avatar */
+    border-bottom-right-radius: 0.5rem;
+    padding-bottom: 8px; /* Thêm chút đệm dưới */
+}
+
+.lyric-line {
+    margin: 1px 0; /* Khoảng cách nhỏ giữa các dòng */
+    transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out, color 0.4s ease-in-out, font-weight 0.3s ease-in-out;
+    font-size: 0.75rem; /* Cỡ chữ nhỏ hơn cho lời bài hát (điều chỉnh nếu cần) */
+    opacity: 0.6; /* Các dòng không active sẽ mờ hơn */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.6); /* Đổ bóng nhẹ cho dễ đọc */
+    line-height: 1.3;
+}
+
+.lyric-line.active {
+    opacity: 1;
+    font-weight: 600; /* bold hơn một chút */
+    font-size: 0.85rem; /* Cỡ chữ lớn hơn cho dòng active */
+    color: #c4b5fd; /* Màu tím nhạt giống logo text */
+    transform: scale(1.03); /* Phóng to nhẹ dòng active */
+}
+
+.lyric-line.upcoming-1 {
+    opacity: 0.7; /* Mờ hơn dòng active */
+    font-size: 0.7rem;
+}
+
+/* Có thể thêm .upcoming-2 nếu muốn hiển thị nhiều dòng hơn */
+
+/* --- END: LYRICS DISPLAY STYLES --- */
