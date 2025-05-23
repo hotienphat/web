@@ -49,7 +49,9 @@ body {
 }
 /* Styles for search container button from user's file */
 .search-container button { /* Assuming this class is on the button or its parent */
-    background-color: #4f46e5; 
+    background-color: #4f46e5;
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
 }
 .search-container button:hover {
     background-color: #6366f1;
