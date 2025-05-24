@@ -56,8 +56,7 @@ let currentTrackIndex = 0;
 
 // --- LYRICS DATA for "Phép Màu" (Times updated to total seconds) ---
 const phepMauLyrics = [
-    { time: 0,   text: "Bài hát: Phép Màu" },
-    { time: 0,   text: "Mounter x MAYDAYs, Minh Tốc" },
+    { time: 0,   text: "Bài hát: Phép Màu - Mounter x MAYDAYs, Minh Tốc" },
     { time: 3,   text: "Ngày thay đêm,vội trôi giấc mơ êm đềm" },
     { time: 10,  text: "Tôi lênh đênh trên biển vắng, hoàng hôn chờ em chưa buông nắng" },
     { time: 17,  text: "Đừng tìm nhau, vào hôm gió mưa tơi bời" },
