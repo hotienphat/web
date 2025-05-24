@@ -54,46 +54,49 @@ const audioPlaylist = [
 let currentTrackIndex = 0;
 // --- END: MUSIC PLAYER CONFIGURATION ---
 
-// --- LYRICS DATA for "Phép Màu" ---
+// --- LYRICS DATA for "Phép Màu" (Times updated to total seconds) ---
+// Original time format was M.SS (e.g., 1.04 for 1m 4s)
+// New times are total seconds.
+// For 0.2 and 0.3, assuming they meant 2 seconds and 3 seconds respectively for initial credits/lines.
 const phepMauLyrics = [
-    { time: 0.0, text: "Bài hát: Phép Màu" },
-    { time: 0.2, text: "Mounter x MAYDAYs, Minh Tốc" },
-    { time: 0.3, text: "Ngày thay đêm,vội trôi giấc mơ êm đềm" },
-    { time: 0.10, text: "Tôi lênh đênh trên biển vắng, hoàng hôn chờ em chưa buông nắng" },
-    { time: 0.17, text: "Đừng tìm nhau, vào hôm gió mưa tơi bời" },
-    { time: 0.23, text: "Sợ lời sắp nói vỡ tan thương đau, hẹn kiếp sau có nhau trọn đời" },
-    { time: 0.30, text: "..." },
-    { time: 0.44, text: "Liệu người có còn ở đây với tôi thật lâu?" },
-    { time: 0.50, text: "Ngày rộng tháng dài, sợ mai không còn thấy nhau" },
-    { time: 0.57, text: "Ngày em đến, áng mây xanh thêm, ngày em đi nắng vương cuối thềm" },
-    { time: 1.04, text: "Thiếu em tôi sợ bơ vơ, vắng em như tàn cơn mơ" },
-    { time: 1.10, text: "Chẳng phải phép màu vậy sao chúng ta gặp nhau?" },
-    { time: 1.17, text: "Một người khẽ cười, người kia cũng dịu nỗi đau" },
-    { time: 1.24, text: "Gọi tôi thức giấc cơn ngủ mê, dìu tôi đi lúc quên lối về" },
-    { time: 1.30, text: "Quãng đời mai sau luôn cạnh nhau" },
-    { time: 1.38, text: "..." },
-    { time: 1.45, text: "Rồi ngày mai, còn ai với ai ở lại?" },
-    { time: 1.51, text: "Vẫn căng buồm ra khơi theo làn gió mới" },
-    { time: 1.55, text: "Vì biết đâu mọi thứ chưa bắt đầu" },
-    { time: 1.55, text: "Hah-hah-ah-ah-ah-ah" },
-    { time: 1.58, text: "Hah-hah-ah-ah-ah-ah" },
-    { time: 2.05, text: "Liệu người có còn ở đây với tôi thật lâu?" },
-    { time: 2.10, text: "Ngày rộng tháng dài, sợ mai không còn thấy nhau" },
-    { time: 2.17, text: "Ngày em đến, áng mây xanh thêm, ngày em đi, nắng vương cuối thềm" },
-    { time: 2.24, text: "Thiếu em tôi sợ bơ vơ" },
-    { time: 2.30, text: "Vắng em như tàn cơn mơ" },
-    { time: 2.37, text: "Chẳng phải phép màu vậy sao chúng ta gặp nhau?" },
-    { time: 2.44, text: "Một người khẽ cười, người kia cũng dịu nỗi đau" },
-    { time: 2.50, text: "Gọi tôi thức giấc cơn ngủ mê, dìu tôi đi lúc quên lối về" },
-    { time: 2.58, text: "Quãng đời thanh xuân sao em cho tôi giữ lấy, giữ lấy" },
-    { time: 3.11, text: "(Qua bao khổ đau, ta bên cạnh nhau)" },
-    { time: 3.37, text: "Chẳng phải phép màu vậy sao chúng ta gặp nhau?" },
-    { time: 3.44, text: "Một người khẽ cười, người kia cũng dịu nỗi đau" },
-    { time: 3.51, text: "Gọi tôi thức giấc cơn ngủ mê, dìu tôi đi lúc quên lối về" },
-    { time: 3.57, text: "Quãng đời mai sau luôn cạnh nhau" },
-    { time: 4.04, text: "Quãng đời mai sau luôn cạnh nhau" },
-    { time: 4.11, text: "HẾT" },
-
+    { time: 0,   text: "Bài hát: Phép Màu" }, // Original: 0.0
+    { time: 2,   text: "Mounter x MAYDAYs, Minh Tốc" }, // Original: 0.2 (Interpreted as 2 seconds)
+    { time: 3,   text: "Ngày thay đêm,vội trôi giấc mơ êm đềm" }, // Original: 0.3 (Interpreted as 3 seconds)
+    { time: 10,  text: "Tôi lênh đênh trên biển vắng, hoàng hôn chờ em chưa buông nắng" }, // Original: 0.10 -> 0*60+10 = 10
+    { time: 17,  text: "Đừng tìm nhau, vào hôm gió mưa tơi bời" }, // Original: 0.17 -> 0*60+17 = 17
+    { time: 23,  text: "Sợ lời sắp nói vỡ tan thương đau, hẹn kiếp sau có nhau trọn đời" }, // Original: 0.23 -> 0*60+23 = 23
+    { time: 30,  text: "..." }, // Original: 0.30 -> 0*60+30 = 30
+    { time: 44,  text: "Liệu người có còn ở đây với tôi thật lâu?" }, // Original: 0.44 -> 0*60+44 = 44
+    { time: 50,  text: "Ngày rộng tháng dài, sợ mai không còn thấy nhau" }, // Original: 0.50 -> 0*60+50 = 50
+    { time: 57,  text: "Ngày em đến, áng mây xanh thêm, ngày em đi nắng vương cuối thềm" }, // Original: 0.57 -> 0*60+57 = 57
+    { time: 64,  text: "Thiếu em tôi sợ bơ vơ, vắng em như tàn cơn mơ" }, // Original: 1.04 -> 1*60+4 = 64
+    { time: 70,  text: "Chẳng phải phép màu vậy sao chúng ta gặp nhau?" }, // Original: 1.10 -> 1*60+10 = 70
+    { time: 77,  text: "Một người khẽ cười, người kia cũng dịu nỗi đau" }, // Original: 1.17 -> 1*60+17 = 77
+    { time: 84,  text: "Gọi tôi thức giấc cơn ngủ mê, dìu tôi đi lúc quên lối về" }, // Original: 1.24 -> 1*60+24 = 84
+    { time: 90,  text: "Quãng đời mai sau luôn cạnh nhau" }, // Original: 1.30 -> 1*60+30 = 90
+    { time: 98,  text: "..." }, // Original: 1.38 -> 1*60+38 = 98
+    { time: 105, text: "Rồi ngày mai, còn ai với ai ở lại?" }, // Original: 1.45 -> 1*60+45 = 105
+    { time: 111, text: "Vẫn căng buồm ra khơi theo làn gió mới" }, // Original: 1.51 -> 1*60+51 = 111
+    // Note: Original had two 1.55 entries. Assuming these are distinct or very close.
+    { time: 115, text: "Vì biết đâu mọi thứ chưa bắt đầu" }, // Original: 1.55 -> 1*60+55 = 115 
+    { time: 115, text: "Hah-hah-ah-ah-ah-ah" }, // Original: 1.55 -> 1*60+55 = 115
+    { time: 118, text: "Hah-hah-ah-ah-ah-ah" }, // Original: 1.58 -> 1*60+58 = 118
+    { time: 125, text: "Liệu người có còn ở đây với tôi thật lâu?" }, // Original: 2.05 -> 2*60+5 = 125
+    { time: 130, text: "Ngày rộng tháng dài, sợ mai không còn thấy nhau" }, // Original: 2.10 -> 2*60+10 = 130
+    { time: 137, text: "Ngày em đến, áng mây xanh thêm, ngày em đi, nắng vương cuối thềm" }, // Original: 2.17 -> 2*60+17 = 137
+    { time: 144, text: "Thiếu em tôi sợ bơ vơ" }, // Original: 2.24 -> 2*60+24 = 144
+    { time: 150, text: "Vắng em như tàn cơn mơ" }, // Original: 2.30 -> 2*60+30 = 150
+    { time: 157, text: "Chẳng phải phép màu vậy sao chúng ta gặp nhau?" }, // Original: 2.37 -> 2*60+37 = 157
+    { time: 164, text: "Một người khẽ cười, người kia cũng dịu nỗi đau" }, // Original: 2.44 -> 2*60+44 = 164
+    { time: 170, text: "Gọi tôi thức giấc cơn ngủ mê, dìu tôi đi lúc quên lối về" }, // Original: 2.50 -> 2*60+50 = 170
+    { time: 178, text: "Quãng đời thanh xuân sao em cho tôi giữ lấy, giữ lấy" }, // Original: 2.58 -> 2*60+58 = 178
+    { time: 191, text: "(Qua bao khổ đau, ta bên cạnh nhau)" }, // Original: 3.11 -> 3*60+11 = 191
+    { time: 217, text: "Chẳng phải phép màu vậy sao chúng ta gặp nhau?" }, // Original: 3.37 -> 3*60+37 = 217
+    { time: 224, text: "Một người khẽ cười, người kia cũng dịu nỗi đau" }, // Original: 3.44 -> 3*60+44 = 224
+    { time: 231, text: "Gọi tôi thức giấc cơn ngủ mê, dìu tôi đi lúc quên lối về" }, // Original: 3.51 -> 3*60+51 = 231
+    { time: 237, text: "Quãng đời mai sau luôn cạnh nhau" }, // Original: 3.57 -> 3*60+57 = 237
+    { time: 244, text: "Quãng đời mai sau luôn cạnh nhau" }, // Original: 4.04 -> 4*60+4 = 244
+    { time: 251, text: "HẾT" }, // Original: 4.11 -> 4*60+11 = 251
 ];
 let currentLyricIndex = -1;
 
@@ -508,7 +511,7 @@ function updateLyrics(currentTime) {
         if (currentTime >= phepMauLyrics[i].time) {
             newLyricIndex = i;
         } else {
-            break;
+            break; 
         }
     }
 
