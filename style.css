@@ -216,3 +216,19 @@ textarea {
     cursor: text;
 }
 /* --- END: CUSTOM CURSOR STYLES --- */
+
+/* --- START: DONATE SECTION STYLES --- */
+.qr-code-placeholder {
+    border: 2px dashed #6b7280; /* border-slate-500 */
+    display: flex; /* Already set by Tailwind */
+    align-items: center; /* Already set by Tailwind */
+    justify-content: center; /* Already set by Tailwind */
+    text-align: center; /* For the placeholder text */
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.qr-code-placeholder:hover {
+    border-color: #a78bfa; /* purple-400 */
+    background-color: rgba(167, 139, 250, 0.1); /* Light purple tint on hover */
+}
+/* --- END: DONATE SECTION STYLES --- */
