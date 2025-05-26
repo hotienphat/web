@@ -55,12 +55,6 @@ body {
     background-color: #6366f1; /* Lighter shade for hover */
 }
 
-.image-placeholder-container {
-    /* This class is on the parent of .image-placeholder and #lyricsOverlay */
-    /* Tailwind classes used: relative rounded-lg overflow-hidden shadow-xl flex-auto */
-    /* No specific CSS needed here unless overriding Tailwind */
-}
-
 .image-placeholder {
     background-image: url('./Backround sound/avt.png');
     background-size: cover;
