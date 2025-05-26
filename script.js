@@ -195,6 +195,7 @@ function initializeMusicPlayer() {
     prevTrackBtn = document.getElementById('prevTrackBtn');
     nextTrackBtn = document.getElementById('nextTrackBtn');
 
+    // Lyrics elements
     lyricsOverlay = document.getElementById('lyricsOverlay');
     currentLyricEl = document.getElementById('currentLyric');
     nextLyricEl = document.getElementById('nextLyric');
@@ -213,51 +214,27 @@ function initializeMusicPlayer() {
     playPauseMusicBtn.addEventListener('click', togglePlayPause);
     stopMusicBtn.addEventListener('click', stopAudio);
     musicProgressBar.addEventListener('input', seekAudio); 
-
     audioPlayer.addEventListener('timeupdate', () => {
         updateProgressBar();
-        if (audioPlayer) {
+        if (audioPlayer) { // Ensure audioPlayer is defined
              updateLyrics(audioPlayer.currentTime);
         }
     }); 
     audioPlayer.addEventListener('loadedmetadata', setAudioDuration); 
-    audioPlayer.addEventListener('ended', playNextTrackHandlerImproved); // Use improved handler
-
-    // Robust event listeners for play/pause state changes
-    audioPlayer.addEventListener('play', () => {
-        updatePlayPauseIcon();
-        if (!isVisualizerInitialized && audioPlayer) { // Initialize visualizer if not done
-            setupAudioGraph();
-        }
-        if (isVisualizerInitialized && audioContext && audioContext.state === 'suspended') {
-            audioContext.resume().catch(e => console.error("Error resuming AudioContext for visualizer:", e));
-        }
-        // Start visualizer drawing loop if initialized and not already running
-        if (isVisualizerInitialized && !rafId && audioPlayer.paused === false) {
-             drawVisualizerLoop();
-        }
-    });
-
-    audioPlayer.addEventListener('pause', () => { // Handles both user pause and implicit pause (e.g. before next track)
-        updatePlayPauseIcon();
-        if (rafId) { // Stop visualizer animation
-            cancelAnimationFrame(rafId);
-            rafId = null;
-            // Clearing the canvas on pause is optional, stop/ended will handle explicit clears
-        }
-    });
+    audioPlayer.addEventListener('ended', playNextTrackHandler); 
 
     volumeSlider.addEventListener('input', setVolume);
     volumeBtn.addEventListener('click', toggleMute);
 
     prevTrackBtn.addEventListener('click', playPrevTrackHandler); 
-    nextTrackBtn.addEventListener('click', playNextTrackHandlerImproved); // Use improved handler for consistency
+    nextTrackBtn.addEventListener('click', playNextTrackHandler); 
     
     updateTrackButtonsState(); 
 }
 
 /**
  * Loads a specific track into the audio player.
+ * @param {number} trackIndex - The index of the track in the audioPlaylist.
  */
 function loadTrack(trackIndex) {
     if (trackIndex < 0 || trackIndex >= audioPlaylist.length) {
@@ -267,8 +244,6 @@ function loadTrack(trackIndex) {
     const track = audioPlaylist[trackIndex];
     const currentVolume = audioPlayer ? audioPlayer.volume : 1; 
     const currentMutedState = audioPlayer ? audioPlayer.muted : false;
-    const isCurrentlyPlaying = audioPlayer && !audioPlayer.paused;
-
 
     audioPlayer.src = track.src; 
     audioPlayer.volume = currentVolume; 
@@ -281,19 +256,14 @@ function loadTrack(trackIndex) {
     
     musicProgressBar.value = 0;
     currentTimeEl.textContent = formatTime(0);
-    // Duration will be set by 'loadedmetadata' event
     durationEl.textContent = formatTime(audioPlayer.duration || 0); 
     
-    currentLyricIndex = -1; 
-    updateLyrics(0); 
+    currentLyricIndex = -1; // Reset lyric index for the new track
+    updateLyrics(0); // Update lyrics display for the new track (or hide if not Phép Màu)
 
-    updatePlayPauseIcon(); // Update based on new track's initial (paused) state
+    updatePlayPauseIcon(); 
     updateTrackButtonsState(); 
-    updateVolumeIcon();
-
-    // If the player was playing before loading the new track, attempt to play the new track.
-    // This is mainly for prev/next track actions when music was already playing.
-    // The playNextTrackHandlerImproved and playPrevTrackHandler will manage this.
+    updateVolumeIcon(); 
 }
 
 /**
@@ -301,13 +271,13 @@ function loadTrack(trackIndex) {
  */
 function togglePlayPause() {
     if (!audioPlayer) return;
-    if (!isVisualizerInitialized && audioPlayer) { // Ensure visualizer is set up on first play attempt
+    if (!isVisualizerInitialized && audioPlayer) {
         setupAudioGraph();
     }
 
     if (audioPlayer.paused || audioPlayer.ended) {
         if (audioContext && audioContext.state === 'suspended') {
-            audioContext.resume().then(() => { // Resume audio context if suspended
+            audioContext.resume().then(() => {
                 audioPlayer.play().catch(handlePlayError);
             }).catch(handlePlayError);
         } else {
@@ -316,7 +286,9 @@ function togglePlayPause() {
     } else {
         audioPlayer.pause();
     }
-    // The 'play' and 'pause' event listeners will call updatePlayPauseIcon()
+    updatePlayPauseIcon(); 
+    // Update lyrics visibility based on play/pause state
+    if (audioPlayer) updateLyrics(audioPlayer.currentTime);
 }
 
 /**
@@ -324,19 +296,16 @@ function togglePlayPause() {
  */
 function stopAudio() {
     if (!audioPlayer) return;
-    audioPlayer.pause(); // This will trigger the 'pause' event listener
+    audioPlayer.pause();
     audioPlayer.currentTime = 0; 
-    
-    // Explicitly clear visualizer canvas on STOP
-    if (visualizerCtx && visualizerCanvas) {
-        visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
-        // Ensure rafId is null if it wasn't caught by pause event (should be, but good practice)
-        if (rafId) {
-            cancelAnimationFrame(rafId);
-            rafId = null;
+    updatePlayPauseIcon(); 
+    if (rafId) { 
+        cancelAnimationFrame(rafId);
+        rafId = null;
+        if(visualizerCtx && visualizerCanvas) {
+            visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
         }
     }
-
     // Hide lyrics when stopped
     if (lyricsOverlay) {
         lyricsOverlay.classList.remove('opacity-100', 'pointer-events-auto');
@@ -353,16 +322,14 @@ function stopAudio() {
         nextLyricEl.classList.add('opacity-0');
     }
     currentLyricIndex = -1;
-    updatePlayPauseIcon(); // Ensure icon is 'play' after stop actions
 }
 
 /**
  * Updates the play/pause button icon based on the audio player's state.
- * Relies mostly on audioPlayer.paused.
  */
 function updatePlayPauseIcon() {
     if (!playPauseMusicBtn || !audioPlayer) return;
-    if (audioPlayer.paused) {
+    if (audioPlayer.paused || audioPlayer.ended) {
         playPauseMusicBtn.innerHTML = '<i class="fas fa-play fa-lg"></i>';
     } else {
         playPauseMusicBtn.innerHTML = '<i class="fas fa-pause fa-lg"></i>';
@@ -419,7 +386,7 @@ function handlePlayError(error) {
     } else if (error.name === 'AbortError') {
         console.info("Playback aborted.");
     }
-    updatePlayPauseIcon(); // Reflect that playback failed
+    updatePlayPauseIcon(); 
 }
 
 /**
@@ -465,27 +432,13 @@ function updateVolumeIcon() {
 }
 
 /**
- * Improved handler for playing the next track (handles 'ended' and next button).
+ * Handler for playing the next track.
  */
-function playNextTrackHandlerImproved() {
-    // Stop and clear visualizer for the ended track
-    if (rafId) {
-        cancelAnimationFrame(rafId);
-        rafId = null;
-    }
-    if (visualizerCtx && visualizerCanvas) {
-        visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
-    }
-
-    const wasPlayingBeforeChange = !audioPlayer.paused; // Check if music was playing before this function was called
-
+function playNextTrackHandler() {
     currentTrackIndex = (currentTrackIndex + 1) % audioPlaylist.length;
-    loadTrack(currentTrackIndex); // loadTrack will set initial icon state (usually 'play')
-
-    if (wasPlayingBeforeChange || audioPlaylist.length === 1) { // If it was playing, or only one song (loop)
-        audioPlayer.play().catch(handlePlayError); // 'play' event listener will update icon to 'pause'
-    } else {
-        updatePlayPauseIcon(); // Ensure icon is 'play' if not auto-playing
+    loadTrack(currentTrackIndex);
+    if(audioPlayer && (!audioPlayer.paused || audioPlaylist.length === 1)){ 
+        audioPlayer.play().catch(handlePlayError);
     }
 }
 
@@ -493,23 +446,10 @@ function playNextTrackHandlerImproved() {
  * Handler for playing the previous track.
  */
 function playPrevTrackHandler() {
-    if (rafId) { // Stop and clear visualizer for the current track
-        cancelAnimationFrame(rafId);
-        rafId = null;
-    }
-    if (visualizerCtx && visualizerCanvas) {
-        visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
-    }
-
-    const wasPlayingBeforeChange = !audioPlayer.paused;
-
     currentTrackIndex = (currentTrackIndex - 1 + audioPlaylist.length) % audioPlaylist.length;
     loadTrack(currentTrackIndex);
-
-    if (wasPlayingBeforeChange || audioPlaylist.length === 1) {
+    if(audioPlayer && (!audioPlayer.paused || audioPlaylist.length === 1)){
          audioPlayer.play().catch(handlePlayError);
-    } else {
-        updatePlayPauseIcon();
     }
 }
 
@@ -536,6 +476,7 @@ function updateLyrics(currentTime) {
     if (!audioPlayer || !phepMauLyrics || !lyricsOverlay || !currentLyricEl || !nextLyricEl) return;
 
     const currentTrack = audioPlaylist[currentTrackIndex];
+    // Only show lyrics if the current song is "Phép Màu" and music is playing or loaded
     if (!currentTrack || !currentTrack.title.includes("Phép Màu (Đàn Cá Gỗ OST)")) {
         lyricsOverlay.classList.remove('opacity-100', 'pointer-events-auto');
         lyricsOverlay.classList.add('opacity-0', 'pointer-events-none');
@@ -549,10 +490,11 @@ function updateLyrics(currentTime) {
         return;
     }
 
-    if (!audioPlayer.paused || audioPlayer.readyState >= 2) { 
+    // Show lyrics overlay if Phép Màu is the current song and it's playing or paused (loaded)
+    if (!audioPlayer.paused || audioPlayer.readyState >= 2) { // readyState >= 2 means metadata loaded
         lyricsOverlay.classList.add('opacity-100', 'pointer-events-auto');
         lyricsOverlay.classList.remove('opacity-0', 'pointer-events-none');
-    } else { 
+    } else { // Hide if not playing and not loaded enough
         lyricsOverlay.classList.remove('opacity-100', 'pointer-events-auto');
         lyricsOverlay.classList.add('opacity-0', 'pointer-events-none');
     }
@@ -569,6 +511,7 @@ function updateLyrics(currentTime) {
     if (newLyricIndex !== currentLyricIndex) {
         currentLyricIndex = newLyricIndex;
 
+        // Update current lyric
         if (currentLyricIndex !== -1 && phepMauLyrics[currentLyricIndex]) {
             currentLyricEl.classList.remove('active', 'opacity-100', 'translate-y-0');
             currentLyricEl.classList.add('opacity-0', 'translate-y-1'); 
@@ -584,6 +527,7 @@ function updateLyrics(currentTime) {
             currentLyricEl.classList.add('opacity-0', 'translate-y-1');
         }
 
+        // Update next lyric
         const nextIndex = currentLyricIndex + 1;
         if (nextIndex < phepMauLyrics.length && phepMauLyrics[nextIndex] && phepMauLyrics[nextIndex].text.trim() !== "") {
              nextLyricEl.classList.remove('visible', 'opacity-100');
@@ -610,10 +554,7 @@ function setupAudioGraph() {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         analyser = audioContext.createAnalyser();
         analyser.fftSize = 256; 
-        // Ensure sourceNode is created only once or reconnected if audioPlayer.src changes
-        if (!sourceNode || sourceNode.mediaElement !== audioPlayer) {
-            sourceNode = audioContext.createMediaElementSource(audioPlayer);
-        }
+        sourceNode = audioContext.createMediaElementSource(audioPlayer);
         sourceNode.connect(analyser);       
         analyser.connect(audioContext.destination); 
         dataArray = new Uint8Array(analyser.frequencyBinCount);
@@ -628,7 +569,7 @@ function setupAudioGraph() {
 
 function initializeVisualizerCanvas() {
     visualizerCanvas = document.getElementById('musicVisualizer');
-    const imagePlaceholderContainer = document.querySelector('.image-placeholder-container'); 
+    const imagePlaceholderContainer = document.querySelector('.image-placeholder-container'); // Use the container
 
     if (!visualizerCanvas || !imagePlaceholderContainer) {
         console.error("Visualizer: Không tìm thấy canvas hoặc image placeholder container.");
@@ -650,13 +591,41 @@ function initializeVisualizerCanvas() {
     setCanvasDimensions(); 
     window.addEventListener('resize', setCanvasDimensions);
 
-    // Event listeners for play/pause/ended related to visualizer are now mainly in initializeMusicPlayer
-    // to centralize state management.
-    // This function primarily sets up the canvas.
+    if (audioPlayer) {
+        audioPlayer.addEventListener('play', () => {
+            if (!isVisualizerInitialized) { 
+                setupAudioGraph();
+            }
+            if (isVisualizerInitialized && audioContext && audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    if (!rafId) drawVisualizerLoop();
+                }).catch(e => console.error("Error resuming AudioContext for visualizer:", e));
+            } else if (isVisualizerInitialized && !rafId) {
+                drawVisualizerLoop();
+            }
+        });
+
+        audioPlayer.addEventListener('pause', () => {
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+                rafId = null;
+            }
+        });
+
+        audioPlayer.addEventListener('ended', () => {
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+                rafId = null;
+                if(visualizerCtx && visualizerCanvas) {
+                    visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+                }
+            }
+        });
+    }
 }
 
 function drawVisualizerLoop() {
-    if (!isVisualizerInitialized || !analyser || !visualizerCtx || !dataArray || !visualizerCanvas || !audioPlayer || audioPlayer.paused) {
+    if (!isVisualizerInitialized || !analyser || !visualizerCtx || !dataArray || !visualizerCanvas) {
         if (rafId) cancelAnimationFrame(rafId);
         rafId = null;
         return;
@@ -694,9 +663,11 @@ document.addEventListener('DOMContentLoaded', () => {
         initializeVisualizerCanvas();
     }
     
-    if (audioPlayer) { // Initial lyrics setup
+    // Initial lyrics setup based on the initially loaded track
+    if (audioPlayer) {
         updateLyrics(audioPlayer.currentTime);
     }
+
 
     const searchButton = document.getElementById('searchButton'); 
     if (searchButton) { 
