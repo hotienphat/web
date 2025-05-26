@@ -46,13 +46,13 @@ body {
     color: #c4b5fd; /* text-purple-300 or a lighter variant */
     text-shadow: 0 0 8px rgba(196, 181, 253, 0.5); /* Custom shadow for glow effect */
 }
-.search-container button { 
-    background-color: #4f46e5; 
+.search-container button { /* Assuming Tailwind classes like bg-purple-600 */
+    background-color: #4f46e5; /* Matching scrollbar thumb, can be purple-600 #7c3aed */
     display: flex;
-    align-items: center; 
+    align-items: center; /* Ensure icon is centered if text is removed */
 }
 .search-container button:hover {
-    background-color: #6366f1; 
+    background-color: #6366f1; /* Lighter shade for hover */
 }
 
 .image-placeholder {
@@ -60,54 +60,61 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    min-height: 300px; 
+    min-height: 300px; /* Ensure it has a height */
+    /* Removed border-radius, overflow, box-shadow as they are on the parent .image-placeholder-container (via Tailwind classes) */
 }
 
+/* Styles for Music Visualizer Canvas */
 #musicVisualizer {
     display: block;
-    width: 60px; 
+    width: 60px; /* Fixed width for the vertical visualizer */
     height: 300px; /* Fallback, JS will try to match avatar height */
-    background-color: rgba(31, 41, 55, 0.7); 
-    border: 1px solid #374151; 
-    border-radius: 0.5rem; 
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
+    background-color: rgba(31, 41, 55, 0.7); /* bg-slate-800 with opacity */
+    border: 1px solid #374151; /* border-slate-700 */
+    border-radius: 0.5rem; /* rounded-lg */
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); /* shadow-lg */
 }
+
+/* --- STYLES FOR LYRICS --- */
 
 #currentLyric.active {
     opacity: 1;
     transform: translateY(0);
-    color: #f0f0f0; 
-    text-shadow: 0 0 6px rgba(220, 190, 255, 0.7), 0 0 12px rgba(200, 170, 255, 0.5); 
+    color: #f0f0f0; /* Slightly brighter white for active lyric */
+    text-shadow: 0 0 6px rgba(220, 190, 255, 0.7), 0 0 12px rgba(200, 170, 255, 0.5); /* Subtle purple glow */
 }
 
 #nextLyric.visible {
-    opacity: 0.7; 
+    opacity: 0.7; /* Next lyric is slightly less opaque */
 }
 
+
+/* --- STYLES FOR DETAILED MUSIC PLAYER --- */
 #musicPlayerContainer {
-    box-shadow: 0 -4px 15px rgba(139, 92, 246, 0.2); 
+    box-shadow: 0 -4px 15px rgba(139, 92, 246, 0.2); /* Purple glow from top */
 }
 
 .music-control-button {
     background: none;
     border: none;
-    cursor: pointer; 
+    cursor: pointer; /* Will be overridden by custom cursor below, but good fallback */
     transition: color 0.2s ease-in-out, transform 0.1s ease-in-out;
 }
 .music-control-button:active {
-    transform: scale(0.9); 
+    transform: scale(0.9); /* Click feedback */
 }
 
+/* Custom styling for range inputs (progress bar and volume slider) */
 .music-progress-bar::-webkit-slider-thumb,
 .music-volume-slider::-webkit-slider-thumb {
-    -webkit-appearance: none; 
+    -webkit-appearance: none; /* Override default appearance */
     appearance: none;
-    width: 14px; 
-    height: 14px; 
-    background: #a78bfa; 
-    border-radius: 50%; 
-    cursor: pointer; 
-    margin-top: -5px; 
+    width: 14px; /* Size of the thumb */
+    height: 14px; /* Size of the thumb */
+    background: #a78bfa; /* Purple theme color for thumb */
+    border-radius: 50%; /* Circular thumb */
+    cursor: pointer; /* Hand cursor on thumb */
+    margin-top: -5px; /* Adjust vertical position to center on track */
 }
 
 .music-progress-bar::-moz-range-thumb,
@@ -117,7 +124,7 @@ body {
     background: #a78bfa;
     border-radius: 50%;
     cursor: pointer;
-    border: none; 
+    border: none; /* Remove default border */
 }
 
 .music-progress-bar::-ms-thumb,
@@ -127,17 +134,18 @@ body {
     background: #a78bfa;
     border-radius: 50%;
     cursor: pointer;
-    border: 0; 
-    margin-top: 0px; 
+    border: 0; /* Remove default border */
+    margin-top: 0px; /* IE specific adjustment */
 }
 
+/* Track styling */
 .music-progress-bar::-webkit-slider-runnable-track,
 .music-volume-slider::-webkit-slider-runnable-track {
     width: 100%;
-    height: 4px; 
+    height: 4px; /* Slimmer track */
     cursor: pointer;
-    background: #4a5568; 
-    border-radius: 2px; 
+    background: #4a5568; /* Darker background for the track (slate-600) */
+    border-radius: 2px; /* Rounded track */
 }
 
 .music-progress-bar::-moz-range-track,
@@ -154,62 +162,57 @@ body {
     width: 100%;
     height: 4px;
     cursor: pointer;
-    background: transparent; 
+    background: transparent; /* IE specific: track is transparent */
     border-color: transparent;
     color: transparent;
 }
 
+/* IE fill styling (progress part) */
 .music-progress-bar::-ms-fill-lower,
 .music-volume-slider::-ms-fill-lower {
-    background: #a78bfa; 
+    background: #a78bfa; /* Purple theme color for the fill */
     border-radius: 2px;
 }
 .music-progress-bar::-ms-fill-upper,
 .music-volume-slider::-ms-fill-upper {
-    background: #4a5568; 
+    background: #4a5568; /* Darker background for the remaining part of the track */
     border-radius: 2px;
 }
 
+/* Ensure the container for range inputs allows for thumb vertical centering */
 #musicProgressBar, #volumeSlider {
-    height: 14px; 
-    display: flex; 
-    align-items: center; 
+    height: 14px; /* Height to accommodate the thumb */
+    display: flex; /* Helps with vertical alignment if needed */
+    align-items: center; /* Helps with vertical alignment if needed */
 }
 
+/* --- START: CUSTOM CURSOR STYLES --- */
+/* Default cursor for the page - a new design */
 html, body {
+    /* A purple diamond shape with a softer outer glow. Hotspot 10 10 for center. */
     cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><defs><filter id="glow"><feGaussianBlur stdDeviation="1.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><polygon points="10,2 18,10 10,18 2,10" fill="%23c4b5fd" opacity="0.9" style="filter:url(%23glow);"/><polygon points="10,2 18,10 10,18 2,10" stroke="%23a78bfa" stroke-width="1" fill="none"/></svg>') 10 10, auto;
 }
 
+/* Pointer cursor for interactive elements - a new design */
 a,
 button,
 .shortcut-button,
 .music-control-button,
 #searchButton,
-input[type="range"], 
-label[for], 
+input[type="range"], /* For slider thumbs */
+label[for], /* Labels associated with inputs */
 select,
 input[type="checkbox"],
 input[type="radio"]
 {
+    /* A sharper, more modern purple arrow with a slight shadow. Hotspot 5 2 for the tip. */
     cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><defs><filter id="dropshadow" height="130%"><feGaussianBlur in="SourceAlpha" stdDeviation="1"/><feOffset dx="0.5" dy="0.5" result="offsetblur"/><feComponentTransfer><feFuncA type="linear" slope="0.7"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path fill="%23a78bfa" d="M4.22 22.39L12.83 13.78C13.16 13.45 13.16 12.92 12.83 12.59L4.22 4.01C3.89 3.68 3.89 3.15 4.22 2.82C4.55 2.49 5.08 2.49 5.41 2.82L14.02 11.43C15.04 12.45 15.04 13.91 14.02 14.93L5.41 23.54C5.08 23.87 4.55 23.87 4.22 23.54C3.89 23.21 3.89 22.72 4.22 22.39Z" style="filter:url(%23dropshadow);" transform="rotate(-45 12 12) translate(0, -1)"/></svg>') 5 2, pointer;
 }
 
+/* Text selection cursor for text inputs */
 input[type="text"],
-input[type="search"], 
+input[type="search"], /* Ensure search input also gets text cursor */
 textarea {
     cursor: text;
 }
-
-.qr-code-placeholder {
-    border: 2px dashed #6b7280; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    text-align: center; 
-    transition: border-color 0.3s ease, background-color 0.3s ease;
-}
-
-.qr-code-placeholder:hover {
-    border-color: #a78bfa; 
-    background-color: rgba(167, 139, 250, 0.1); 
-}
+/* --- END: CUSTOM CURSOR STYLES --- */
