@@ -58,7 +58,44 @@
                         <p class="text-sm text-gray-400 mt-1"><i class="fas fa-heart mr-2 text-purple-400"></i>Sở thích: Lập trình, Nghe nhạc, Chơi game</p>
                     </div>
                 </div>
-            </div>
+
+                <div id="donateSection" class="p-6 bg-slate-800 rounded-xl shadow-lg mt-6">
+                    <h3 class="text-xl font-semibold mb-4 text-purple-300 text-center">ỦNG HỘ MÌNH</h3>
+                    <p class="text-sm text-gray-300 leading-relaxed mb-4 text-center">
+                        Nếu bạn thấy những chia sẻ của mình hữu ích và muốn mời mình một ly cà phê, bạn có thể ủng hộ tại đây.
+                        Mỗi đóng góp nhỏ đều là động lực lớn để mình tiếp tục!
+                    </p>
+                    <div class="space-y-4">
+                        <div class="donation-method p-4 bg-slate-700/50 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <i class="fas fa-wallet fa-lg text-pink-500 mr-3"></i> <span class="font-medium text-gray-200">Momo</span>
+                                </div>
+                                <button data-qr-target="momoQrPlaceholder" class="toggle-qr-btn bg-purple-600 hover:bg-purple-700 text-white text-xs px-3 py-1.5 rounded-md transition-colors duration-300">
+                                    Hiện QR
+                                </button>
+                            </div>
+                            <div id="momoQrPlaceholder" class="qr-placeholder hidden mt-3 p-2 bg-white rounded flex items-center justify-center">
+                                <span class="text-slate-500 text-sm">Chỗ cho mã QR Momo (150x150px)</span>
+                            </div>
+                        </div>
+
+                        <div class="donation-method p-4 bg-slate-700/50 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <i class="fas fa-university fa-lg text-blue-500 mr-3"></i> <span class="font-medium text-gray-200">Chuyển Khoản Ngân Hàng</span>
+                                </div>
+                                <button data-qr-target="bankQrPlaceholder" class="toggle-qr-btn bg-purple-600 hover:bg-purple-700 text-white text-xs px-3 py-1.5 rounded-md transition-colors duration-300">
+                                    Hiện QR
+                                </button>
+                            </div>
+                            <div id="bankQrPlaceholder" class="qr-placeholder hidden mt-3 p-2 bg-white rounded flex items-center justify-center">
+                                 <span class="text-slate-500 text-sm">Chỗ cho mã QR Ngân Hàng (150x150px)</span>
+                            </div>
+                        </div>
+                         </div>
+                </div>
+                </div>
 
             <div class="md:col-span-2 space-y-8">
                 <div id="shortcutsContainer" class="space-y-8">
