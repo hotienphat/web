@@ -1,10 +1,16 @@
-/* General body styles from user's file */
+/* General body styles from user's file - giữ nguyên các style hiện có của bạn */
 body {
     font-family: 'Inter', sans-serif;
     background-color: #111827; /* bg-slate-900 */
     color: #e5e7eb; /* text-gray-200 */
     margin: 0;
+    /* Thêm overflow: hidden khi loading để tránh cuộn trang */
 }
+
+body.loading {
+    overflow: hidden;
+}
+
 
 .search-input::placeholder {
     color: #9ca3af; /* placeholder-slate-400 */
@@ -61,60 +67,53 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     min-height: 300px; /* Ensure it has a height */
-    /* Removed border-radius, overflow, box-shadow as they are on the parent .image-placeholder-container (via Tailwind classes) */
 }
 
-/* Styles for Music Visualizer Canvas */
 #musicVisualizer {
     display: block;
-    width: 60px; /* Fixed width for the vertical visualizer */
-    height: 300px; /* Fallback, JS will try to match avatar height */
-    background-color: rgba(31, 41, 55, 0.7); /* bg-slate-800 with opacity */
-    border: 1px solid #374151; /* border-slate-700 */
-    border-radius: 0.5rem; /* rounded-lg */
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); /* shadow-lg */
+    width: 60px; 
+    height: 300px; 
+    background-color: rgba(31, 41, 55, 0.7); 
+    border: 1px solid #374151; 
+    border-radius: 0.5rem; 
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
 }
-
-/* --- STYLES FOR LYRICS --- */
 
 #currentLyric.active {
     opacity: 1;
     transform: translateY(0);
-    color: #f0f0f0; /* Slightly brighter white for active lyric */
-    text-shadow: 0 0 6px rgba(220, 190, 255, 0.7), 0 0 12px rgba(200, 170, 255, 0.5); /* Subtle purple glow */
+    color: #f0f0f0; 
+    text-shadow: 0 0 6px rgba(220, 190, 255, 0.7), 0 0 12px rgba(200, 170, 255, 0.5); 
 }
 
 #nextLyric.visible {
-    opacity: 0.7; /* Next lyric is slightly less opaque */
+    opacity: 0.7; 
 }
 
-
-/* --- STYLES FOR DETAILED MUSIC PLAYER --- */
 #musicPlayerContainer {
-    box-shadow: 0 -4px 15px rgba(139, 92, 246, 0.2); /* Purple glow from top */
+    box-shadow: 0 -4px 15px rgba(139, 92, 246, 0.2); 
 }
 
 .music-control-button {
     background: none;
     border: none;
-    cursor: pointer; /* Will be overridden by custom cursor below, but good fallback */
+    cursor: pointer; 
     transition: color 0.2s ease-in-out, transform 0.1s ease-in-out;
 }
 .music-control-button:active {
-    transform: scale(0.9); /* Click feedback */
+    transform: scale(0.9); 
 }
 
-/* Custom styling for range inputs (progress bar and volume slider) */
 .music-progress-bar::-webkit-slider-thumb,
 .music-volume-slider::-webkit-slider-thumb {
-    -webkit-appearance: none; /* Override default appearance */
+    -webkit-appearance: none; 
     appearance: none;
-    width: 14px; /* Size of the thumb */
-    height: 14px; /* Size of the thumb */
-    background: #a78bfa; /* Purple theme color for thumb */
-    border-radius: 50%; /* Circular thumb */
-    cursor: pointer; /* Hand cursor on thumb */
-    margin-top: -5px; /* Adjust vertical position to center on track */
+    width: 14px; 
+    height: 14px; 
+    background: #a78bfa; 
+    border-radius: 50%; 
+    cursor: pointer; 
+    margin-top: -5px; 
 }
 
 .music-progress-bar::-moz-range-thumb,
@@ -124,7 +123,7 @@ body {
     background: #a78bfa;
     border-radius: 50%;
     cursor: pointer;
-    border: none; /* Remove default border */
+    border: none; 
 }
 
 .music-progress-bar::-ms-thumb,
@@ -134,18 +133,17 @@ body {
     background: #a78bfa;
     border-radius: 50%;
     cursor: pointer;
-    border: 0; /* Remove default border */
-    margin-top: 0px; /* IE specific adjustment */
+    border: 0; 
+    margin-top: 0px; 
 }
 
-/* Track styling */
 .music-progress-bar::-webkit-slider-runnable-track,
 .music-volume-slider::-webkit-slider-runnable-track {
     width: 100%;
-    height: 4px; /* Slimmer track */
+    height: 4px; 
     cursor: pointer;
-    background: #4a5568; /* Darker background for the track (slate-600) */
-    border-radius: 2px; /* Rounded track */
+    background: #4a5568; 
+    border-radius: 2px; 
 }
 
 .music-progress-bar::-moz-range-track,
@@ -162,104 +160,83 @@ body {
     width: 100%;
     height: 4px;
     cursor: pointer;
-    background: transparent; /* IE specific: track is transparent */
+    background: transparent; 
     border-color: transparent;
     color: transparent;
 }
 
-/* IE fill styling (progress part) */
 .music-progress-bar::-ms-fill-lower,
 .music-volume-slider::-ms-fill-lower {
-    background: #a78bfa; /* Purple theme color for the fill */
+    background: #a78bfa; 
     border-radius: 2px;
 }
 .music-progress-bar::-ms-fill-upper,
 .music-volume-slider::-ms-fill-upper {
-    background: #4a5568; /* Darker background for the remaining part of the track */
+    background: #4a5568; 
     border-radius: 2px;
 }
 
-/* Ensure the container for range inputs allows for thumb vertical centering */
 #musicProgressBar, #volumeSlider {
-    height: 14px; /* Height to accommodate the thumb */
-    display: flex; /* Helps with vertical alignment if needed */
-    align-items: center; /* Helps with vertical alignment if needed */
+    height: 14px; 
+    display: flex; 
+    align-items: center; 
 }
 
-/* --- START: CUSTOM CURSOR STYLES --- */
-/* Default cursor for the page - a new design */
 html, body {
-    /* A purple diamond shape with a softer outer glow. Hotspot 10 10 for center. */
     cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><defs><filter id="glow"><feGaussianBlur stdDeviation="1.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><polygon points="10,2 18,10 10,18 2,10" fill="%23c4b5fd" opacity="0.9" style="filter:url(%23glow);"/><polygon points="10,2 18,10 10,18 2,10" stroke="%23a78bfa" stroke-width="1" fill="none"/></svg>') 10 10, auto;
 }
 
-/* Pointer cursor for interactive elements - a new design */
 a,
 button,
 .shortcut-button,
 .music-control-button,
 #searchButton,
-input[type="range"], /* For slider thumbs */
-label[for], /* Labels associated with inputs */
+input[type="range"], 
+label[for], 
 select,
 input[type="checkbox"],
 input[type="radio"]
 {
-    /* A sharper, more modern purple arrow with a slight shadow. Hotspot 5 2 for the tip. */
     cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><defs><filter id="dropshadow" height="130%"><feGaussianBlur in="SourceAlpha" stdDeviation="1"/><feOffset dx="0.5" dy="0.5" result="offsetblur"/><feComponentTransfer><feFuncA type="linear" slope="0.7"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path fill="%23a78bfa" d="M4.22 22.39L12.83 13.78C13.16 13.45 13.16 12.92 12.83 12.59L4.22 4.01C3.89 3.68 3.89 3.15 4.22 2.82C4.55 2.49 5.08 2.49 5.41 2.82L14.02 11.43C15.04 12.45 15.04 13.91 14.02 14.93L5.41 23.54C5.08 23.87 4.55 23.87 4.22 23.54C3.89 23.21 3.89 22.72 4.22 22.39Z" style="filter:url(%23dropshadow);" transform="rotate(-45 12 12) translate(0, -1)"/></svg>') 5 2, pointer;
 }
 
-/* Text selection cursor for text inputs */
 input[type="text"],
-input[type="search"], /* Ensure search input also gets text cursor */
+input[type="search"], 
 textarea {
     cursor: text;
 }
-/* --- END: CUSTOM CURSOR STYLES --- */
 
-/* --- NEW STYLES FOR DONATE SECTION --- */
 .donation-method {
-    /* Các lớp Tailwind trong HTML đã định dạng phần lớn */
-    /* Ví dụ: p-4 bg-slate-700/50 rounded-lg */
 }
 
 .qr-placeholder {
-    width: 166px; /* Kích thước bao gồm padding: 150px cho nội dung + 2*8px padding (p-2) */
-    height: 166px; /* Kích thước bao gồm padding: 150px cho nội dung + 2*8px padding (p-2) */
-    /* Các lớp Tailwind p-2 bg-white rounded flex items-center justify-center đã được áp dụng trong HTML */
-    /* Đường viền này là một gợi ý trực quan bổ sung cho trạng thái placeholder */
-    border: 2px dashed #4b5563; /* Màu slate-600, dễ nhìn hơn trên nền trắng */
-    margin-left: auto; /* Căn giữa khối placeholder */
+    width: 166px; 
+    height: 166px; 
+    border: 2px dashed #4b5563; 
+    margin-left: auto; 
     margin-right: auto;
 }
 
-.qr-placeholder span { /* Định dạng cho văn bản placeholder */
+.qr-placeholder span { 
     text-align: center;
-    font-size: 0.8rem; /* Tương đương text-xs */
-    color: #4b5563; /* Màu slate-600 */
+    font-size: 0.8rem; 
+    color: #4b5563; 
 }
 
-/* Khi người dùng thêm thẻ <img> vào div này, lý tưởng nhất là ảnh có kích thước 150x150px */
-/* Ví dụ: <img src="..." alt="..." class="w-[150px] h-[150px] object-contain"> */
-/* Hoặc, nếu họ chỉ đặt <img src="...">, chúng ta có thể cố gắng kiểm soát nó thông qua CSS, 
-   nhưng sử dụng các lớp Tailwind trên thẻ img sẽ tốt hơn. */
 .qr-placeholder img {
-    max-width: 150px; /* Kích thước tối đa cho ảnh QR bên trong placeholder */
+    max-width: 150px; 
     max-height: 150px;
-    object-fit: contain; /* Đảm bảo mã QR không bị méo */
+    object-fit: contain; 
 }
 
-/* Tailwind đã có lớp .hidden (display: none;), không cần định nghĩa lại */
-
-/* --- NEW STYLES FOR SEARCH SUGGESTIONS --- */
 .suggestions-dropdown {
-    max-height: 200px; /* Giới hạn chiều cao của dropdown */
-    overflow-y: auto; /* Thêm thanh cuộn nếu nhiều gợi ý */
+    max-height: 200px; 
+    overflow-y: auto; 
 }
 
 .suggestion-item {
-    padding: 0.75rem 1rem; /* py-3 px-4 */
-    color: #e5e7eb; /* text-gray-200 */
+    padding: 0.75rem 1rem; 
+    color: #e5e7eb; 
     cursor: pointer;
     transition: background-color 0.2s ease-in-out;
 }
@@ -268,6 +245,14 @@ textarea {
     background-color: #374151; /* bg-slate-600 */
 }
 
-.suggestion-item.active-suggestion { /* For keyboard navigation */
+.suggestion-item.active-suggestion { 
     background-color: #4b5563; /* bg-slate-500 */
 }
+
+/* Các style cho loading screen và modal có thể đã được thêm vào <style> trong HTML.
+   Nếu bạn muốn chuyển chúng vào đây, hãy sao chép các style cho:
+   #loading-screen, .loader, #loading-screen p, @keyframes spin,
+   #page-content.hidden, #access-modal.hidden, #page-content (opacity transition),
+   #access-modal (opacity transition), #modal-content-area (opacity & transform transition)
+   vào cuối tệp này.
+*/
