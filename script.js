@@ -653,6 +653,29 @@ function drawVisualizerLoop() {
     }
 }
 
+// --- NEW: DONATE SECTION FUNCTIONALITY ---
+function initializeDonateSection() {
+    const toggleQrButtons = document.querySelectorAll('.toggle-qr-btn');
+
+    toggleQrButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetId = button.dataset.qrTarget; // Lấy giá trị của data-qr-target
+            const qrPlaceholder = document.getElementById(targetId);
+
+            if (qrPlaceholder) {
+                const isHidden = qrPlaceholder.classList.contains('hidden');
+                if (isHidden) {
+                    qrPlaceholder.classList.remove('hidden');
+                    button.textContent = 'Ẩn QR';
+                } else {
+                    qrPlaceholder.classList.add('hidden');
+                    button.textContent = 'Hiện QR';
+                }
+            }
+        });
+    });
+}
+
 
 // --- DOMContentLoaded ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -667,7 +690,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (audioPlayer) {
         updateLyrics(audioPlayer.currentTime);
     }
-
 
     const searchButton = document.getElementById('searchButton'); 
     if (searchButton) { 
@@ -693,4 +715,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.error("Current year element not found in footer.");
     }
+
+    initializeDonateSection(); // Khởi tạo chức năng cho mục ủng hộ
 });
