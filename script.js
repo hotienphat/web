@@ -2,12 +2,12 @@
 const shortcutSections = [
     {
         title: "MẠNG XÃ HỘI",
-        iconPrefix: "fab", 
+        iconPrefix: "fab",
         shortcuts: [
             { name: "Facebook", url: "https://www.facebook.com/KaedeharaKazuha0805", icon: "facebook" },
             { name: "Messenger", url: "https://messenger.com", icon: "facebook-messenger" },
             { name: "Instagram", url: "https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Fhotien_boyneh%2F&is_from_rle", icon: "instagram" },
-            { name: "Threads", url: "https://www.threads.net/@hotien_boyneh", icon: "threads" }, 
+            { name: "Threads", url: "https://www.threads.net/@hotien_boyneh", icon: "threads" },
         ]
     },
     {
@@ -15,14 +15,14 @@ const shortcutSections = [
         iconPrefix: "fab",
         shortcuts: [
             { name: "Youtube", url: "https://youtube.com", icon: "youtube" },
-            { name: "Gmail", url: "https://mail.google.com", icon: "google" }, 
+            { name: "Gmail", url: "https://mail.google.com", icon: "google" },
             { name: "Drive", url: "https://drive.google.com", icon: "google-drive" },
             { name: "Tìm kiếm", url: "https://google.com", icon: "google" }
         ]
     },
     {
         title: "GÓC HỌC TẬP",
-        iconPrefix: "fas", 
+        iconPrefix: "fas",
         shortcuts: [
             { name: "Trung Tâm GDTX", url: "https://txdaknong.daknong.edu.vn/", icon: "school" },
             { name: "Random của FOT", url: "https://hotienphat.github.io/GDTX/", icon: "shuffle" },
@@ -35,9 +35,22 @@ const shortcutSections = [
             { name: "Genshin Impact", url: "https://genshin.hoyoverse.com/", icon: "gamepad" },
             { name: "Valorant", url: "https://playvalorant.com/", icon: "gamepad" },
             { name: "Honkai: Star Rail", url: "https://hsr.hoyoverse.com/", icon: "rocket" },
-            { name: "Spotify", url: "https://spotify.com", icon: "spotify", iconPrefixOverride: "fab" }, 
+            { name: "Spotify", url: "https://spotify.com", icon: "spotify", iconPrefixOverride: "fab" },
         ]
     },
+    // START: New Donate Section
+    {
+        title: "ỦNG HỘ / DONATE",
+        iconPrefix: "fas", // Or "fab" if using brand icons like PayPal
+        shortcuts: [
+            { name: "Momo / Paypal", url: "your-momo-or-paypal-link", icon: "hand-holding-dollar" }, // Example icon, change if needed
+            { name: "Ngân Hàng", url: "your-bank-details-link-or-page", icon: "credit-card" }, // Example icon
+            // Add more donation links here if you have them
+            // { name: "Buy Me a Coffee", url: "your-buymeacoffee-link", icon: "mug-hot" },
+            // { name: "Patreon", url: "your-patreon-link", icon: "patreon", iconPrefixOverride: "fab" },
+        ]
+    }
+    // END: New Donate Section
 ];
 // --- END: EDIT SHORTCUTS HERE ---
 
@@ -46,8 +59,8 @@ const audioPlaylist = [
     {
         title: "Phép Màu (Đàn Cá Gỗ OST)", // Make sure this title is used for lyrics matching
         artist: "Mounter x MAYDAYs, Minh Tốc",
-        src: "./Backround sound/phepmau.mp3", 
-        albumArt: "./Backround sound/Phepmaulogo.jpg" 
+        src: "./Backround sound/phepmau.mp3",
+        albumArt: "./Backround sound/Phepmaulogo.jpg"
     },
     // Add more tracks here if needed
 ];
@@ -63,10 +76,10 @@ const phepMauLyrics = [
     { time: 23,  text: "Sợ lời sắp nói vỡ tan thương đau, hẹn kiếp sau có nhau trọn đời" },
     { time: 30,  text: "..." },
     { time: 44,  text: "Liệu người có còn ở đây với tôi thật lâu?" },
-    { time: 50,  text: "Ngày rộng tháng dài, sợ mai không còn thấy nhau" }, 
-    { time: 57,  text: "Ngày em đến, áng mây xanh thêm, ngày em đi nắng vương cuối thềm" }, 
-    { time: 64,  text: "Thiếu em tôi sợ bơ vơ, vắng em như tàn cơn mơ" }, 
-    { time: 70,  text: "Chẳng phải phép màu vậy sao chúng ta gặp nhau?" }, 
+    { time: 50,  text: "Ngày rộng tháng dài, sợ mai không còn thấy nhau" },
+    { time: 57,  text: "Ngày em đến, áng mây xanh thêm, ngày em đi nắng vương cuối thềm" },
+    { time: 64,  text: "Thiếu em tôi sợ bơ vơ, vắng em như tàn cơn mơ" },
+    { time: 70,  text: "Chẳng phải phép màu vậy sao chúng ta gặp nhau?" },
     { time: 77,  text: "Một người khẽ cười, người kia cũng dịu nỗi đau" },
     { time: 84,  text: "Gọi tôi thức giấc cơn ngủ mê, dìu tôi đi lúc quên lối về" },
     { time: 90,  text: "Quãng đời mai sau luôn cạnh nhau" },
@@ -95,7 +108,7 @@ let currentLyricIndex = -1;
 
 
 // --- Global variables for the music player ---
-let audioPlayer; 
+let audioPlayer;
 let playPauseMusicBtn, stopMusicBtn, musicProgressBar, albumArtElement, currentTimeEl, durationEl;
 let songTitleEl, songArtistEl;
 let volumeBtn, volumeSlider;
@@ -105,13 +118,13 @@ let prevTrackBtn, nextTrackBtn;
 let lyricsOverlay, currentLyricEl, nextLyricEl;
 
 // --- Global variables for Music Visualizer ---
-let audioContext; 
-let analyser; 
-let sourceNode; 
-let visualizerCanvas, visualizerCtx; 
-let dataArray; 
-let rafId; 
-let isVisualizerInitialized = false; 
+let audioContext;
+let analyser;
+let sourceNode;
+let visualizerCanvas, visualizerCtx;
+let dataArray;
+let rafId;
+let isVisualizerInitialized = false;
 
 /**
  * Renders shortcut sections and their items into the DOM.
@@ -122,14 +135,14 @@ function renderShortcuts() {
         console.error("Shortcut container not found!");
         return;
     }
-    container.innerHTML = ''; 
+    container.innerHTML = '';
 
     shortcutSections.forEach(section => {
         const sectionDiv = document.createElement('div');
-        sectionDiv.className = 'p-6 bg-slate-800 rounded-xl shadow-lg'; 
+        sectionDiv.className = 'p-6 bg-slate-800 rounded-xl shadow-lg';
 
         const titleElement = document.createElement('h2');
-        titleElement.className = 'text-2xl font-semibold mb-6 section-title tracking-wider'; 
+        titleElement.className = 'text-2xl font-semibold mb-6 section-title tracking-wider';
         titleElement.textContent = section.title;
         sectionDiv.appendChild(titleElement);
 
@@ -139,9 +152,9 @@ function renderShortcuts() {
         section.shortcuts.forEach(shortcut => {
             const link = document.createElement('a');
             link.href = shortcut.url;
-            link.target = "_blank"; 
+            link.target = "_blank";
             link.rel = "noopener noreferrer";
-            link.className = 'shortcut-button p-4 rounded-lg text-center flex flex-col items-center justify-center h-32'; 
+            link.className = 'shortcut-button p-4 rounded-lg text-center flex flex-col items-center justify-center h-32';
 
             const iconElement = document.createElement('i');
             const prefix = shortcut.iconPrefixOverride || section.iconPrefix || 'fas';
@@ -152,7 +165,7 @@ function renderShortcuts() {
             nameSpan.className = 'text-sm font-medium';
             nameSpan.textContent = shortcut.name;
             link.appendChild(nameSpan);
-            
+
             gridDiv.appendChild(link);
         });
         sectionDiv.appendChild(gridDiv);
@@ -179,8 +192,8 @@ function performSearch() {
  * Initializes the main music player components and event listeners.
  */
 function initializeMusicPlayer() {
-    audioPlayer = new Audio(); 
-    audioPlayer.crossOrigin = "anonymous"; 
+    audioPlayer = new Audio();
+    audioPlayer.crossOrigin = "anonymous";
 
     playPauseMusicBtn = document.getElementById('playPauseMusicBtn');
     stopMusicBtn = document.getElementById('stopMusicBtn');
@@ -204,32 +217,32 @@ function initializeMusicPlayer() {
     if (essentialElements.some(el => !el)) {
         console.error("Một hoặc nhiều phần tử của trình phát nhạc hoặc lời bài hát không được tìm thấy trong DOM!");
         const playerContainer = document.getElementById('musicPlayerContainer');
-        if(playerContainer) playerContainer.style.display = 'none'; 
-        return; 
+        if(playerContainer) playerContainer.style.display = 'none';
+        return;
     }
-    
-    loadTrack(currentTrackIndex); 
-    setVolume(); 
+
+    loadTrack(currentTrackIndex);
+    setVolume();
 
     playPauseMusicBtn.addEventListener('click', togglePlayPause);
     stopMusicBtn.addEventListener('click', stopAudio);
-    musicProgressBar.addEventListener('input', seekAudio); 
+    musicProgressBar.addEventListener('input', seekAudio);
     audioPlayer.addEventListener('timeupdate', () => {
         updateProgressBar();
         if (audioPlayer) { // Ensure audioPlayer is defined
              updateLyrics(audioPlayer.currentTime);
         }
-    }); 
-    audioPlayer.addEventListener('loadedmetadata', setAudioDuration); 
-    audioPlayer.addEventListener('ended', playNextTrackHandler); 
+    });
+    audioPlayer.addEventListener('loadedmetadata', setAudioDuration);
+    audioPlayer.addEventListener('ended', playNextTrackHandler);
 
     volumeSlider.addEventListener('input', setVolume);
     volumeBtn.addEventListener('click', toggleMute);
 
-    prevTrackBtn.addEventListener('click', playPrevTrackHandler); 
-    nextTrackBtn.addEventListener('click', playNextTrackHandler); 
-    
-    updateTrackButtonsState(); 
+    prevTrackBtn.addEventListener('click', playPrevTrackHandler);
+    nextTrackBtn.addEventListener('click', playNextTrackHandler);
+
+    updateTrackButtonsState();
 }
 
 /**
@@ -242,28 +255,28 @@ function loadTrack(trackIndex) {
         return;
     }
     const track = audioPlaylist[trackIndex];
-    const currentVolume = audioPlayer ? audioPlayer.volume : 1; 
+    const currentVolume = audioPlayer ? audioPlayer.volume : 1;
     const currentMutedState = audioPlayer ? audioPlayer.muted : false;
 
-    audioPlayer.src = track.src; 
-    audioPlayer.volume = currentVolume; 
-    audioPlayer.muted = currentMutedState; 
+    audioPlayer.src = track.src;
+    audioPlayer.volume = currentVolume;
+    audioPlayer.muted = currentMutedState;
 
-    albumArtElement.src = track.albumArt; 
+    albumArtElement.src = track.albumArt;
     albumArtElement.alt = track.title + " - Album Art";
     songTitleEl.textContent = track.title;
     songArtistEl.textContent = track.artist;
-    
+
     musicProgressBar.value = 0;
     currentTimeEl.textContent = formatTime(0);
-    durationEl.textContent = formatTime(audioPlayer.duration || 0); 
-    
+    durationEl.textContent = formatTime(audioPlayer.duration || 0);
+
     currentLyricIndex = -1; // Reset lyric index for the new track
     updateLyrics(0); // Update lyrics display for the new track (or hide if not Phép Màu)
 
-    updatePlayPauseIcon(); 
-    updateTrackButtonsState(); 
-    updateVolumeIcon(); 
+    updatePlayPauseIcon();
+    updateTrackButtonsState();
+    updateVolumeIcon();
 }
 
 /**
@@ -286,7 +299,7 @@ function togglePlayPause() {
     } else {
         audioPlayer.pause();
     }
-    updatePlayPauseIcon(); 
+    updatePlayPauseIcon();
     // Update lyrics visibility based on play/pause state
     if (audioPlayer) updateLyrics(audioPlayer.currentTime);
 }
@@ -297,9 +310,9 @@ function togglePlayPause() {
 function stopAudio() {
     if (!audioPlayer) return;
     audioPlayer.pause();
-    audioPlayer.currentTime = 0; 
-    updatePlayPauseIcon(); 
-    if (rafId) { 
+    audioPlayer.currentTime = 0;
+    updatePlayPauseIcon();
+    if (rafId) {
         cancelAnimationFrame(rafId);
         rafId = null;
         if(visualizerCtx && visualizerCanvas) {
@@ -341,7 +354,7 @@ function updatePlayPauseIcon() {
  */
 function updateProgressBar() {
     if (!audioPlayer || !musicProgressBar || !currentTimeEl) return;
-    if (audioPlayer.duration && !isNaN(audioPlayer.duration)) { 
+    if (audioPlayer.duration && !isNaN(audioPlayer.duration)) {
         musicProgressBar.value = audioPlayer.currentTime;
         currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
     }
@@ -386,7 +399,7 @@ function handlePlayError(error) {
     } else if (error.name === 'AbortError') {
         console.info("Playback aborted.");
     }
-    updatePlayPauseIcon(); 
+    updatePlayPauseIcon();
 }
 
 /**
@@ -405,9 +418,9 @@ function setVolume() {
  */
 function toggleMute() {
     if (!audioPlayer) return;
-    audioPlayer.muted = !audioPlayer.muted; 
+    audioPlayer.muted = !audioPlayer.muted;
     if (!audioPlayer.muted && audioPlayer.volume === 0) {
-        audioPlayer.volume = 0.5; 
+        audioPlayer.volume = 0.5;
         if (volumeSlider) volumeSlider.value = audioPlayer.volume.toString();
     }
     updateVolumeIcon();
@@ -417,8 +430,8 @@ function toggleMute() {
  * Updates the volume button icon.
  */
 function updateVolumeIcon() {
-    if(!volumeBtn || !audioPlayer) return; 
-    volumeBtn.innerHTML = ''; 
+    if(!volumeBtn || !audioPlayer) return;
+    volumeBtn.innerHTML = '';
     const icon = document.createElement('i');
     icon.classList.add('fas');
     if (audioPlayer.muted || audioPlayer.volume === 0) {
@@ -437,7 +450,7 @@ function updateVolumeIcon() {
 function playNextTrackHandler() {
     currentTrackIndex = (currentTrackIndex + 1) % audioPlaylist.length;
     loadTrack(currentTrackIndex);
-    if(audioPlayer && (!audioPlayer.paused || audioPlaylist.length === 1)){ 
+    if(audioPlayer && (!audioPlayer.paused || audioPlaylist.length === 1)){
         audioPlayer.play().catch(handlePlayError);
     }
 }
@@ -498,13 +511,13 @@ function updateLyrics(currentTime) {
         lyricsOverlay.classList.remove('opacity-100', 'pointer-events-auto');
         lyricsOverlay.classList.add('opacity-0', 'pointer-events-none');
     }
-    
+
     let newLyricIndex = -1;
     for (let i = 0; i < phepMauLyrics.length; i++) {
         if (currentTime >= phepMauLyrics[i].time) {
             newLyricIndex = i;
         } else {
-            break; 
+            break;
         }
     }
 
@@ -514,13 +527,13 @@ function updateLyrics(currentTime) {
         // Update current lyric
         if (currentLyricIndex !== -1 && phepMauLyrics[currentLyricIndex]) {
             currentLyricEl.classList.remove('active', 'opacity-100', 'translate-y-0');
-            currentLyricEl.classList.add('opacity-0', 'translate-y-1'); 
+            currentLyricEl.classList.add('opacity-0', 'translate-y-1');
 
             setTimeout(() => {
                 currentLyricEl.textContent = phepMauLyrics[currentLyricIndex].text;
                 currentLyricEl.classList.add('active', 'opacity-100', 'translate-y-0');
                 currentLyricEl.classList.remove('opacity-0', 'translate-y-1');
-            }, 50); 
+            }, 50);
         } else {
             currentLyricEl.textContent = '';
             currentLyricEl.classList.remove('active', 'opacity-100', 'translate-y-0');
@@ -536,7 +549,7 @@ function updateLyrics(currentTime) {
                 nextLyricEl.textContent = phepMauLyrics[nextIndex].text;
                 nextLyricEl.classList.add('visible', 'opacity-100');
                 nextLyricEl.classList.remove('opacity-0');
-            }, 100); 
+            }, 100);
         } else {
             nextLyricEl.textContent = '';
             nextLyricEl.classList.remove('visible', 'opacity-100');
@@ -548,22 +561,22 @@ function updateLyrics(currentTime) {
 
 // --- MUSIC VISUALIZER FUNCTIONS ---
 function setupAudioGraph() {
-    if (isVisualizerInitialized || !audioPlayer) return; 
+    if (isVisualizerInitialized || !audioPlayer) return;
 
     try {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         analyser = audioContext.createAnalyser();
-        analyser.fftSize = 256; 
+        analyser.fftSize = 256;
         sourceNode = audioContext.createMediaElementSource(audioPlayer);
-        sourceNode.connect(analyser);       
-        analyser.connect(audioContext.destination); 
+        sourceNode.connect(analyser);
+        analyser.connect(audioContext.destination);
         dataArray = new Uint8Array(analyser.frequencyBinCount);
-        isVisualizerInitialized = true; 
+        isVisualizerInitialized = true;
         console.log("Audio graph for visualizer initialized.");
     } catch (e) {
         console.error("Lỗi khởi tạo AudioContext hoặc Analyser cho visualizer:", e);
-        if (visualizerCanvas) visualizerCanvas.style.display = 'none'; 
-        isVisualizerInitialized = false; 
+        if (visualizerCanvas) visualizerCanvas.style.display = 'none';
+        isVisualizerInitialized = false;
     }
 }
 
@@ -581,19 +594,19 @@ function initializeVisualizerCanvas() {
     function setCanvasDimensions() {
         if (!imagePlaceholderContainer || !visualizerCanvas) return;
         const avatarRect = imagePlaceholderContainer.getBoundingClientRect();
-        visualizerCanvas.height = avatarRect.height > 0 ? avatarRect.height : 300; 
-        visualizerCanvas.width = 60; 
+        visualizerCanvas.height = avatarRect.height > 0 ? avatarRect.height : 300;
+        visualizerCanvas.width = 60;
 
         if (visualizerCtx && (!rafId || (audioPlayer && audioPlayer.paused))) {
              visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
         }
     }
-    setCanvasDimensions(); 
+    setCanvasDimensions();
     window.addEventListener('resize', setCanvasDimensions);
 
     if (audioPlayer) {
         audioPlayer.addEventListener('play', () => {
-            if (!isVisualizerInitialized) { 
+            if (!isVisualizerInitialized) {
                 setupAudioGraph();
             }
             if (isVisualizerInitialized && audioContext && audioContext.state === 'suspended') {
@@ -631,47 +644,47 @@ function drawVisualizerLoop() {
         return;
     }
 
-    rafId = requestAnimationFrame(drawVisualizerLoop); 
-    analyser.getByteFrequencyData(dataArray); 
-    visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height); 
+    rafId = requestAnimationFrame(drawVisualizerLoop);
+    analyser.getByteFrequencyData(dataArray);
+    visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
 
-    const numBars = 32; 
-    const barThickness = (visualizerCanvas.height / numBars) * 0.75; 
-    const barSpacing = (visualizerCanvas.height / numBars) * 0.25; 
-    let currentY = barSpacing / 2; 
-    const bufferLength = analyser.frequencyBinCount; 
+    const numBars = 32;
+    const barThickness = (visualizerCanvas.height / numBars) * 0.75;
+    const barSpacing = (visualizerCanvas.height / numBars) * 0.25;
+    let currentY = barSpacing / 2;
+    const bufferLength = analyser.frequencyBinCount;
 
     for (let i = 0; i < numBars; i++) {
         const dataArrayIndex = Math.min(bufferLength - 1, Math.floor((i / numBars) * (bufferLength * 0.75)));
-        const barLengthFraction = dataArray[dataArrayIndex] / 255.0; 
-        let barLength = barLengthFraction * visualizerCanvas.width; 
-        if (barLength < 1 && dataArray[dataArrayIndex] > 0) barLength = 1; 
-        if (barLength > visualizerCanvas.width) barLength = visualizerCanvas.width; 
-        visualizerCtx.fillStyle = '#a78bfa'; 
+        const barLengthFraction = dataArray[dataArrayIndex] / 255.0;
+        let barLength = barLengthFraction * visualizerCanvas.width;
+        if (barLength < 1 && dataArray[dataArrayIndex] > 0) barLength = 1;
+        if (barLength > visualizerCanvas.width) barLength = visualizerCanvas.width;
+        visualizerCtx.fillStyle = '#a78bfa';
         visualizerCtx.fillRect(0, currentY, barLength, barThickness);
-        currentY += barThickness + barSpacing; 
+        currentY += barThickness + barSpacing;
     }
 }
 
 
 // --- DOMContentLoaded ---
 document.addEventListener('DOMContentLoaded', () => {
-    renderShortcuts(); 
-    initializeMusicPlayer(); 
+    renderShortcuts();
+    initializeMusicPlayer();
 
-    if (document.getElementById('musicPlayerContainer')) { 
+    if (document.getElementById('musicPlayerContainer')) {
         initializeVisualizerCanvas();
     }
-    
+
     // Initial lyrics setup based on the initially loaded track
     if (audioPlayer) {
         updateLyrics(audioPlayer.currentTime);
     }
 
 
-    const searchButton = document.getElementById('searchButton'); 
-    if (searchButton) { 
-        searchButton.addEventListener('click', performSearch); 
+    const searchButton = document.getElementById('searchButton');
+    if (searchButton) {
+        searchButton.addEventListener('click', performSearch);
     } else {
         console.warn("Search button with id 'searchButton' not found in HTML.");
     }
