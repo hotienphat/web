@@ -76,12 +76,12 @@
                                 </button>
                             </div>
                             <div id="momoQrPlaceholder" class="qr-placeholder hidden mt-3 p-2 bg-white rounded flex items-center justify-center">
-                                <span class="text-slate-500 text-sm">Chỗ cho mã QR Momo (150x150px)</span>
+                                <img src="./Backround sound/Momo.png" alt="Momo QR Code" class="w-[150px] h-[150px] object-contain">
                             </div>
                         </div>
 
                         <div class="donation-method p-4 bg-slate-700/50 rounded-lg">
-                            <div class="flex items-center justify-between">
+                            <div class="flex items-center justify-between mb-3">
                                 <div class="flex items-center">
                                     <i class="fas fa-university fa-lg text-blue-500 mr-3"></i> <span class="font-medium text-gray-200">Chuyển Khoản Ngân Hàng</span>
                                 </div>
@@ -89,10 +89,30 @@
                                     Hiện QR
                                 </button>
                             </div>
-                            <div id="bankQrPlaceholder" class="qr-placeholder hidden mt-3 p-2 bg-white rounded flex items-center justify-center">
-                                 <span class="text-slate-500 text-sm">Chỗ cho mã QR Ngân Hàng (150x150px)</span>
+                            <div id="bankQrPlaceholder" class="qr-placeholder hidden mb-3 p-2 bg-white rounded flex items-center justify-center">
+                                 <img src="./Backround sound/Viettin.png" alt="Bank QR Code" class="w-[150px] h-[150px] object-contain">
                             </div>
-                        </div>
+                            <div id="bankAccountInfo" class="mt-3 pt-3 border-t border-slate-600 space-y-2 text-sm">
+                                <div>
+                                    <span class="font-medium text-gray-400">Ngân hàng:</span>
+                                    <span id="bankName" class="text-gray-200 ml-1">VIETTINBANK</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <span class="font-medium text-gray-400">Số tài khoản:</span>
+                                        <span id="accountNumber" class="text-gray-200 ml-1">105882966120</span>
+                                    </div>
+                                    <button id="copyAccountNumberBtn" title="Sao chép số tài khoản" class="bg-purple-500 hover:bg-purple-600 text-white text-xs px-2 py-1 rounded-md transition-colors duration-300 flex items-center">
+                                        <i class="fas fa-copy mr-1"></i> Sao chép
+                                    </button>
+                                </div>
+                                <div>
+                                    <span class="font-medium text-gray-400">Chủ tài khoản:</span>
+                                    <span id="accountHolderName" class="text-gray-200 ml-1">HỒ TIẾN PHÁT</span>
+                                </div>
+                                <div id="copyNotification" class="text-green-400 text-xs mt-1 hidden">Đã sao chép số tài khoản!</div>
+                            </div>
+                            </div>
                          </div>
                 </div>
                 </div>
@@ -111,7 +131,7 @@
     <div id="musicPlayerContainer" class="fixed bottom-0 left-0 right-0 bg-slate-800/80 backdrop-blur-md p-3 shadow-t-xl z-[60]">
         <div class="container mx-auto flex items-center justify-between gap-4">
             <div class="flex items-center gap-3 flex-shrink-0">
-                <img id="albumArt" src="./Backround sound/Ladygagapokerface.png" alt="Album Art" class="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover border-2 border-purple-500">
+                <img id="albumArt" src="./Backround sound/Phepmaulogo.jpg" alt="Album Art" class="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover border-2 border-purple-500">
                 <div class="hidden sm:block">
                     <p id="songTitle" class="text-sm font-semibold text-purple-300">Phép Màu (Đàn Cá Gỗ OST)</p>
                     <p id="songArtist" class="text-xs text-gray-400">Mounter x MAYDAYs, Minh Tốc</p>
