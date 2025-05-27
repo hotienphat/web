@@ -57,6 +57,12 @@ const audioPlaylist = [
         src: "./Backround sound/phepmau.mp3",
         albumArt: "./Backround sound/Phepmaulogo.jpg"
     },
+    {
+        title: "My Curse, My Fate",
+        artist: "Sān-Z · HOYO-MiX",
+        src: "./Backround sound/My Curse, My Fate - Sān-Z.mp3",
+        albumArt: "./Backround sound/My Curse, My Fate logo.png"
+    },
 ];
 let currentTrackIndex = 0;
 // --- END: MUSIC PLAYER CONFIGURATION ---
