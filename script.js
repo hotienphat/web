@@ -1,4 +1,12 @@
-// --- START: EDIT SHORTCUTS HERE (from user's file) ---
+// --- START: IDs cho các phần tử DOM mới ---
+const loadingScreenId = 'loading-screen';
+const pageContentId = 'page-content';
+const accessModalId = 'access-modal';
+const acceptAccessBtnId = 'acceptAccessBtn';
+const modalContentAreaId = 'modal-content-area';
+// --- END: IDs ---
+
+// --- START: EDIT SHORTCUTS HERE (Giữ nguyên từ file của bạn) ---
 const shortcutSections = [
     {
         title: "MẠNG XÃ HỘI",
@@ -17,7 +25,7 @@ const shortcutSections = [
             { name: "Youtube", url: "https://youtube.com", icon: "youtube" },
             { name: "Gmail", url: "https://mail.google.com", icon: "google" },
             { name: "Drive", url: "https://drive.google.com", icon: "google-drive" },
-            { name: "Tìm kiếm", url: "https://google.com", icon: "google" } // This specific shortcut can also be a direct Google search
+            { name: "Tìm kiếm", url: "https://google.com", icon: "google" }
         ]
     },
     {
@@ -41,20 +49,19 @@ const shortcutSections = [
 ];
 // --- END: EDIT SHORTCUTS HERE ---
 
-// --- START: MUSIC PLAYER CONFIGURATION ---
+// --- START: MUSIC PLAYER CONFIGURATION (Giữ nguyên) ---
 const audioPlaylist = [
     {
-        title: "Phép Màu (Đàn Cá Gỗ OST)", // Make sure this title is used for lyrics matching
+        title: "Phép Màu (Đàn Cá Gỗ OST)",
         artist: "Mounter x MAYDAYs, Minh Tốc",
         src: "./Backround sound/phepmau.mp3",
         albumArt: "./Backround sound/Phepmaulogo.jpg"
     },
-    // Add more tracks here if needed
 ];
 let currentTrackIndex = 0;
 // --- END: MUSIC PLAYER CONFIGURATION ---
 
-// --- LYRICS DATA for "Phép Màu" (Times updated to total seconds) ---
+// --- LYRICS DATA for "Phép Màu" (Giữ nguyên) ---
 const phepMauLyrics = [
     { time: 0,   text: "Bài hát: Phép Màu - Mounter x MAYDAYs, Minh Tốc" },
     { time: 3,   text: "Ngày thay đêm, vội trôi giấc mơ êm đềm" },
@@ -92,19 +99,15 @@ const phepMauLyrics = [
     { time: 255, text: "HẾT" },
 ];
 let currentLyricIndex = -1;
+// --- END LYRICS DATA ---
 
-
-// --- Global variables for the music player ---
+// --- Global variables for the music player (Giữ nguyên) ---
 let audioPlayer;
 let playPauseMusicBtn, stopMusicBtn, musicProgressBar, albumArtElement, currentTimeEl, durationEl;
 let songTitleEl, songArtistEl;
 let volumeBtn, volumeSlider;
 let prevTrackBtn, nextTrackBtn;
-
-// --- Global variables for Lyrics ---
 let lyricsOverlay, currentLyricEl, nextLyricEl;
-
-// --- Global variables for Music Visualizer ---
 let audioContext;
 let analyser;
 let sourceNode;
@@ -112,29 +115,21 @@ let visualizerCanvas, visualizerCtx;
 let dataArray;
 let rafId;
 let isVisualizerInitialized = false;
+// --- END Global variables for music player ---
 
-// --- START: SEARCH SUGGESTIONS ---
+// --- START: SEARCH SUGGESTIONS (Giữ nguyên) ---
 let searchKeywords = [];
-let searchInput, suggestionsDropdown; // Made these global for easier access
-let activeSuggestionIndex = -1; // For keyboard navigation
+let searchInput, suggestionsDropdown; 
+let activeSuggestionIndex = -1; 
 
-/**
- * Generates a list of keywords from shortcut sections and other relevant page content.
- * These keywords are used for the suggestion dropdown.
- */
 function generateSearchKeywords() {
-    const keywords = new Set(); // Use a Set to avoid duplicate keywords
-
-    // Add titles of shortcut sections
+    const keywords = new Set();
     shortcutSections.forEach(section => {
         keywords.add(section.title.toLowerCase());
-        // Add names of shortcuts
         section.shortcuts.forEach(shortcut => {
             keywords.add(shortcut.name.toLowerCase());
         });
     });
-
-    // Add other relevant keywords for site-specific suggestions
     keywords.add("về bản thân");
     keywords.add("thông tin cá nhân");
     keywords.add("ủng hộ");
@@ -147,7 +142,6 @@ function generateSearchKeywords() {
     if (audioPlaylist.length > 0 && audioPlaylist[0].title) {
         keywords.add(audioPlaylist[0].title.toLowerCase());
     }
-
     const aboutMeSection = document.getElementById('aboutMeSection');
     if (aboutMeSection) {
         const textContent = aboutMeSection.textContent || aboutMeSection.innerText;
@@ -158,42 +152,28 @@ function generateSearchKeywords() {
     }
     keywords.add("trang cá nhân");
     keywords.add("hồ tiến phát");
-
     searchKeywords = Array.from(keywords);
-    console.log("Generated Search Keywords (for suggestions):", searchKeywords);
 }
 
-
-/**
- * Displays search suggestions based on user input.
- * These suggestions are from the local site content.
- */
 function displaySuggestions() {
     const inputValue = searchInput.value.toLowerCase().trim();
     suggestionsDropdown.innerHTML = ''; 
     activeSuggestionIndex = -1; 
-
     if (inputValue.length === 0) {
         suggestionsDropdown.classList.add('hidden');
         return;
     }
-
     const filteredSuggestions = searchKeywords.filter(keyword =>
         keyword.toLowerCase().includes(inputValue)
     );
-
     if (filteredSuggestions.length > 0) {
         filteredSuggestions.slice(0, 7).forEach((suggestion) => { 
             const suggestionItem = document.createElement('div');
             suggestionItem.classList.add('suggestion-item');
             suggestionItem.textContent = suggestion;
-            // When a site-specific suggestion is clicked, fill the input and search Google with it.
-            // Or, you could make this navigate to a local section if the suggestion is for that.
-            // For now, it will fill the input, and the user can then press Enter/Search button for Google search.
             suggestionItem.addEventListener('click', () => {
                 searchInput.value = suggestion;
                 suggestionsDropdown.classList.add('hidden');
-                // Optional: performSearch(); // Uncomment to immediately search Google on suggestion click
             });
             suggestionsDropdown.appendChild(suggestionItem);
         });
@@ -203,19 +183,14 @@ function displaySuggestions() {
     }
 }
 
-/**
- * Handles keyboard navigation for suggestions.
- * @param {KeyboardEvent} e - The keyboard event.
- */
 function handleSuggestionKeyboardNav(e) {
     const items = suggestionsDropdown.querySelectorAll('.suggestion-item');
     if (items.length === 0 || suggestionsDropdown.classList.contains('hidden')) {
-        if (e.key === 'Enter') { // If no suggestions, Enter performs Google search
+        if (e.key === 'Enter') { 
             performSearch();
         }
         return;
     }
-
     if (e.key === 'ArrowDown') {
         e.preventDefault();
         activeSuggestionIndex = (activeSuggestionIndex + 1) % items.length;
@@ -225,22 +200,17 @@ function handleSuggestionKeyboardNav(e) {
         activeSuggestionIndex = (activeSuggestionIndex - 1 + items.length) % items.length;
         updateActiveSuggestion(items);
     } else if (e.key === 'Enter') {
-        e.preventDefault(); // Prevent form submission if it's in a form
+        e.preventDefault(); 
         if (activeSuggestionIndex > -1 && items[activeSuggestionIndex]) {
-            searchInput.value = items[activeSuggestionIndex].textContent; // Set input to selected suggestion
+            searchInput.value = items[activeSuggestionIndex].textContent; 
         }
-        performSearch(); // Always perform Google search on Enter
+        performSearch(); 
         suggestionsDropdown.classList.add('hidden');
-
     } else if (e.key === 'Escape') {
         suggestionsDropdown.classList.add('hidden');
     }
 }
 
-/**
- * Updates the visual state of the active suggestion.
- * @param {NodeListOf<Element>} items - The list of suggestion items.
- */
 function updateActiveSuggestion(items) {
     items.forEach(item => item.classList.remove('active-suggestion'));
     if (activeSuggestionIndex > -1 && items[activeSuggestionIndex]) {
@@ -249,24 +219,16 @@ function updateActiveSuggestion(items) {
     }
 }
 
-
-/**
- * Initializes search suggestions functionality.
- */
 function initializeSearchSuggestions() {
-    searchInput = document.getElementById('searchInput'); // Assign to global variable
-    suggestionsDropdown = document.getElementById('suggestionsDropdown'); // Assign to global variable
-
+    searchInput = document.getElementById('searchInput'); 
+    suggestionsDropdown = document.getElementById('suggestionsDropdown'); 
     if (!searchInput || !suggestionsDropdown) {
         console.error("Search input or suggestions dropdown not found for suggestions functionality.");
         return;
     }
-
     generateSearchKeywords(); 
-
     searchInput.addEventListener('input', displaySuggestions);
     searchInput.addEventListener('keydown', handleSuggestionKeyboardNav);
-
     document.addEventListener('click', (event) => {
         if (searchInput && suggestionsDropdown && !searchInput.contains(event.target) && !suggestionsDropdown.contains(event.target)) {
             suggestionsDropdown.classList.add('hidden');
@@ -280,10 +242,11 @@ function initializeSearchSuggestions() {
 }
 // --- END: SEARCH SUGGESTIONS ---
 
+// --- START: Các hàm gốc khác (renderShortcuts, performSearch, ...) ---
+// Sao chép TẤT CẢ các hàm gốc còn lại từ file script.js của bạn vào đây
+// Ví dụ: renderShortcuts, performSearch, initializeMusicPlayer, loadTrack, togglePlayPause, ...
+// ... cho đến hết initializeCopyButtons. Đảm bảo không bỏ sót hàm nào.
 
-/**
- * Renders shortcut sections and their items into the DOM.
- */
 function renderShortcuts() {
     const container = document.getElementById('shortcutsContainer');
     if (!container) {
@@ -291,36 +254,29 @@ function renderShortcuts() {
         return;
     }
     container.innerHTML = '';
-
     shortcutSections.forEach(section => {
         const sectionDiv = document.createElement('div');
         sectionDiv.className = 'p-6 bg-slate-800 rounded-xl shadow-lg';
-
         const titleElement = document.createElement('h2');
         titleElement.className = 'text-2xl font-semibold mb-6 section-title tracking-wider';
         titleElement.textContent = section.title;
         sectionDiv.appendChild(titleElement);
-
         const gridDiv = document.createElement('div');
         gridDiv.className = 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4';
-
         section.shortcuts.forEach(shortcut => {
             const link = document.createElement('a');
             link.href = shortcut.url;
             link.target = "_blank";
             link.rel = "noopener noreferrer";
             link.className = 'shortcut-button p-4 rounded-lg text-center flex flex-col items-center justify-center h-32';
-
             const iconElement = document.createElement('i');
             const prefix = shortcut.iconPrefixOverride || section.iconPrefix || 'fas';
             iconElement.className = `${prefix} fa-${shortcut.icon} fa-2x mb-2 text-purple-400`;
             link.appendChild(iconElement);
-
             const nameSpan = document.createElement('span');
             nameSpan.className = 'text-sm font-medium';
             nameSpan.textContent = shortcut.name;
             link.appendChild(nameSpan);
-
             gridDiv.appendChild(link);
         });
         sectionDiv.appendChild(gridDiv);
@@ -328,33 +284,24 @@ function renderShortcuts() {
     });
 }
 
-/**
- * Performs a Google search with the query from the search input.
- * This function is now the primary action for the search.
- */
 function performSearch() {
-    if (!searchInput) { // Ensure searchInput is available
+    if (!searchInput) { 
         console.error("Search input element not found for performSearch!");
         return;
     }
     const query = searchInput.value.trim();
     if (query) {
-        // Construct Google search URL
         const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-        window.open(googleSearchUrl, '_blank'); // Open in a new tab
+        window.open(googleSearchUrl, '_blank'); 
     }
     if (suggestionsDropdown) { 
         suggestionsDropdown.classList.add('hidden');
     }
 }
 
-/**
- * Initializes the main music player components and event listeners.
- */
 function initializeMusicPlayer() {
     audioPlayer = new Audio();
     audioPlayer.crossOrigin = "anonymous";
-
     playPauseMusicBtn = document.getElementById('playPauseMusicBtn');
     stopMusicBtn = document.getElementById('stopMusicBtn');
     musicProgressBar = document.getElementById('musicProgressBar');
@@ -367,11 +314,9 @@ function initializeMusicPlayer() {
     volumeSlider = document.getElementById('volumeSlider');
     prevTrackBtn = document.getElementById('prevTrackBtn');
     nextTrackBtn = document.getElementById('nextTrackBtn');
-
     lyricsOverlay = document.getElementById('lyricsOverlay');
     currentLyricEl = document.getElementById('currentLyric');
     nextLyricEl = document.getElementById('nextLyric');
-
     const essentialElements = [playPauseMusicBtn, stopMusicBtn, musicProgressBar, albumArtElement, currentTimeEl, durationEl, songTitleEl, songArtistEl, volumeBtn, volumeSlider, prevTrackBtn, nextTrackBtn, lyricsOverlay, currentLyricEl, nextLyricEl];
     if (essentialElements.some(el => !el)) {
         console.error("Một hoặc nhiều phần tử của trình phát nhạc hoặc lời bài hát không được tìm thấy trong DOM!");
@@ -379,10 +324,8 @@ function initializeMusicPlayer() {
         if(playerContainer) playerContainer.style.display = 'none';
         return;
     }
-
     loadTrack(currentTrackIndex);
     setVolume();
-
     playPauseMusicBtn.addEventListener('click', togglePlayPause);
     stopMusicBtn.addEventListener('click', stopAudio);
     musicProgressBar.addEventListener('input', seekAudio);
@@ -394,20 +337,13 @@ function initializeMusicPlayer() {
     });
     audioPlayer.addEventListener('loadedmetadata', setAudioDuration);
     audioPlayer.addEventListener('ended', playNextTrackHandler);
-
     volumeSlider.addEventListener('input', setVolume);
     volumeBtn.addEventListener('click', toggleMute);
-
     prevTrackBtn.addEventListener('click', playPrevTrackHandler);
     nextTrackBtn.addEventListener('click', playNextTrackHandler);
-
     updateTrackButtonsState();
 }
 
-/**
- * Loads a specific track into the audio player.
- * @param {number} trackIndex - The index of the track in the audioPlaylist.
- */
 function loadTrack(trackIndex) {
     if (trackIndex < 0 || trackIndex >= audioPlaylist.length) {
         console.error("Chỉ số bài hát không hợp lệ:", trackIndex);
@@ -416,37 +352,28 @@ function loadTrack(trackIndex) {
     const track = audioPlaylist[trackIndex];
     const currentVolume = audioPlayer ? audioPlayer.volume : 1;
     const currentMutedState = audioPlayer ? audioPlayer.muted : false;
-
     audioPlayer.src = track.src;
     audioPlayer.volume = currentVolume;
     audioPlayer.muted = currentMutedState;
-
     albumArtElement.src = track.albumArt;
     albumArtElement.alt = track.title + " - Album Art";
     songTitleEl.textContent = track.title;
     songArtistEl.textContent = track.artist;
-
     musicProgressBar.value = 0;
     currentTimeEl.textContent = formatTime(0);
     durationEl.textContent = formatTime(audioPlayer.duration || 0);
-
     currentLyricIndex = -1; 
     updateLyrics(0); 
-
     updatePlayPauseIcon();
     updateTrackButtonsState();
     updateVolumeIcon();
 }
 
-/**
- * Toggles play/pause state of the audio player.
- */
 function togglePlayPause() {
     if (!audioPlayer) return;
     if (!isVisualizerInitialized && audioPlayer) {
         setupAudioGraph();
     }
-
     if (audioPlayer.paused || audioPlayer.ended) {
         if (audioContext && audioContext.state === 'suspended') {
             audioContext.resume().then(() => {
@@ -462,9 +389,6 @@ function togglePlayPause() {
     if (audioPlayer) updateLyrics(audioPlayer.currentTime);
 }
 
-/**
- * Stops the audio, resets current time, and updates UI.
- */
 function stopAudio() {
     if (!audioPlayer) return;
     audioPlayer.pause();
@@ -494,9 +418,6 @@ function stopAudio() {
     currentLyricIndex = -1;
 }
 
-/**
- * Updates the play/pause button icon based on the audio player's state.
- */
 function updatePlayPauseIcon() {
     if (!playPauseMusicBtn || !audioPlayer) return;
     if (audioPlayer.paused || audioPlayer.ended) {
@@ -506,9 +427,6 @@ function updatePlayPauseIcon() {
     }
 }
 
-/**
- * Updates the music progress bar and current time display.
- */
 function updateProgressBar() {
     if (!audioPlayer || !musicProgressBar || !currentTimeEl) return;
     if (audioPlayer.duration && !isNaN(audioPlayer.duration)) {
@@ -517,9 +435,6 @@ function updateProgressBar() {
     }
 }
 
-/**
- * Sets the maximum value for the progress bar and total duration display.
- */
 function setAudioDuration() {
     if (!audioPlayer || !musicProgressBar || !durationEl) return;
     if (audioPlayer.duration && !isNaN(audioPlayer.duration)) {
@@ -528,17 +443,11 @@ function setAudioDuration() {
     }
 }
 
-/**
- * Seeks the audio to the position selected on the progress bar.
- */
 function seekAudio() {
     if (!audioPlayer || !musicProgressBar) return;
     audioPlayer.currentTime = musicProgressBar.value;
 }
 
-/**
- * Formats time in seconds to a mm:ss string.
- */
 function formatTime(timeInSeconds) {
     if (isNaN(timeInSeconds) || timeInSeconds < 0) timeInSeconds = 0;
     const minutes = Math.floor(timeInSeconds / 60);
@@ -546,9 +455,6 @@ function formatTime(timeInSeconds) {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 }
 
-/**
- * Handles errors during audio playback.
- */
 function handlePlayError(error) {
     console.error("Lỗi khi phát nhạc:", error.name, error.message);
     if (error.name === 'NotAllowedError') {
@@ -559,9 +465,6 @@ function handlePlayError(error) {
     updatePlayPauseIcon();
 }
 
-/**
- * Sets the audio volume.
- */
 function setVolume() {
     if (!audioPlayer || !volumeSlider) return;
     const newVolume = parseFloat(volumeSlider.value);
@@ -570,9 +473,6 @@ function setVolume() {
     updateVolumeIcon();
 }
 
-/**
- * Toggles the mute/unmute state.
- */
 function toggleMute() {
     if (!audioPlayer) return;
     audioPlayer.muted = !audioPlayer.muted;
@@ -583,9 +483,6 @@ function toggleMute() {
     updateVolumeIcon();
 }
 
-/**
- * Updates the volume button icon.
- */
 function updateVolumeIcon() {
     if(!volumeBtn || !audioPlayer) return;
     volumeBtn.innerHTML = '';
@@ -601,9 +498,6 @@ function updateVolumeIcon() {
     volumeBtn.appendChild(icon);
 }
 
-/**
- * Handler for playing the next track.
- */
 function playNextTrackHandler() {
     currentTrackIndex = (currentTrackIndex + 1) % audioPlaylist.length;
     loadTrack(currentTrackIndex);
@@ -612,9 +506,6 @@ function playNextTrackHandler() {
     }
 }
 
-/**
- * Handler for playing the previous track.
- */
 function playPrevTrackHandler() {
     currentTrackIndex = (currentTrackIndex - 1 + audioPlaylist.length) % audioPlaylist.length;
     loadTrack(currentTrackIndex);
@@ -623,9 +514,6 @@ function playPrevTrackHandler() {
     }
 }
 
-/**
- * Updates the enabled/disabled state of previous/next track buttons.
- */
 function updateTrackButtonsState() {
     if(!prevTrackBtn || !nextTrackBtn) return;
     const disableButtons = audioPlaylist.length <= 1;
@@ -637,14 +525,8 @@ function updateTrackButtonsState() {
     });
 }
 
-// --- LYRICS FUNCTIONS ---
-/**
- * Updates the lyrics display based on the current audio time.
- * @param {number} currentTime - The current time of the audio player in seconds.
- */
 function updateLyrics(currentTime) {
     if (!audioPlayer || !phepMauLyrics || !lyricsOverlay || !currentLyricEl || !nextLyricEl) return;
-
     const currentTrack = audioPlaylist[currentTrackIndex];
     if (!currentTrack || !currentTrack.title || !currentTrack.title.includes("Phép Màu (Đàn Cá Gỗ OST)")) {
         lyricsOverlay.classList.remove('opacity-100', 'pointer-events-auto');
@@ -658,7 +540,6 @@ function updateLyrics(currentTime) {
         currentLyricIndex = -1;
         return;
     }
-
     if (!audioPlayer.paused || audioPlayer.readyState >= 2) { 
         lyricsOverlay.classList.add('opacity-100', 'pointer-events-auto');
         lyricsOverlay.classList.remove('opacity-0', 'pointer-events-none');
@@ -666,7 +547,6 @@ function updateLyrics(currentTime) {
         lyricsOverlay.classList.remove('opacity-100', 'pointer-events-auto');
         lyricsOverlay.classList.add('opacity-0', 'pointer-events-none');
     }
-
     let newLyricIndex = -1;
     for (let i = 0; i < phepMauLyrics.length; i++) {
         if (currentTime >= phepMauLyrics[i].time) {
@@ -675,14 +555,11 @@ function updateLyrics(currentTime) {
             break;
         }
     }
-
     if (newLyricIndex !== currentLyricIndex) {
         currentLyricIndex = newLyricIndex;
-
         if (currentLyricIndex !== -1 && phepMauLyrics[currentLyricIndex]) {
             currentLyricEl.classList.remove('active', 'opacity-100', 'translate-y-0');
             currentLyricEl.classList.add('opacity-0', 'translate-y-1');
-
             setTimeout(() => {
                 currentLyricEl.textContent = phepMauLyrics[currentLyricIndex].text;
                 currentLyricEl.classList.add('active', 'opacity-100', 'translate-y-0');
@@ -693,7 +570,6 @@ function updateLyrics(currentTime) {
             currentLyricEl.classList.remove('active', 'opacity-100', 'translate-y-0');
             currentLyricEl.classList.add('opacity-0', 'translate-y-1');
         }
-
         const nextIndex = currentLyricIndex + 1;
         if (nextIndex < phepMauLyrics.length && phepMauLyrics[nextIndex] && phepMauLyrics[nextIndex].text.trim() !== "") {
              nextLyricEl.classList.remove('visible', 'opacity-100');
@@ -711,11 +587,8 @@ function updateLyrics(currentTime) {
     }
 }
 
-
-// --- MUSIC VISUALIZER FUNCTIONS ---
 function setupAudioGraph() {
     if (isVisualizerInitialized || !audioPlayer) return;
-
     try {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         analyser = audioContext.createAnalyser();
@@ -725,7 +598,6 @@ function setupAudioGraph() {
         analyser.connect(audioContext.destination);
         dataArray = new Uint8Array(analyser.frequencyBinCount);
         isVisualizerInitialized = true;
-        console.log("Audio graph for visualizer initialized.");
     } catch (e) {
         console.error("Lỗi khởi tạo AudioContext hoặc Analyser cho visualizer:", e);
         if (visualizerCanvas) visualizerCanvas.style.display = 'none';
@@ -736,27 +608,23 @@ function setupAudioGraph() {
 function initializeVisualizerCanvas() {
     visualizerCanvas = document.getElementById('musicVisualizer');
     const imagePlaceholderContainer = document.querySelector('.image-placeholder-container'); 
-
     if (!visualizerCanvas || !imagePlaceholderContainer) {
         console.error("Visualizer: Không tìm thấy canvas hoặc image placeholder container.");
         if (visualizerCanvas) visualizerCanvas.style.display = 'none';
         return;
     }
     visualizerCtx = visualizerCanvas.getContext('2d');
-
     function setCanvasDimensions() {
         if (!imagePlaceholderContainer || !visualizerCanvas) return;
         const avatarRect = imagePlaceholderContainer.getBoundingClientRect();
         visualizerCanvas.height = avatarRect.height > 0 ? avatarRect.height : 300;
         visualizerCanvas.width = 60;
-
         if (visualizerCtx && (!rafId || (audioPlayer && audioPlayer.paused))) {
              visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
         }
     }
     setCanvasDimensions();
     window.addEventListener('resize', setCanvasDimensions);
-
     if (audioPlayer) {
         audioPlayer.addEventListener('play', () => {
             if (!isVisualizerInitialized) {
@@ -770,14 +638,12 @@ function initializeVisualizerCanvas() {
                 drawVisualizerLoop();
             }
         });
-
         audioPlayer.addEventListener('pause', () => {
             if (rafId) {
                 cancelAnimationFrame(rafId);
                 rafId = null;
             }
         });
-
         audioPlayer.addEventListener('ended', () => {
             if (rafId) {
                 cancelAnimationFrame(rafId);
@@ -796,17 +662,14 @@ function drawVisualizerLoop() {
         rafId = null;
         return;
     }
-
     rafId = requestAnimationFrame(drawVisualizerLoop);
     analyser.getByteFrequencyData(dataArray);
     visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
-
     const numBars = 32;
     const barThickness = (visualizerCanvas.height / numBars) * 0.75;
     const barSpacing = (visualizerCanvas.height / numBars) * 0.25;
     let currentY = barSpacing / 2;
     const bufferLength = analyser.frequencyBinCount;
-
     for (let i = 0; i < numBars; i++) {
         const dataArrayIndex = Math.min(bufferLength - 1, Math.floor((i / numBars) * (bufferLength * 0.75)));
         const barLengthFraction = dataArray[dataArrayIndex] / 255.0;
@@ -819,15 +682,12 @@ function drawVisualizerLoop() {
     }
 }
 
-// --- DONATE SECTION FUNCTIONALITY ---
 function initializeDonateSection() {
     const toggleQrButtons = document.querySelectorAll('.toggle-qr-btn');
-
     toggleQrButtons.forEach(button => {
         button.addEventListener('click', () => {
             const targetId = button.dataset.qrTarget; 
             const qrPlaceholder = document.getElementById(targetId);
-
             if (qrPlaceholder) {
                 const isHidden = qrPlaceholder.classList.contains('hidden');
                 if (isHidden) {
@@ -842,18 +702,11 @@ function initializeDonateSection() {
     });
 }
 
-// --- COPY TO CLIPBOARD FUNCTIONALITY ---
-/**
- * Copies the given text to the clipboard and shows a notification.
- * @param {string} text - The text to copy.
- * @param {HTMLElement} notificationElement - The element to show as notification.
- */
 function copyTextToClipboard(text, notificationElement) {
     if (!text) {
         console.warn("Không có nội dung để sao chép.");
         return;
     }
-
     const textArea = document.createElement("textarea");
     textArea.value = text;
     textArea.style.position = "fixed"; 
@@ -861,7 +714,6 @@ function copyTextToClipboard(text, notificationElement) {
     document.body.appendChild(textArea);
     textArea.focus();
     textArea.select();
-
     try {
         const successful = document.execCommand('copy');
         if (successful) {
@@ -877,23 +729,16 @@ function copyTextToClipboard(text, notificationElement) {
     } catch (err) {
         console.error('Lỗi khi sao chép bằng document.execCommand: ', err);
     }
-
     document.body.removeChild(textArea);
 }
 
-
-/**
- * Initializes copy buttons for donation section.
- */
 function initializeCopyButtons() {
     const copyMomoBtn = document.getElementById('copyMomoNumberBtn');
     const momoNumberEl = document.getElementById('momoNumber');
     const momoNotificationEl = document.getElementById('copyMomoNotification');
-
     const copyBankBtn = document.getElementById('copyAccountNumberBtn');
     const accountNumberEl = document.getElementById('accountNumber');
     const bankNotificationEl = document.getElementById('copyNotification');
-
     if (copyMomoBtn && momoNumberEl && momoNotificationEl) {
         copyMomoBtn.addEventListener('click', () => {
             copyTextToClipboard(momoNumberEl.textContent.trim(), momoNotificationEl);
@@ -901,7 +746,6 @@ function initializeCopyButtons() {
     } else {
         console.warn("Không tìm thấy các phần tử để sao chép số Momo.");
     }
-
     if (copyBankBtn && accountNumberEl && bankNotificationEl) {
         copyBankBtn.addEventListener('click', () => {
             copyTextToClipboard(accountNumberEl.textContent.trim(), bankNotificationEl);
@@ -910,45 +754,111 @@ function initializeCopyButtons() {
         console.warn("Không tìm thấy các phần tử để sao chép số tài khoản ngân hàng.");
     }
 }
-// --- END: COPY TO CLIPBOARD FUNCTIONALITY ---
+// --- END: Các hàm gốc ---
 
 
-// --- DOMContentLoaded ---
-document.addEventListener('DOMContentLoaded', () => {
-    // Initialize search input and suggestions dropdown first
-    searchInput = document.getElementById('searchInput');
-    suggestionsDropdown = document.getElementById('suggestionsDropdown');
-
+// --- Hàm khởi tạo toàn bộ ứng dụng trang (Nội dung gốc của DOMContentLoaded) ---
+function initializePageApplication() {
     renderShortcuts();
     initializeMusicPlayer();
-    initializeSearchSuggestions(); // Initialize search suggestions functionality
+    initializeSearchSuggestions();
 
     if (document.getElementById('musicPlayerContainer')) {
         initializeVisualizerCanvas();
     }
 
-    if (audioPlayer) {
+    // audioPlayer được khởi tạo trong initializeMusicPlayer
+    if (audioPlayer) { 
         updateLyrics(audioPlayer.currentTime);
     }
 
     const searchButton = document.getElementById('searchButton');
     if (searchButton) {
-        searchButton.addEventListener('click', performSearch); // This will now perform a Google search
-    } else {
-        console.warn("Search button with id 'searchButton' not found in HTML.");
+        searchButton.addEventListener('click', performSearch);
     }
-
-    // The 'Enter' key press is handled within `handleSuggestionKeyboardNav`
-    // which calls `performSearch` for Google search.
-    // No need for a separate keypress listener on searchInput here for 'Enter'.
 
     const currentYearElement = document.getElementById('currentYear');
     if (currentYearElement) {
         currentYearElement.textContent = new Date().getFullYear();
-    } else {
-        console.error("Current year element not found in footer.");
     }
 
-    initializeDonateSection(); 
-    initializeCopyButtons(); 
+    initializeDonateSection();
+    initializeCopyButtons();
+
+    console.log("Ứng dụng trang đã được khởi tạo.");
+}
+// --- END: Hàm khởi tạo ứng dụng ---
+
+
+// --- Logic Tải Trang Mới ---
+window.addEventListener('load', () => {
+    const loadingScreen = document.getElementById(loadingScreenId);
+    const pageContent = document.getElementById(pageContentId);
+    const accessModal = document.getElementById(accessModalId);
+    const acceptButton = document.getElementById(acceptAccessBtnId);
+    const modalContentArea = document.getElementById(modalContentAreaId);
+
+    // Thời gian tối thiểu hiển thị màn hình loading (miligiây)
+    const minLoadingTime = 2500; 
+
+    document.body.classList.add('loading'); // Thêm class để ẩn cuộn
+
+    setTimeout(() => {
+        if (loadingScreen) {
+            // Bắt đầu làm mờ màn hình loading
+            loadingScreen.style.opacity = '0';
+            // Sau khi hiệu ứng làm mờ hoàn tất, ẩn nó đi
+            loadingScreen.addEventListener('transitionend', () => {
+                loadingScreen.style.display = 'none';
+            }, { once: true });
+        }
+
+        // Hiển thị nội dung trang
+        if (pageContent) {
+            pageContent.classList.remove('hidden');
+            // Kích hoạt reflow để đảm bảo transition opacity hoạt động sau khi display:none được gỡ bỏ
+            // pageContent.offsetHeight; // Dòng này có thể không cần thiết nếu dùng requestAnimationFrame
+            requestAnimationFrame(() => {
+                 pageContent.style.opacity = '1'; // Kích hoạt hiệu ứng fade-in
+            });
+        }
+
+        // Khởi tạo các chức năng của trang
+        initializePageApplication();
+        document.body.classList.remove('loading'); // Xóa class để cho phép cuộn lại
+
+        // Hiển thị modal sau một khoảng trễ nhỏ
+        if (accessModal && modalContentArea) {
+            setTimeout(() => {
+                accessModal.classList.remove('hidden');
+                 // Kích hoạt reflow
+                // accessModal.offsetHeight;
+                requestAnimationFrame(() => {
+                    accessModal.style.opacity = '1';
+                    modalContentArea.style.opacity = '1';
+                    modalContentArea.style.transform = 'scale(1)';
+                });
+            }, 500); // Hiện modal sau 0.5 giây khi nội dung trang đã bắt đầu hiển thị
+        }
+
+    }, minLoadingTime);
+
+    // Xử lý nút "Truy cập" trong modal
+    if (acceptButton && accessModal && modalContentArea) {
+        acceptButton.addEventListener('click', () => {
+            modalContentArea.style.opacity = '0';
+            modalContentArea.style.transform = 'scale(0.95)';
+            accessModal.style.opacity = '0';
+            
+            // Đợi hiệu ứng của accessModal hoàn tất rồi mới thêm class 'hidden'
+            accessModal.addEventListener('transitionend', function handleTransitionEnd(e) {
+                if (e.target === accessModal && e.propertyName === 'opacity') {
+                    accessModal.classList.add('hidden');
+                    // Gỡ bỏ listener để tránh bị gọi lại ngoài ý muốn
+                    accessModal.removeEventListener('transitionend', handleTransitionEnd);
+                }
+            });
+        });
+    }
 });
+// --- END: Logic Tải Trang Mới ---
