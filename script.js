@@ -60,8 +60,8 @@ const audioPlaylist = [
     {
         title: "My Curse, My Fate",
         artist: "Sān-Z · HOYO-MiX",
-        src: "./Backround sound/my_curse_my_fate.mp3", // THAY THẾ BẰNG ĐƯỜNG DẪN ĐÚNG
-        albumArt: "./Backround sound/my_curse_my_fate_album_art.jpg" // THAY THẾ BẰNG ĐƯỜNG DẪN ĐÚNG
+        src: "./Backround sound/My Curse, My Fate - Sān-Z.mp3", // THAY THẾ BẰNG ĐƯỜNG DẪN ĐÚNG
+        albumArt: "./Backround sound/My Curse, My Fate logo.png" // THAY THẾ BẰNG ĐƯỜNG DẪN ĐÚNG
     }
 ];
 let currentTrackIndex = 0;
