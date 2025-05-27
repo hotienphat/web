@@ -17,7 +17,7 @@ const shortcutSections = [
             { name: "Youtube", url: "https://youtube.com", icon: "youtube" },
             { name: "Gmail", url: "https://mail.google.com", icon: "google" },
             { name: "Drive", url: "https://drive.google.com", icon: "google-drive" },
-            { name: "Tìm kiếm", url: "https://google.com", icon: "google" }
+            { name: "Tìm kiếm", url: "https://google.com", icon: "google" } // This specific shortcut can also be a direct Google search
         ]
     },
     {
@@ -115,11 +115,12 @@ let isVisualizerInitialized = false;
 
 // --- START: SEARCH SUGGESTIONS ---
 let searchKeywords = [];
-let searchInput, suggestionsDropdown;
+let searchInput, suggestionsDropdown; // Made these global for easier access
 let activeSuggestionIndex = -1; // For keyboard navigation
 
 /**
  * Generates a list of keywords from shortcut sections and other relevant page content.
+ * These keywords are used for the suggestion dropdown.
  */
 function generateSearchKeywords() {
     const keywords = new Set(); // Use a Set to avoid duplicate keywords
@@ -133,7 +134,7 @@ function generateSearchKeywords() {
         });
     });
 
-    // Add other relevant keywords (can be expanded)
+    // Add other relevant keywords for site-specific suggestions
     keywords.add("về bản thân");
     keywords.add("thông tin cá nhân");
     keywords.add("ủng hộ");
@@ -143,34 +144,34 @@ function generateSearchKeywords() {
     keywords.add("liên hệ");
     keywords.add("nhạc");
     keywords.add("music player");
-    keywords.add(audioPlaylist[0].title.toLowerCase()); // Add current song title
+    if (audioPlaylist.length > 0 && audioPlaylist[0].title) {
+        keywords.add(audioPlaylist[0].title.toLowerCase());
+    }
 
-    // Add keywords from "about me" section if it exists
     const aboutMeSection = document.getElementById('aboutMeSection');
     if (aboutMeSection) {
         const textContent = aboutMeSection.textContent || aboutMeSection.innerText;
-        const words = textContent.toLowerCase().match(/\b(\w{3,})\b/g); // Get words with 3+ chars
+        const words = textContent.toLowerCase().match(/\b(\w{3,})\b/g); 
         if (words) {
             words.forEach(word => keywords.add(word));
         }
     }
-    // Add some common search terms
     keywords.add("trang cá nhân");
     keywords.add("hồ tiến phát");
 
-
     searchKeywords = Array.from(keywords);
-    console.log("Generated Search Keywords:", searchKeywords);
+    console.log("Generated Search Keywords (for suggestions):", searchKeywords);
 }
 
 
 /**
  * Displays search suggestions based on user input.
+ * These suggestions are from the local site content.
  */
 function displaySuggestions() {
     const inputValue = searchInput.value.toLowerCase().trim();
-    suggestionsDropdown.innerHTML = ''; // Clear previous suggestions
-    activeSuggestionIndex = -1; // Reset active suggestion
+    suggestionsDropdown.innerHTML = ''; 
+    activeSuggestionIndex = -1; 
 
     if (inputValue.length === 0) {
         suggestionsDropdown.classList.add('hidden');
@@ -182,14 +183,17 @@ function displaySuggestions() {
     );
 
     if (filteredSuggestions.length > 0) {
-        filteredSuggestions.slice(0, 7).forEach((suggestion, index) => { // Limit to 7 suggestions
+        filteredSuggestions.slice(0, 7).forEach((suggestion) => { 
             const suggestionItem = document.createElement('div');
             suggestionItem.classList.add('suggestion-item');
             suggestionItem.textContent = suggestion;
+            // When a site-specific suggestion is clicked, fill the input and search Google with it.
+            // Or, you could make this navigate to a local section if the suggestion is for that.
+            // For now, it will fill the input, and the user can then press Enter/Search button for Google search.
             suggestionItem.addEventListener('click', () => {
                 searchInput.value = suggestion;
                 suggestionsDropdown.classList.add('hidden');
-                performSearch(); // Optionally perform search on click
+                // Optional: performSearch(); // Uncomment to immediately search Google on suggestion click
             });
             suggestionsDropdown.appendChild(suggestionItem);
         });
@@ -205,7 +209,12 @@ function displaySuggestions() {
  */
 function handleSuggestionKeyboardNav(e) {
     const items = suggestionsDropdown.querySelectorAll('.suggestion-item');
-    if (items.length === 0 || suggestionsDropdown.classList.contains('hidden')) return;
+    if (items.length === 0 || suggestionsDropdown.classList.contains('hidden')) {
+        if (e.key === 'Enter') { // If no suggestions, Enter performs Google search
+            performSearch();
+        }
+        return;
+    }
 
     if (e.key === 'ArrowDown') {
         e.preventDefault();
@@ -216,14 +225,13 @@ function handleSuggestionKeyboardNav(e) {
         activeSuggestionIndex = (activeSuggestionIndex - 1 + items.length) % items.length;
         updateActiveSuggestion(items);
     } else if (e.key === 'Enter') {
+        e.preventDefault(); // Prevent form submission if it's in a form
         if (activeSuggestionIndex > -1 && items[activeSuggestionIndex]) {
-            e.preventDefault();
-            items[activeSuggestionIndex].click(); // Simulate click on active suggestion
-        } else {
-            // If no suggestion selected, let the default search happen
-            performSearch();
-            suggestionsDropdown.classList.add('hidden');
+            searchInput.value = items[activeSuggestionIndex].textContent; // Set input to selected suggestion
         }
+        performSearch(); // Always perform Google search on Enter
+        suggestionsDropdown.classList.add('hidden');
+
     } else if (e.key === 'Escape') {
         suggestionsDropdown.classList.add('hidden');
     }
@@ -237,7 +245,6 @@ function updateActiveSuggestion(items) {
     items.forEach(item => item.classList.remove('active-suggestion'));
     if (activeSuggestionIndex > -1 && items[activeSuggestionIndex]) {
         items[activeSuggestionIndex].classList.add('active-suggestion');
-        // Scroll into view if needed
         items[activeSuggestionIndex].scrollIntoView({ block: 'nearest', inline: 'nearest' });
     }
 }
@@ -247,27 +254,25 @@ function updateActiveSuggestion(items) {
  * Initializes search suggestions functionality.
  */
 function initializeSearchSuggestions() {
-    searchInput = document.getElementById('searchInput');
-    suggestionsDropdown = document.getElementById('suggestionsDropdown');
+    searchInput = document.getElementById('searchInput'); // Assign to global variable
+    suggestionsDropdown = document.getElementById('suggestionsDropdown'); // Assign to global variable
 
     if (!searchInput || !suggestionsDropdown) {
         console.error("Search input or suggestions dropdown not found for suggestions functionality.");
         return;
     }
 
-    generateSearchKeywords(); // Generate keywords when the page loads
+    generateSearchKeywords(); 
 
     searchInput.addEventListener('input', displaySuggestions);
     searchInput.addEventListener('keydown', handleSuggestionKeyboardNav);
 
-    // Hide suggestions when clicking outside
     document.addEventListener('click', (event) => {
-        if (!searchInput.contains(event.target) && !suggestionsDropdown.contains(event.target)) {
+        if (searchInput && suggestionsDropdown && !searchInput.contains(event.target) && !suggestionsDropdown.contains(event.target)) {
             suggestionsDropdown.classList.add('hidden');
         }
     });
     searchInput.addEventListener('focus', () => {
-        // Optionally show some default suggestions or recent searches on focus
         if (searchInput.value.length > 0) {
              displaySuggestions();
         }
@@ -325,18 +330,20 @@ function renderShortcuts() {
 
 /**
  * Performs a Google search with the query from the search input.
+ * This function is now the primary action for the search.
  */
 function performSearch() {
-    // searchInput is already globally available if initializeSearchSuggestions ran
-    if (!searchInput) {
-        console.error("Search input not found!");
+    if (!searchInput) { // Ensure searchInput is available
+        console.error("Search input element not found for performSearch!");
         return;
     }
     const query = searchInput.value.trim();
     if (query) {
-        window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+        // Construct Google search URL
+        const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+        window.open(googleSearchUrl, '_blank'); // Open in a new tab
     }
-    if (suggestionsDropdown) { // Hide suggestions after search
+    if (suggestionsDropdown) { 
         suggestionsDropdown.classList.add('hidden');
     }
 }
@@ -361,7 +368,6 @@ function initializeMusicPlayer() {
     prevTrackBtn = document.getElementById('prevTrackBtn');
     nextTrackBtn = document.getElementById('nextTrackBtn');
 
-    // Lyrics elements
     lyricsOverlay = document.getElementById('lyricsOverlay');
     currentLyricEl = document.getElementById('currentLyric');
     nextLyricEl = document.getElementById('nextLyric');
@@ -382,7 +388,7 @@ function initializeMusicPlayer() {
     musicProgressBar.addEventListener('input', seekAudio);
     audioPlayer.addEventListener('timeupdate', () => {
         updateProgressBar();
-        if (audioPlayer) { // Ensure audioPlayer is defined
+        if (audioPlayer) { 
              updateLyrics(audioPlayer.currentTime);
         }
     });
@@ -424,8 +430,8 @@ function loadTrack(trackIndex) {
     currentTimeEl.textContent = formatTime(0);
     durationEl.textContent = formatTime(audioPlayer.duration || 0);
 
-    currentLyricIndex = -1; // Reset lyric index for the new track
-    updateLyrics(0); // Update lyrics display for the new track (or hide if not Phép Màu)
+    currentLyricIndex = -1; 
+    updateLyrics(0); 
 
     updatePlayPauseIcon();
     updateTrackButtonsState();
@@ -453,7 +459,6 @@ function togglePlayPause() {
         audioPlayer.pause();
     }
     updatePlayPauseIcon();
-    // Update lyrics visibility based on play/pause state
     if (audioPlayer) updateLyrics(audioPlayer.currentTime);
 }
 
@@ -472,7 +477,6 @@ function stopAudio() {
             visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
         }
     }
-    // Hide lyrics when stopped
     if (lyricsOverlay) {
         lyricsOverlay.classList.remove('opacity-100', 'pointer-events-auto');
         lyricsOverlay.classList.add('opacity-0', 'pointer-events-none');
@@ -642,8 +646,7 @@ function updateLyrics(currentTime) {
     if (!audioPlayer || !phepMauLyrics || !lyricsOverlay || !currentLyricEl || !nextLyricEl) return;
 
     const currentTrack = audioPlaylist[currentTrackIndex];
-    // Only show lyrics if the current song is "Phép Màu" and music is playing or loaded
-    if (!currentTrack || !currentTrack.title.includes("Phép Màu (Đàn Cá Gỗ OST)")) {
+    if (!currentTrack || !currentTrack.title || !currentTrack.title.includes("Phép Màu (Đàn Cá Gỗ OST)")) {
         lyricsOverlay.classList.remove('opacity-100', 'pointer-events-auto');
         lyricsOverlay.classList.add('opacity-0', 'pointer-events-none');
         currentLyricEl.textContent = '';
@@ -656,11 +659,10 @@ function updateLyrics(currentTime) {
         return;
     }
 
-    // Show lyrics overlay if Phép Màu is the current song and it's playing or paused (loaded)
-    if (!audioPlayer.paused || audioPlayer.readyState >= 2) { // readyState >= 2 means metadata loaded
+    if (!audioPlayer.paused || audioPlayer.readyState >= 2) { 
         lyricsOverlay.classList.add('opacity-100', 'pointer-events-auto');
         lyricsOverlay.classList.remove('opacity-0', 'pointer-events-none');
-    } else { // Hide if not playing and not loaded enough
+    } else { 
         lyricsOverlay.classList.remove('opacity-100', 'pointer-events-auto');
         lyricsOverlay.classList.add('opacity-0', 'pointer-events-none');
     }
@@ -677,7 +679,6 @@ function updateLyrics(currentTime) {
     if (newLyricIndex !== currentLyricIndex) {
         currentLyricIndex = newLyricIndex;
 
-        // Update current lyric
         if (currentLyricIndex !== -1 && phepMauLyrics[currentLyricIndex]) {
             currentLyricEl.classList.remove('active', 'opacity-100', 'translate-y-0');
             currentLyricEl.classList.add('opacity-0', 'translate-y-1');
@@ -693,7 +694,6 @@ function updateLyrics(currentTime) {
             currentLyricEl.classList.add('opacity-0', 'translate-y-1');
         }
 
-        // Update next lyric
         const nextIndex = currentLyricIndex + 1;
         if (nextIndex < phepMauLyrics.length && phepMauLyrics[nextIndex] && phepMauLyrics[nextIndex].text.trim() !== "") {
              nextLyricEl.classList.remove('visible', 'opacity-100');
@@ -735,7 +735,7 @@ function setupAudioGraph() {
 
 function initializeVisualizerCanvas() {
     visualizerCanvas = document.getElementById('musicVisualizer');
-    const imagePlaceholderContainer = document.querySelector('.image-placeholder-container'); // Use the container
+    const imagePlaceholderContainer = document.querySelector('.image-placeholder-container'); 
 
     if (!visualizerCanvas || !imagePlaceholderContainer) {
         console.error("Visualizer: Không tìm thấy canvas hoặc image placeholder container.");
@@ -819,13 +819,13 @@ function drawVisualizerLoop() {
     }
 }
 
-// --- NEW: DONATE SECTION FUNCTIONALITY ---
+// --- DONATE SECTION FUNCTIONALITY ---
 function initializeDonateSection() {
     const toggleQrButtons = document.querySelectorAll('.toggle-qr-btn');
 
     toggleQrButtons.forEach(button => {
         button.addEventListener('click', () => {
-            const targetId = button.dataset.qrTarget; // Lấy giá trị của data-qr-target
+            const targetId = button.dataset.qrTarget; 
             const qrPlaceholder = document.getElementById(targetId);
 
             if (qrPlaceholder) {
@@ -842,7 +842,7 @@ function initializeDonateSection() {
     });
 }
 
-// --- START: COPY TO CLIPBOARD FUNCTIONALITY ---
+// --- COPY TO CLIPBOARD FUNCTIONALITY ---
 /**
  * Copies the given text to the clipboard and shows a notification.
  * @param {string} text - The text to copy.
@@ -854,11 +854,10 @@ function copyTextToClipboard(text, notificationElement) {
         return;
     }
 
-    // Sử dụng phương thức document.execCommand('copy') để tương thích tốt hơn trong iFrame
     const textArea = document.createElement("textarea");
     textArea.value = text;
-    textArea.style.position = "fixed"; // Ngăn cuộn trang khi chọn
-    textArea.style.left = "-9999px"; // Di chuyển ra khỏi màn hình
+    textArea.style.position = "fixed"; 
+    textArea.style.left = "-9999px"; 
     document.body.appendChild(textArea);
     textArea.focus();
     textArea.select();
@@ -870,15 +869,13 @@ function copyTextToClipboard(text, notificationElement) {
                 notificationElement.classList.remove('hidden');
                 setTimeout(() => {
                     notificationElement.classList.add('hidden');
-                }, 2000); // Ẩn thông báo sau 2 giây
+                }, 2000); 
             }
         } else {
             console.error('Không thể sao chép bằng document.execCommand.');
-            // Có thể hiển thị thông báo lỗi cho người dùng ở đây
         }
     } catch (err) {
         console.error('Lỗi khi sao chép bằng document.execCommand: ', err);
-        // Có thể hiển thị thông báo lỗi cho người dùng ở đây
     }
 
     document.body.removeChild(textArea);
@@ -918,38 +915,32 @@ function initializeCopyButtons() {
 
 // --- DOMContentLoaded ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize search input and suggestions dropdown first
+    searchInput = document.getElementById('searchInput');
+    suggestionsDropdown = document.getElementById('suggestionsDropdown');
+
     renderShortcuts();
     initializeMusicPlayer();
-    initializeSearchSuggestions(); // Initialize search suggestions
+    initializeSearchSuggestions(); // Initialize search suggestions functionality
 
     if (document.getElementById('musicPlayerContainer')) {
         initializeVisualizerCanvas();
     }
 
-    // Initial lyrics setup based on the initially loaded track
     if (audioPlayer) {
         updateLyrics(audioPlayer.currentTime);
     }
 
     const searchButton = document.getElementById('searchButton');
     if (searchButton) {
-        searchButton.addEventListener('click', performSearch);
+        searchButton.addEventListener('click', performSearch); // This will now perform a Google search
     } else {
         console.warn("Search button with id 'searchButton' not found in HTML.");
     }
 
-    // The keypress listener for searchInput is now handled by handleSuggestionKeyboardNav
-    // for Enter key, but we keep the original Enter key functionality if no suggestion is active.
-    const searchInputElement = document.getElementById('searchInput'); // Re-get in case it wasn't set globally yet
-    if (searchInputElement) {
-         // The 'Enter' key press is now handled within `handleSuggestionKeyboardNav`
-         // No need for a separate keypress listener here for 'Enter' if suggestions are active.
-         // If you want 'Enter' to always search even if suggestions are visible but none selected,
-         // the logic in `handleSuggestionKeyboardNav` for 'Enter' already covers this.
-    } else {
-        console.error("Search input element not found for keypress listener.");
-    }
-
+    // The 'Enter' key press is handled within `handleSuggestionKeyboardNav`
+    // which calls `performSearch` for Google search.
+    // No need for a separate keypress listener on searchInput here for 'Enter'.
 
     const currentYearElement = document.getElementById('currentYear');
     if (currentYearElement) {
@@ -958,6 +949,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error("Current year element not found in footer.");
     }
 
-    initializeDonateSection(); // Khởi tạo chức năng cho mục ủng hộ
-    initializeCopyButtons(); // THÊM MỚI: Khởi tạo các nút sao chép
+    initializeDonateSection(); 
+    initializeCopyButtons(); 
 });
