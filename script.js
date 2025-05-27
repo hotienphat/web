@@ -113,6 +113,169 @@ let dataArray;
 let rafId;
 let isVisualizerInitialized = false;
 
+// --- START: SEARCH SUGGESTIONS ---
+let searchKeywords = [];
+let searchInput, suggestionsDropdown;
+let activeSuggestionIndex = -1; // For keyboard navigation
+
+/**
+ * Generates a list of keywords from shortcut sections and other relevant page content.
+ */
+function generateSearchKeywords() {
+    const keywords = new Set(); // Use a Set to avoid duplicate keywords
+
+    // Add titles of shortcut sections
+    shortcutSections.forEach(section => {
+        keywords.add(section.title.toLowerCase());
+        // Add names of shortcuts
+        section.shortcuts.forEach(shortcut => {
+            keywords.add(shortcut.name.toLowerCase());
+        });
+    });
+
+    // Add other relevant keywords (can be expanded)
+    keywords.add("về bản thân");
+    keywords.add("thông tin cá nhân");
+    keywords.add("ủng hộ");
+    keywords.add("donate");
+    keywords.add("momo");
+    keywords.add("ngân hàng");
+    keywords.add("liên hệ");
+    keywords.add("nhạc");
+    keywords.add("music player");
+    keywords.add(audioPlaylist[0].title.toLowerCase()); // Add current song title
+
+    // Add keywords from "about me" section if it exists
+    const aboutMeSection = document.getElementById('aboutMeSection');
+    if (aboutMeSection) {
+        const textContent = aboutMeSection.textContent || aboutMeSection.innerText;
+        const words = textContent.toLowerCase().match(/\b(\w{3,})\b/g); // Get words with 3+ chars
+        if (words) {
+            words.forEach(word => keywords.add(word));
+        }
+    }
+    // Add some common search terms
+    keywords.add("trang cá nhân");
+    keywords.add("hồ tiến phát");
+
+
+    searchKeywords = Array.from(keywords);
+    console.log("Generated Search Keywords:", searchKeywords);
+}
+
+
+/**
+ * Displays search suggestions based on user input.
+ */
+function displaySuggestions() {
+    const inputValue = searchInput.value.toLowerCase().trim();
+    suggestionsDropdown.innerHTML = ''; // Clear previous suggestions
+    activeSuggestionIndex = -1; // Reset active suggestion
+
+    if (inputValue.length === 0) {
+        suggestionsDropdown.classList.add('hidden');
+        return;
+    }
+
+    const filteredSuggestions = searchKeywords.filter(keyword =>
+        keyword.toLowerCase().includes(inputValue)
+    );
+
+    if (filteredSuggestions.length > 0) {
+        filteredSuggestions.slice(0, 7).forEach((suggestion, index) => { // Limit to 7 suggestions
+            const suggestionItem = document.createElement('div');
+            suggestionItem.classList.add('suggestion-item');
+            suggestionItem.textContent = suggestion;
+            suggestionItem.addEventListener('click', () => {
+                searchInput.value = suggestion;
+                suggestionsDropdown.classList.add('hidden');
+                performSearch(); // Optionally perform search on click
+            });
+            suggestionsDropdown.appendChild(suggestionItem);
+        });
+        suggestionsDropdown.classList.remove('hidden');
+    } else {
+        suggestionsDropdown.classList.add('hidden');
+    }
+}
+
+/**
+ * Handles keyboard navigation for suggestions.
+ * @param {KeyboardEvent} e - The keyboard event.
+ */
+function handleSuggestionKeyboardNav(e) {
+    const items = suggestionsDropdown.querySelectorAll('.suggestion-item');
+    if (items.length === 0 || suggestionsDropdown.classList.contains('hidden')) return;
+
+    if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        activeSuggestionIndex = (activeSuggestionIndex + 1) % items.length;
+        updateActiveSuggestion(items);
+    } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        activeSuggestionIndex = (activeSuggestionIndex - 1 + items.length) % items.length;
+        updateActiveSuggestion(items);
+    } else if (e.key === 'Enter') {
+        if (activeSuggestionIndex > -1 && items[activeSuggestionIndex]) {
+            e.preventDefault();
+            items[activeSuggestionIndex].click(); // Simulate click on active suggestion
+        } else {
+            // If no suggestion selected, let the default search happen
+            performSearch();
+            suggestionsDropdown.classList.add('hidden');
+        }
+    } else if (e.key === 'Escape') {
+        suggestionsDropdown.classList.add('hidden');
+    }
+}
+
+/**
+ * Updates the visual state of the active suggestion.
+ * @param {NodeListOf<Element>} items - The list of suggestion items.
+ */
+function updateActiveSuggestion(items) {
+    items.forEach(item => item.classList.remove('active-suggestion'));
+    if (activeSuggestionIndex > -1 && items[activeSuggestionIndex]) {
+        items[activeSuggestionIndex].classList.add('active-suggestion');
+        // Scroll into view if needed
+        items[activeSuggestionIndex].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    }
+}
+
+
+/**
+ * Initializes search suggestions functionality.
+ */
+function initializeSearchSuggestions() {
+    searchInput = document.getElementById('searchInput');
+    suggestionsDropdown = document.getElementById('suggestionsDropdown');
+
+    if (!searchInput || !suggestionsDropdown) {
+        console.error("Search input or suggestions dropdown not found for suggestions functionality.");
+        return;
+    }
+
+    generateSearchKeywords(); // Generate keywords when the page loads
+
+    searchInput.addEventListener('input', displaySuggestions);
+    searchInput.addEventListener('keydown', handleSuggestionKeyboardNav);
+
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', (event) => {
+        if (!searchInput.contains(event.target) && !suggestionsDropdown.contains(event.target)) {
+            suggestionsDropdown.classList.add('hidden');
+        }
+    });
+    searchInput.addEventListener('focus', () => {
+        // Optionally show some default suggestions or recent searches on focus
+        if (searchInput.value.length > 0) {
+             displaySuggestions();
+        }
+    });
+}
+// --- END: SEARCH SUGGESTIONS ---
+
+
 /**
  * Renders shortcut sections and their items into the DOM.
  */
@@ -164,7 +327,7 @@ function renderShortcuts() {
  * Performs a Google search with the query from the search input.
  */
 function performSearch() {
-    const searchInput = document.getElementById('searchInput');
+    // searchInput is already globally available if initializeSearchSuggestions ran
     if (!searchInput) {
         console.error("Search input not found!");
         return;
@@ -172,6 +335,9 @@ function performSearch() {
     const query = searchInput.value.trim();
     if (query) {
         window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+    }
+    if (suggestionsDropdown) { // Hide suggestions after search
+        suggestionsDropdown.classList.add('hidden');
     }
 }
 
@@ -754,6 +920,7 @@ function initializeCopyButtons() {
 document.addEventListener('DOMContentLoaded', () => {
     renderShortcuts();
     initializeMusicPlayer();
+    initializeSearchSuggestions(); // Initialize search suggestions
 
     if (document.getElementById('musicPlayerContainer')) {
         initializeVisualizerCanvas();
@@ -771,16 +938,18 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn("Search button with id 'searchButton' not found in HTML.");
     }
 
-    const searchInputElement = document.getElementById('searchInput');
+    // The keypress listener for searchInput is now handled by handleSuggestionKeyboardNav
+    // for Enter key, but we keep the original Enter key functionality if no suggestion is active.
+    const searchInputElement = document.getElementById('searchInput'); // Re-get in case it wasn't set globally yet
     if (searchInputElement) {
-        searchInputElement.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                performSearch();
-            }
-        });
+         // The 'Enter' key press is now handled within `handleSuggestionKeyboardNav`
+         // No need for a separate keypress listener here for 'Enter' if suggestions are active.
+         // If you want 'Enter' to always search even if suggestions are visible but none selected,
+         // the logic in `handleSuggestionKeyboardNav` for 'Enter' already covers this.
     } else {
         console.error("Search input element not found for keypress listener.");
     }
+
 
     const currentYearElement = document.getElementById('currentYear');
     if (currentYearElement) {
