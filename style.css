@@ -216,3 +216,37 @@ textarea {
     cursor: text;
 }
 /* --- END: CUSTOM CURSOR STYLES --- */
+
+/* --- NEW STYLES FOR DONATE SECTION --- */
+.donation-method {
+    /* Các lớp Tailwind trong HTML đã định dạng phần lớn */
+    /* Ví dụ: p-4 bg-slate-700/50 rounded-lg */
+}
+
+.qr-placeholder {
+    width: 166px; /* Kích thước bao gồm padding: 150px cho nội dung + 2*8px padding (p-2) */
+    height: 166px; /* Kích thước bao gồm padding: 150px cho nội dung + 2*8px padding (p-2) */
+    /* Các lớp Tailwind p-2 bg-white rounded flex items-center justify-center đã được áp dụng trong HTML */
+    /* Đường viền này là một gợi ý trực quan bổ sung cho trạng thái placeholder */
+    border: 2px dashed #4b5563; /* Màu slate-600, dễ nhìn hơn trên nền trắng */
+    margin-left: auto; /* Căn giữa khối placeholder */
+    margin-right: auto;
+}
+
+.qr-placeholder span { /* Định dạng cho văn bản placeholder */
+    text-align: center;
+    font-size: 0.8rem; /* Tương đương text-xs */
+    color: #4b5563; /* Màu slate-600 */
+}
+
+/* Khi người dùng thêm thẻ <img> vào div này, lý tưởng nhất là ảnh có kích thước 150x150px */
+/* Ví dụ: <img src="..." alt="..." class="w-[150px] h-[150px] object-contain"> */
+/* Hoặc, nếu họ chỉ đặt <img src="...">, chúng ta có thể cố gắng kiểm soát nó thông qua CSS, 
+   nhưng sử dụng các lớp Tailwind trên thẻ img sẽ tốt hơn. */
+.qr-placeholder img {
+    max-width: 150px; /* Kích thước tối đa cho ảnh QR bên trong placeholder */
+    max-height: 150px;
+    object-fit: contain; /* Đảm bảo mã QR không bị méo */
+}
+
+/* Tailwind đã có lớp .hidden (display: none;), không cần định nghĩa lại */
