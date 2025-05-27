@@ -60,8 +60,8 @@ const audioPlaylist = [
     {
         title: "My Curse, My Fate",
         artist: "Sān-Z · HOYO-MiX",
-        src: "./Backround sound/My Curse, My Fate - Sān-Z.mp3", // THAY THẾ BẰNG ĐƯỜNG DẪN ĐÚNG
-        albumArt: "./Backround sound/My Curse, My Fate logo.png" // THAY THẾ BẰNG ĐƯỜNG DẪN ĐÚNG
+        src: "./Backround sound/my_curse_my_fate.mp3", // Đảm bảo đường dẫn này đúng
+        albumArt: "./Backround sound/my_curse_my_fate_album_art.jpg" // Đảm bảo đường dẫn này đúng
     }
 ];
 let currentTrackIndex = 0;
@@ -107,7 +107,7 @@ const phepMauLyrics = [
 let currentLyricIndex = -1;
 // --- END LYRICS DATA ---
 
-// --- Global variables for the music player (Giữ nguyên) ---
+// --- Global variables for the music player ---
 let audioPlayer;
 let playPauseMusicBtn, stopMusicBtn, musicProgressBar, albumArtElement, currentTimeEl, durationEl;
 let songTitleEl, songArtistEl;
@@ -123,7 +123,7 @@ let rafId;
 let isVisualizerInitialized = false;
 // --- END Global variables for music player ---
 
-// --- START: SEARCH SUGGESTIONS (Giữ nguyên) ---
+// --- START: SEARCH SUGGESTIONS ---
 let searchKeywords = [];
 let searchInput, suggestionsDropdown;
 let activeSuggestionIndex = -1;
@@ -184,7 +184,6 @@ function displaySuggestions() {
             suggestionItem.addEventListener('click', () => {
                 searchInput.value = suggestion;
                 suggestionsDropdown.classList.add('hidden');
-                // performSearch();
             });
             suggestionsDropdown.appendChild(suggestionItem);
         });
@@ -339,6 +338,8 @@ function initializeMusicPlayer() {
     playPauseMusicBtn.addEventListener('click', togglePlayPause);
     stopMusicBtn.addEventListener('click', stopAudio);
     musicProgressBar.addEventListener('input', seekAudio);
+
+    // Event listeners for audio state changes
     audioPlayer.addEventListener('timeupdate', () => {
         updateProgressBar();
         if (audioPlayer) {
@@ -347,6 +348,11 @@ function initializeMusicPlayer() {
     });
     audioPlayer.addEventListener('loadedmetadata', setAudioDuration);
     audioPlayer.addEventListener('ended', playNextTrackHandler);
+
+    // *** NEW: Add event listeners to sync play/pause button icon reliably ***
+    audioPlayer.addEventListener('play', updatePlayPauseIcon);
+    audioPlayer.addEventListener('pause', updatePlayPauseIcon);
+    // *** END NEW ***
 
     volumeSlider.addEventListener('input', setVolume);
     volumeBtn.addEventListener('click', toggleMute);
@@ -363,7 +369,7 @@ function loadTrack(trackIndex) {
         return;
     }
     const track = audioPlaylist[trackIndex];
-    const wasPlaying = audioPlayer && !audioPlayer.paused;
+    // const wasPlaying = audioPlayer && !audioPlayer.paused; // Keep track if it was playing
     const currentVolume = audioPlayer ? audioPlayer.volume : 1;
     const currentMutedState = audioPlayer ? audioPlayer.muted : false;
 
@@ -382,12 +388,7 @@ function loadTrack(trackIndex) {
     currentLyricIndex = -1;
     updateLyrics(0);
 
-    // The decision to play is now primarily handled by playNextTrackHandler and playPrevTrackHandler
-    // However, keeping this for potential direct loadTrack calls that might expect auto-resume.
-    if (wasPlaying && (audioPlayer.readyState > 0 || audioPlayer.src !== '')) { // Check if it was playing *and* a track is loaded
-         // audioPlayer.play().catch(handlePlayError); // Let handlers manage explicit play
-    }
-    updatePlayPauseIcon();
+    updatePlayPauseIcon(); // Update icon based on current state after loading
     updateTrackButtonsState();
     updateVolumeIcon();
 }
@@ -410,15 +411,15 @@ function togglePlayPause() {
     } else {
         audioPlayer.pause();
     }
-    updatePlayPauseIcon();
+    // updatePlayPauseIcon(); // This will be handled by the 'play' or 'pause' event listeners
     if (audioPlayer) updateLyrics(audioPlayer.currentTime);
 }
 
 function stopAudio() {
     if (!audioPlayer) return;
-    audioPlayer.pause();
+    audioPlayer.pause(); // This will trigger the 'pause' event, which calls updatePlayPauseIcon
     audioPlayer.currentTime = 0;
-    updatePlayPauseIcon();
+    // updatePlayPauseIcon(); // Already handled by 'pause' event listener
 
     if (rafId) {
         cancelAnimationFrame(rafId);
@@ -488,7 +489,7 @@ function handlePlayError(error) {
     } else if (error.name === 'AbortError') {
         console.info("Playback aborted.");
     }
-    updatePlayPauseIcon();
+    // updatePlayPauseIcon(); // This will be handled by 'pause' event if play fails and causes pause
 }
 
 function setVolume() {
@@ -526,31 +527,37 @@ function updateVolumeIcon() {
 
 function playNextTrackHandler() {
     currentTrackIndex = (currentTrackIndex + 1) % audioPlaylist.length;
+    const wasPlaying = !audioPlayer.paused; // Check before loading new track
     loadTrack(currentTrackIndex);
-    // Luôn cố gắng phát bài hát tiếp theo sau khi tải
     if (audioPlayer) {
-        // Đảm bảo audio context được resume nếu cần thiết (quan trọng cho autoplay sau tương tác)
-        if (audioContext && audioContext.state === 'suspended') {
-            audioContext.resume().then(() => {
+        // If it was playing before, or if it's the first track, try to play.
+        // The 'ended' event naturally leads to playing the next track.
+        // For manual next clicks, we also want it to play.
+        if (wasPlaying || audioPlaylist.length > 0) {
+             if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    audioPlayer.play().catch(handlePlayError);
+                }).catch(handlePlayError);
+            } else {
                 audioPlayer.play().catch(handlePlayError);
-            }).catch(handlePlayError);
-        } else {
-            audioPlayer.play().catch(handlePlayError);
+            }
         }
     }
 }
 
 function playPrevTrackHandler() {
     currentTrackIndex = (currentTrackIndex - 1 + audioPlaylist.length) % audioPlaylist.length;
+    const wasPlaying = !audioPlayer.paused; // Check before loading new track
     loadTrack(currentTrackIndex);
-    // Luôn cố gắng phát bài hát trước đó sau khi tải
     if (audioPlayer) {
-        if (audioContext && audioContext.state === 'suspended') {
-            audioContext.resume().then(() => {
+         if (wasPlaying || audioPlaylist.length > 0) {
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    audioPlayer.play().catch(handlePlayError);
+                }).catch(handlePlayError);
+            } else {
                 audioPlayer.play().catch(handlePlayError);
-            }).catch(handlePlayError);
-        } else {
-            audioPlayer.play().catch(handlePlayError);
+            }
         }
     }
 }
