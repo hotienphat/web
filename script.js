@@ -67,7 +67,7 @@ const audioPlaylist = [
 let currentTrackIndex = 0;
 // --- END: MUSIC PLAYER CONFIGURATION ---
 
-// --- LYRICS DATA for "Phép Màu" (Giữ nguyên) ---
+// --- LYRICS DATA for "Phép Màu" ---
 const phepMauLyrics = [
     { time: 0,   text: "Bài hát: Phép Màu - Mounter x MAYDAYs, Minh Tốc" },
     { time: 3,   text: "Ngày thay đêm, vội trôi giấc mơ êm đềm" },
@@ -146,7 +146,6 @@ function generateSearchKeywords() {
     keywords.add("nhạc");
     keywords.add("music player");
 
-    // Thêm tất cả các tiêu đề bài hát vào từ khóa tìm kiếm
     audioPlaylist.forEach(song => {
         if (song.title) {
             keywords.add(song.title.toLowerCase());
@@ -185,7 +184,6 @@ function displaySuggestions() {
             suggestionItem.addEventListener('click', () => {
                 searchInput.value = suggestion;
                 suggestionsDropdown.classList.add('hidden');
-                // Tùy chọn: thực hiện tìm kiếm ngay khi nhấp vào gợi ý
                 // performSearch();
             });
             suggestionsDropdown.appendChild(suggestionItem);
@@ -239,7 +237,7 @@ function initializeSearchSuggestions() {
         console.error("Search input or suggestions dropdown not found for suggestions functionality.");
         return;
     }
-    generateSearchKeywords(); // Gọi sau khi audioPlaylist đã được cập nhật
+    generateSearchKeywords();
     searchInput.addEventListener('input', displaySuggestions);
     searchInput.addEventListener('keydown', handleSuggestionKeyboardNav);
     document.addEventListener('click', (event) => {
@@ -255,7 +253,7 @@ function initializeSearchSuggestions() {
 }
 // --- END: SEARCH SUGGESTIONS ---
 
-// --- START: Các hàm gốc khác (renderShortcuts, performSearch, ...) ---
+// --- START: Các hàm gốc khác ---
 function renderShortcuts() {
     const container = document.getElementById('shortcutsContainer');
     if (!container) {
@@ -310,7 +308,7 @@ function performSearch() {
 
 function initializeMusicPlayer() {
     audioPlayer = new Audio();
-    audioPlayer.crossOrigin = "anonymous"; // Quan trọng cho visualizer nếu nhạc từ nguồn khác
+    audioPlayer.crossOrigin = "anonymous";
     playPauseMusicBtn = document.getElementById('playPauseMusicBtn');
     stopMusicBtn = document.getElementById('stopMusicBtn');
     musicProgressBar = document.getElementById('musicProgressBar');
@@ -331,24 +329,24 @@ function initializeMusicPlayer() {
     if (essentialElements.some(el => !el)) {
         console.error("Một hoặc nhiều phần tử của trình phát nhạc hoặc lời bài hát không được tìm thấy trong DOM!");
         const playerContainer = document.getElementById('musicPlayerContainer');
-        if(playerContainer) playerContainer.style.display = 'none'; // Ẩn trình phát nhạc nếu thiếu phần tử
-        return; // Không tiếp tục nếu thiếu phần tử
+        if(playerContainer) playerContainer.style.display = 'none';
+        return;
     }
 
     loadTrack(currentTrackIndex);
-    setVolume(); // Đặt âm lượng ban đầu
+    setVolume();
 
     playPauseMusicBtn.addEventListener('click', togglePlayPause);
     stopMusicBtn.addEventListener('click', stopAudio);
     musicProgressBar.addEventListener('input', seekAudio);
     audioPlayer.addEventListener('timeupdate', () => {
         updateProgressBar();
-        if (audioPlayer) { // Kiểm tra audioPlayer tồn tại
+        if (audioPlayer) {
              updateLyrics(audioPlayer.currentTime);
         }
     });
     audioPlayer.addEventListener('loadedmetadata', setAudioDuration);
-    audioPlayer.addEventListener('ended', playNextTrackHandler); // Tự động chuyển bài khi kết thúc
+    audioPlayer.addEventListener('ended', playNextTrackHandler);
 
     volumeSlider.addEventListener('input', setVolume);
     volumeBtn.addEventListener('click', toggleMute);
@@ -356,7 +354,7 @@ function initializeMusicPlayer() {
     prevTrackBtn.addEventListener('click', playPrevTrackHandler);
     nextTrackBtn.addEventListener('click', playNextTrackHandler);
 
-    updateTrackButtonsState(); // Cập nhật trạng thái nút prev/next ban đầu
+    updateTrackButtonsState();
 }
 
 function loadTrack(trackIndex) {
@@ -365,13 +363,11 @@ function loadTrack(trackIndex) {
         return;
     }
     const track = audioPlaylist[trackIndex];
-    // Lưu trạng thái phát, âm lượng và mute hiện tại trước khi thay đổi src
     const wasPlaying = audioPlayer && !audioPlayer.paused;
     const currentVolume = audioPlayer ? audioPlayer.volume : 1;
     const currentMutedState = audioPlayer ? audioPlayer.muted : false;
 
     audioPlayer.src = track.src;
-    // Áp dụng lại âm lượng và trạng thái mute
     audioPlayer.volume = currentVolume;
     audioPlayer.muted = currentMutedState;
 
@@ -382,29 +378,29 @@ function loadTrack(trackIndex) {
 
     musicProgressBar.value = 0;
     currentTimeEl.textContent = formatTime(0);
-    // durationEl sẽ được cập nhật bởi sự kiện 'loadedmetadata'
 
-    currentLyricIndex = -1; // Reset chỉ số lời bài hát
-    updateLyrics(0); // Cập nhật lời bài hát cho bài mới (nếu có)
+    currentLyricIndex = -1;
+    updateLyrics(0);
 
-    // Nếu bài hát trước đó đang phát, tự động phát bài hát mới
-    if (wasPlaying) {
-        audioPlayer.play().catch(handlePlayError);
+    // The decision to play is now primarily handled by playNextTrackHandler and playPrevTrackHandler
+    // However, keeping this for potential direct loadTrack calls that might expect auto-resume.
+    if (wasPlaying && (audioPlayer.readyState > 0 || audioPlayer.src !== '')) { // Check if it was playing *and* a track is loaded
+         // audioPlayer.play().catch(handlePlayError); // Let handlers manage explicit play
     }
     updatePlayPauseIcon();
     updateTrackButtonsState();
-    updateVolumeIcon(); // Cập nhật icon âm lượng
+    updateVolumeIcon();
 }
 
 function togglePlayPause() {
     if (!audioPlayer) return;
 
-    if (!isVisualizerInitialized && audioPlayer) { // Khởi tạo visualizer nếu chưa có và có audioPlayer
+    if (!isVisualizerInitialized && audioPlayer) {
         setupAudioGraph();
     }
 
     if (audioPlayer.paused || audioPlayer.ended) {
-        if (audioContext && audioContext.state === 'suspended') { // Quan trọng cho autoplay policy
+        if (audioContext && audioContext.state === 'suspended') {
             audioContext.resume().then(() => {
                 audioPlayer.play().catch(handlePlayError);
             }).catch(handlePlayError);
@@ -415,7 +411,7 @@ function togglePlayPause() {
         audioPlayer.pause();
     }
     updatePlayPauseIcon();
-    if (audioPlayer) updateLyrics(audioPlayer.currentTime); // Cập nhật lời bài hát khi play/pause
+    if (audioPlayer) updateLyrics(audioPlayer.currentTime);
 }
 
 function stopAudio() {
@@ -424,15 +420,13 @@ function stopAudio() {
     audioPlayer.currentTime = 0;
     updatePlayPauseIcon();
 
-    // Dừng và xóa visualizer
     if (rafId) {
         cancelAnimationFrame(rafId);
         rafId = null;
-        if(visualizerCtx && visualizerCanvas) { // Kiểm tra visualizerCtx và visualizerCanvas
+        if(visualizerCtx && visualizerCanvas) {
             visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
         }
     }
-    // Ẩn overlay lời bài hát
     if (lyricsOverlay) {
         lyricsOverlay.classList.remove('opacity-100', 'pointer-events-auto');
         lyricsOverlay.classList.add('opacity-0', 'pointer-events-none');
@@ -447,11 +441,11 @@ function stopAudio() {
         nextLyricEl.classList.remove('visible', 'opacity-100');
         nextLyricEl.classList.add('opacity-0');
     }
-    currentLyricIndex = -1; // Reset chỉ số lời bài hát
+    currentLyricIndex = -1;
 }
 
 function updatePlayPauseIcon() {
-    if (!playPauseMusicBtn || !audioPlayer) return; // Kiểm tra cả hai
+    if (!playPauseMusicBtn || !audioPlayer) return;
     if (audioPlayer.paused || audioPlayer.ended) {
         playPauseMusicBtn.innerHTML = '<i class="fas fa-play fa-lg"></i>';
     } else {
@@ -460,28 +454,28 @@ function updatePlayPauseIcon() {
 }
 
 function updateProgressBar() {
-    if (!audioPlayer || !musicProgressBar || !currentTimeEl) return; // Kiểm tra tất cả
-    if (audioPlayer.duration && !isNaN(audioPlayer.duration)) { // Kiểm tra duration hợp lệ
+    if (!audioPlayer || !musicProgressBar || !currentTimeEl) return;
+    if (audioPlayer.duration && !isNaN(audioPlayer.duration)) {
         musicProgressBar.value = audioPlayer.currentTime;
         currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
     }
 }
 
 function setAudioDuration() {
-    if (!audioPlayer || !musicProgressBar || !durationEl) return; // Kiểm tra tất cả
-    if (audioPlayer.duration && !isNaN(audioPlayer.duration)) { // Kiểm tra duration hợp lệ
+    if (!audioPlayer || !musicProgressBar || !durationEl) return;
+    if (audioPlayer.duration && !isNaN(audioPlayer.duration)) {
         musicProgressBar.max = audioPlayer.duration;
         durationEl.textContent = formatTime(audioPlayer.duration);
     }
 }
 
 function seekAudio() {
-    if (!audioPlayer || !musicProgressBar) return; // Kiểm tra cả hai
+    if (!audioPlayer || !musicProgressBar) return;
     audioPlayer.currentTime = musicProgressBar.value;
 }
 
 function formatTime(timeInSeconds) {
-    if (isNaN(timeInSeconds) || timeInSeconds < 0) timeInSeconds = 0; // Xử lý NaN hoặc số âm
+    if (isNaN(timeInSeconds) || timeInSeconds < 0) timeInSeconds = 0;
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = Math.floor(timeInSeconds % 60);
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
@@ -490,39 +484,34 @@ function formatTime(timeInSeconds) {
 function handlePlayError(error) {
     console.error("Lỗi khi phát nhạc:", error.name, error.message);
     if (error.name === 'NotAllowedError') {
-        // Thông báo cho người dùng rằng họ cần tương tác để phát nhạc
         console.warn("Autoplay blocked by browser. User interaction required.");
-        // Có thể hiển thị một thông báo trên UI ở đây
     } else if (error.name === 'AbortError') {
-        // Người dùng đã hủy phát nhạc, không cần làm gì thêm
         console.info("Playback aborted.");
     }
-    // Cập nhật lại icon play/pause nếu có lỗi
     updatePlayPauseIcon();
 }
 
 function setVolume() {
-    if (!audioPlayer || !volumeSlider) return; // Kiểm tra cả hai
+    if (!audioPlayer || !volumeSlider) return;
     const newVolume = parseFloat(volumeSlider.value);
     audioPlayer.volume = newVolume;
-    audioPlayer.muted = (newVolume === 0); // Tự động mute nếu âm lượng là 0
+    audioPlayer.muted = (newVolume === 0);
     updateVolumeIcon();
 }
 
 function toggleMute() {
     if (!audioPlayer) return;
     audioPlayer.muted = !audioPlayer.muted;
-    // Nếu unmute và âm lượng đang là 0, đặt lại âm lượng mặc định (ví dụ 0.5)
     if (!audioPlayer.muted && audioPlayer.volume === 0) {
-        audioPlayer.volume = 0.5; // Hoặc giá trị mặc định bạn muốn
-        if (volumeSlider) volumeSlider.value = audioPlayer.volume.toString(); // Cập nhật thanh trượt
+        audioPlayer.volume = 0.5;
+        if (volumeSlider) volumeSlider.value = audioPlayer.volume.toString();
     }
     updateVolumeIcon();
 }
 
 function updateVolumeIcon() {
     if(!volumeBtn || !audioPlayer) return;
-    volumeBtn.innerHTML = ''; // Xóa icon cũ
+    volumeBtn.innerHTML = '';
     const icon = document.createElement('i');
     icon.classList.add('fas');
     if (audioPlayer.muted || audioPlayer.volume === 0) {
@@ -538,18 +527,31 @@ function updateVolumeIcon() {
 function playNextTrackHandler() {
     currentTrackIndex = (currentTrackIndex + 1) % audioPlaylist.length;
     loadTrack(currentTrackIndex);
-    // Không tự động phát nếu danh sách chỉ có 1 bài và nó vừa kết thúc
-    // Hoặc nếu trình phát đang bị tạm dừng bởi người dùng
-    if(audioPlayer && (!audioPlayer.paused || audioPlaylist.length === 1)){
-        audioPlayer.play().catch(handlePlayError);
+    // Luôn cố gắng phát bài hát tiếp theo sau khi tải
+    if (audioPlayer) {
+        // Đảm bảo audio context được resume nếu cần thiết (quan trọng cho autoplay sau tương tác)
+        if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume().then(() => {
+                audioPlayer.play().catch(handlePlayError);
+            }).catch(handlePlayError);
+        } else {
+            audioPlayer.play().catch(handlePlayError);
+        }
     }
 }
 
 function playPrevTrackHandler() {
     currentTrackIndex = (currentTrackIndex - 1 + audioPlaylist.length) % audioPlaylist.length;
     loadTrack(currentTrackIndex);
-    if(audioPlayer && (!audioPlayer.paused || audioPlaylist.length === 1)){
-         audioPlayer.play().catch(handlePlayError);
+    // Luôn cố gắng phát bài hát trước đó sau khi tải
+    if (audioPlayer) {
+        if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume().then(() => {
+                audioPlayer.play().catch(handlePlayError);
+            }).catch(handlePlayError);
+        } else {
+            audioPlayer.play().catch(handlePlayError);
+        }
     }
 }
 
@@ -559,20 +561,16 @@ function updateTrackButtonsState() {
     prevTrackBtn.disabled = disableButtons;
     nextTrackBtn.disabled = disableButtons;
 
-    // Thêm/xóa class Tailwind cho hiệu ứng disable trực quan hơn
     [prevTrackBtn, nextTrackBtn].forEach(btn => {
         btn.classList.toggle('opacity-50', disableButtons);
-        btn.classList.toggle('cursor-not-allowed', disableButtons); // Tailwind class
+        btn.classList.toggle('cursor-not-allowed', disableButtons);
     });
 }
 
 function updateLyrics(currentTime) {
-    // Kiểm tra các phần tử DOM cần thiết
     if (!audioPlayer || !lyricsOverlay || !currentLyricEl || !nextLyricEl) return;
 
     const currentTrack = audioPlaylist[currentTrackIndex];
-    // Chỉ hiển thị lời bài hát "Phép Màu" nếu nó đang phát
-    // Và phepMauLyrics đã được định nghĩa
     if (!currentTrack || !currentTrack.title || !currentTrack.title.includes("Phép Màu (Đàn Cá Gỗ OST)") || typeof phepMauLyrics === 'undefined') {
         lyricsOverlay.classList.remove('opacity-100', 'pointer-events-auto');
         lyricsOverlay.classList.add('opacity-0', 'pointer-events-none');
@@ -583,14 +581,13 @@ function updateLyrics(currentTime) {
         nextLyricEl.classList.remove('visible', 'opacity-100');
         nextLyricEl.classList.add('opacity-0');
         currentLyricIndex = -1;
-        return; // Dừng hàm nếu không phải bài "Phép Màu" hoặc không có lời
+        return;
     }
 
-    // Hiển thị overlay nếu nhạc đang phát hoặc sẵn sàng phát
-    if (!audioPlayer.paused || audioPlayer.readyState >= 2) { // readyState >= 2 (HAVE_CURRENT_DATA) - đủ dữ liệu để phát frame hiện tại
+    if (!audioPlayer.paused || audioPlayer.readyState >= 2) {
         lyricsOverlay.classList.add('opacity-100', 'pointer-events-auto');
         lyricsOverlay.classList.remove('opacity-0', 'pointer-events-none');
-    } else { // Nếu nhạc đang tạm dừng và chưa sẵn sàng, ẩn overlay
+    } else {
         lyricsOverlay.classList.remove('opacity-100', 'pointer-events-auto');
         lyricsOverlay.classList.add('opacity-0', 'pointer-events-none');
     }
@@ -600,29 +597,27 @@ function updateLyrics(currentTime) {
         if (currentTime >= phepMauLyrics[i].time) {
             newLyricIndex = i;
         } else {
-            break; // Dừng sớm nếu thời gian hiện tại nhỏ hơn thời gian của lời
+            break;
         }
     }
 
     if (newLyricIndex !== currentLyricIndex) {
         currentLyricIndex = newLyricIndex;
 
-        // Cập nhật lời bài hát hiện tại với hiệu ứng
         if (currentLyricIndex !== -1 && phepMauLyrics[currentLyricIndex]) {
             currentLyricEl.classList.remove('active', 'opacity-100', 'translate-y-0');
-            currentLyricEl.classList.add('opacity-0', 'translate-y-1'); // Hiệu ứng trượt ra
-            setTimeout(() => { // Đợi một chút cho hiệu ứng trượt ra rồi mới cập nhật text và trượt vào
+            currentLyricEl.classList.add('opacity-0', 'translate-y-1');
+            setTimeout(() => {
                 currentLyricEl.textContent = phepMauLyrics[currentLyricIndex].text;
                 currentLyricEl.classList.add('active', 'opacity-100', 'translate-y-0');
                 currentLyricEl.classList.remove('opacity-0', 'translate-y-1');
-            }, 50); // Thời gian delay nhỏ cho hiệu ứng
+            }, 50);
         } else {
-            currentLyricEl.textContent = ''; // Xóa nếu không có lời
+            currentLyricEl.textContent = '';
             currentLyricEl.classList.remove('active', 'opacity-100', 'translate-y-0');
             currentLyricEl.classList.add('opacity-0', 'translate-y-1');
         }
 
-        // Cập nhật lời bài hát tiếp theo với hiệu ứng
         const nextIndex = currentLyricIndex + 1;
         if (nextIndex < phepMauLyrics.length && phepMauLyrics[nextIndex] && phepMauLyrics[nextIndex].text.trim() !== "") {
              nextLyricEl.classList.remove('visible', 'opacity-100');
@@ -631,9 +626,9 @@ function updateLyrics(currentTime) {
                 nextLyricEl.textContent = phepMauLyrics[nextIndex].text;
                 nextLyricEl.classList.add('visible', 'opacity-100');
                 nextLyricEl.classList.remove('opacity-0');
-            }, 100); // Delay lớn hơn một chút cho lời tiếp theo
+            }, 100);
         } else {
-            nextLyricEl.textContent = ''; // Xóa nếu không có lời tiếp theo
+            nextLyricEl.textContent = '';
             nextLyricEl.classList.remove('visible', 'opacity-100');
             nextLyricEl.classList.add('opacity-0');
         }
@@ -641,36 +636,33 @@ function updateLyrics(currentTime) {
 }
 
 function setupAudioGraph() {
-    if (isVisualizerInitialized || !audioPlayer) return; // Không làm gì nếu đã khởi tạo hoặc không có audioPlayer
+    if (isVisualizerInitialized || !audioPlayer) return;
 
     try {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         analyser = audioContext.createAnalyser();
-        analyser.fftSize = 256; // Kích thước FFT, có thể điều chỉnh
+        analyser.fftSize = 256;
 
-        // Kiểm tra xem sourceNode đã được tạo trước đó chưa
-        // Điều này quan trọng nếu hàm này được gọi lại (ví dụ khi chuyển bài)
-        // Tuy nhiên, với logic hiện tại, sourceNode nên được tạo một lần cho mỗi audioPlayer
         if (!sourceNode || sourceNode.mediaElement !== audioPlayer) {
             sourceNode = audioContext.createMediaElementSource(audioPlayer);
         }
 
         sourceNode.connect(analyser);
-        analyser.connect(audioContext.destination); // Kết nối analyser với output
+        analyser.connect(audioContext.destination);
 
         dataArray = new Uint8Array(analyser.frequencyBinCount);
         isVisualizerInitialized = true;
         console.log("Audio graph setup complete for visualizer.");
     } catch (e) {
         console.error("Lỗi khởi tạo AudioContext hoặc Analyser cho visualizer:", e);
-        if (visualizerCanvas) visualizerCanvas.style.display = 'none'; // Ẩn canvas nếu có lỗi
-        isVisualizerInitialized = false; // Đặt lại trạng thái
+        if (visualizerCanvas) visualizerCanvas.style.display = 'none';
+        isVisualizerInitialized = false;
     }
 }
 
 function initializeVisualizerCanvas() {
     visualizerCanvas = document.getElementById('musicVisualizer');
-    const imagePlaceholderContainer = document.querySelector('.image-placeholder-container'); // Phần tử chứa ảnh avatar
+    const imagePlaceholderContainer = document.querySelector('.image-placeholder-container');
 
     if (!visualizerCanvas || !imagePlaceholderContainer) {
         console.error("Visualizer: Không tìm thấy canvas hoặc image placeholder container.");
@@ -683,36 +675,34 @@ function initializeVisualizerCanvas() {
     function setCanvasDimensions() {
         if (!imagePlaceholderContainer || !visualizerCanvas) return;
         const avatarRect = imagePlaceholderContainer.getBoundingClientRect();
-        visualizerCanvas.height = avatarRect.height > 0 ? avatarRect.height : 300; // Đảm bảo có chiều cao
-        visualizerCanvas.width = 60; // Chiều rộng cố định cho visualizer dạng thanh dọc
+        visualizerCanvas.height = avatarRect.height > 0 ? avatarRect.height : 300;
+        visualizerCanvas.width = 60;
 
-        // Xóa canvas khi thay đổi kích thước và nhạc đang dừng (để tránh vẽ lại hình cũ)
         if (visualizerCtx && (!rafId || (audioPlayer && audioPlayer.paused))) {
              visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
         }
     }
 
-    setCanvasDimensions(); // Đặt kích thước ban đầu
-    window.addEventListener('resize', setCanvasDimensions); // Cập nhật khi thay đổi kích thước cửa sổ
+    setCanvasDimensions();
+    window.addEventListener('resize', setCanvasDimensions);
 
     if (audioPlayer) {
         audioPlayer.addEventListener('play', () => {
-            if (!isVisualizerInitialized) { // Chỉ setup graph nếu chưa có
+            if (!isVisualizerInitialized) {
                 setupAudioGraph();
             }
-            // Xử lý AudioContext bị tạm dừng (do chính sách autoplay)
             if (isVisualizerInitialized && audioContext && audioContext.state === 'suspended') {
                 audioContext.resume().then(() => {
-                    if (!rafId) drawVisualizerLoop(); // Bắt đầu vòng lặp vẽ nếu chưa chạy
+                    if (!rafId) drawVisualizerLoop();
                 }).catch(e => console.error("Error resuming AudioContext for visualizer:", e));
-            } else if (isVisualizerInitialized && !rafId) { // Nếu đã init và chưa có vòng lặp
+            } else if (isVisualizerInitialized && !rafId) {
                 drawVisualizerLoop();
             }
         });
 
         audioPlayer.addEventListener('pause', () => {
             if (rafId) {
-                cancelAnimationFrame(rafId); // Dừng vòng lặp vẽ
+                cancelAnimationFrame(rafId);
                 rafId = null;
             }
         });
@@ -721,7 +711,7 @@ function initializeVisualizerCanvas() {
             if (rafId) {
                 cancelAnimationFrame(rafId);
                 rafId = null;
-                if(visualizerCtx && visualizerCanvas) { // Xóa canvas khi nhạc kết thúc
+                if(visualizerCtx && visualizerCanvas) {
                     visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
                 }
             }
@@ -731,39 +721,36 @@ function initializeVisualizerCanvas() {
 
 function drawVisualizerLoop() {
     if (!isVisualizerInitialized || !analyser || !visualizerCtx || !dataArray || !visualizerCanvas) {
-        if (rafId) cancelAnimationFrame(rafId); // Dừng nếu thiếu bất kỳ thành phần nào
+        if (rafId) cancelAnimationFrame(rafId);
         rafId = null;
         return;
     }
 
-    rafId = requestAnimationFrame(drawVisualizerLoop); // Tiếp tục vòng lặp
+    rafId = requestAnimationFrame(drawVisualizerLoop);
 
-    analyser.getByteFrequencyData(dataArray); // Lấy dữ liệu tần số
+    analyser.getByteFrequencyData(dataArray);
 
-    visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height); // Xóa frame trước
+    visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
 
-    const numBars = 32; // Số lượng thanh visualizer (điều chỉnh cho phù hợp)
-    const barThickness = (visualizerCanvas.height / numBars) * 0.75; // Độ dày của mỗi thanh
-    const barSpacing = (visualizerCanvas.height / numBars) * 0.25; // Khoảng cách giữa các thanh
-    let currentY = barSpacing / 2; // Vị trí Y bắt đầu của thanh đầu tiên
+    const numBars = 32;
+    const barThickness = (visualizerCanvas.height / numBars) * 0.75;
+    const barSpacing = (visualizerCanvas.height / numBars) * 0.25;
+    let currentY = barSpacing / 2;
 
-    const bufferLength = analyser.frequencyBinCount; // Số lượng điểm dữ liệu tần số
+    const bufferLength = analyser.frequencyBinCount;
 
     for (let i = 0; i < numBars; i++) {
-        // Lấy một mẫu từ dataArray, trải đều hơn trên dải tần số thấp và trung
-        const dataArrayIndex = Math.min(bufferLength - 1, Math.floor((i / numBars) * (bufferLength * 0.75))); // Tập trung vào 3/4 dải tần số đầu
-        const barLengthFraction = dataArray[dataArrayIndex] / 255.0; // Chuẩn hóa giá trị (0 đến 1)
-        let barLength = barLengthFraction * visualizerCanvas.width; // Chiều dài thanh tương ứng với chiều rộng canvas
+        const dataArrayIndex = Math.min(bufferLength - 1, Math.floor((i / numBars) * (bufferLength * 0.75)));
+        const barLengthFraction = dataArray[dataArrayIndex] / 255.0;
+        let barLength = barLengthFraction * visualizerCanvas.width;
 
-        // Đảm bảo thanh có chiều dài tối thiểu nếu có tín hiệu, và không vượt quá chiều rộng canvas
-        if (barLength < 1 && dataArray[dataArrayIndex] > 0) barLength = 1; // Chiều dài tối thiểu
+        if (barLength < 1 && dataArray[dataArrayIndex] > 0) barLength = 1;
         if (barLength > visualizerCanvas.width) barLength = visualizerCanvas.width;
 
-        // Vẽ thanh
-        visualizerCtx.fillStyle = '#a78bfa'; // Màu của thanh (màu tím nhạt từ theme)
-        visualizerCtx.fillRect(0, currentY, barLength, barThickness); // Vẽ từ trái sang phải
+        visualizerCtx.fillStyle = '#a78bfa';
+        visualizerCtx.fillRect(0, currentY, barLength, barThickness);
 
-        currentY += barThickness + barSpacing; // Di chuyển đến vị trí Y của thanh tiếp theo
+        currentY += barThickness + barSpacing;
     }
 }
 
@@ -772,7 +759,7 @@ function initializeDonateSection() {
     const toggleQrButtons = document.querySelectorAll('.toggle-qr-btn');
     toggleQrButtons.forEach(button => {
         button.addEventListener('click', () => {
-            const targetId = button.dataset.qrTarget; // Lấy ID từ data-qr-target
+            const targetId = button.dataset.qrTarget;
             const qrPlaceholder = document.getElementById(targetId);
             if (qrPlaceholder) {
                 const isHidden = qrPlaceholder.classList.contains('hidden');
@@ -794,31 +781,26 @@ function copyTextToClipboard(text, notificationElement) {
         return;
     }
 
-    // Sử dụng navigator.clipboard API nếu có thể (an toàn hơn và hiện đại hơn)
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(() => {
             if (notificationElement) {
                 notificationElement.classList.remove('hidden');
                 setTimeout(() => {
                     notificationElement.classList.add('hidden');
-                }, 2000); // Ẩn thông báo sau 2 giây
+                }, 2000);
             }
         }).catch(err => {
             console.error('Không thể sao chép bằng navigator.clipboard: ', err);
-            // Fallback về document.execCommand nếu navigator.clipboard thất bại hoặc không có sẵn
             copyTextWithExecCommand(text, notificationElement);
         });
     } else {
-        // Fallback cho các trình duyệt cũ hơn
         copyTextWithExecCommand(text, notificationElement);
     }
 }
 
-// Hàm fallback sử dụng document.execCommand
 function copyTextWithExecCommand(text, notificationElement) {
     const textArea = document.createElement("textarea");
     textArea.value = text;
-    // Đảm bảo textarea không hiển thị trên màn hình
     textArea.style.position = "fixed";
     textArea.style.left = "-9999px";
     document.body.appendChild(textArea);
@@ -835,11 +817,9 @@ function copyTextWithExecCommand(text, notificationElement) {
             }
         } else {
             console.error('Không thể sao chép bằng document.execCommand.');
-            // Có thể hiển thị thông báo lỗi cho người dùng ở đây
         }
     } catch (err) {
         console.error('Lỗi khi sao chép bằng document.execCommand: ', err);
-        // Có thể hiển thị thông báo lỗi cho người dùng ở đây
     }
     document.body.removeChild(textArea);
 }
@@ -852,7 +832,7 @@ function initializeCopyButtons() {
 
     const copyBankBtn = document.getElementById('copyAccountNumberBtn');
     const accountNumberEl = document.getElementById('accountNumber');
-    const bankNotificationEl = document.getElementById('copyNotification'); // ID này là 'copyNotification' trong HTML của bạn
+    const bankNotificationEl = document.getElementById('copyNotification');
 
     if (copyMomoBtn && momoNumberEl && momoNotificationEl) {
         copyMomoBtn.addEventListener('click', () => {
@@ -873,27 +853,24 @@ function initializeCopyButtons() {
 // --- END: Các hàm gốc ---
 
 
-// --- Hàm khởi tạo toàn bộ ứng dụng trang (Nội dung gốc của DOMContentLoaded) ---
+// --- Hàm khởi tạo toàn bộ ứng dụng trang ---
 function initializePageApplication() {
     renderShortcuts();
-    initializeMusicPlayer(); // Khởi tạo trình phát nhạc trước
-    initializeSearchSuggestions(); // Sau đó khởi tạo gợi ý tìm kiếm (để có thể lấy tên bài hát)
+    initializeMusicPlayer();
+    initializeSearchSuggestions();
 
-    // Chỉ khởi tạo visualizer nếu có musicPlayerContainer (tránh lỗi nếu trình phát nhạc bị ẩn)
     if (document.getElementById('musicPlayerContainer')) {
         initializeVisualizerCanvas();
     }
 
-    // audioPlayer được khởi tạo trong initializeMusicPlayer
-    if (audioPlayer) { // Kiểm tra audioPlayer tồn tại
-        updateLyrics(audioPlayer.currentTime); // Cập nhật lời bài hát ban đầu
+    if (audioPlayer) {
+        updateLyrics(audioPlayer.currentTime);
     }
 
     const searchButton = document.getElementById('searchButton');
     if (searchButton) {
         searchButton.addEventListener('click', performSearch);
     }
-    // Cho phép tìm kiếm bằng Enter trong ô input
     const searchInputEl = document.getElementById('searchInput');
     if (searchInputEl) {
         searchInputEl.addEventListener('keypress', function(event) {
@@ -925,70 +902,50 @@ window.addEventListener('load', () => {
     const acceptButton = document.getElementById(acceptAccessBtnId);
     const modalContentArea = document.getElementById(modalContentAreaId);
 
-    // Thời gian tối thiểu hiển thị màn hình loading (miligiây)
-    const minLoadingTime = 2500; // Giữ nguyên hoặc điều chỉnh nếu muốn
+    const minLoadingTime = 2500;
 
-    document.body.classList.add('loading'); // Thêm class để ẩn cuộn
+    document.body.classList.add('loading');
 
     setTimeout(() => {
         if (loadingScreen) {
-            // Bắt đầu làm mờ màn hình loading
             loadingScreen.style.opacity = '0';
-            // Sau khi hiệu ứng làm mờ hoàn tất, ẩn nó đi
-            // Sử dụng { once: true } để listener tự động gỡ bỏ sau khi chạy 1 lần
             loadingScreen.addEventListener('transitionend', () => {
                 loadingScreen.style.display = 'none';
             }, { once: true });
         }
 
-        // Hiển thị nội dung trang
         if (pageContent) {
             pageContent.classList.remove('hidden');
-            // Kích hoạt reflow để đảm bảo transition opacity hoạt động sau khi display:none được gỡ bỏ
-            // pageContent.offsetHeight; // Dòng này có thể không cần thiết nếu dùng requestAnimationFrame
             requestAnimationFrame(() => {
-                 pageContent.style.opacity = '1'; // Kích hoạt hiệu ứng fade-in
+                 pageContent.style.opacity = '1';
             });
         }
 
-        // Khởi tạo các chức năng của trang
-        initializePageApplication(); // Gọi hàm khởi tạo chính
-        document.body.classList.remove('loading'); // Xóa class để cho phép cuộn lại
+        initializePageApplication();
+        document.body.classList.remove('loading');
 
-        // Hiển thị modal sau một khoảng trễ nhỏ
         if (accessModal && modalContentArea) {
             setTimeout(() => {
                 accessModal.classList.remove('hidden');
-                 // Kích hoạt reflow
-                // accessModal.offsetHeight;
                 requestAnimationFrame(() => {
                     accessModal.style.opacity = '1';
                     modalContentArea.style.opacity = '1';
                     modalContentArea.style.transform = 'scale(1)';
                 });
-            }, 500); // Hiện modal sau 0.5 giây khi nội dung trang đã bắt đầu hiển thị
+            }, 500);
         }
 
     }, minLoadingTime);
 
-    // Xử lý nút "Truy cập" trong modal
     if (acceptButton && accessModal && modalContentArea) {
         acceptButton.addEventListener('click', () => {
-            // Bắt đầu hiệu ứng cho modal content trước
             modalContentArea.style.opacity = '0';
             modalContentArea.style.transform = 'scale(0.95)';
-
-            // Bắt đầu hiệu ứng cho modal background sau một chút
-            // Hoặc cùng lúc tùy theo ý muốn
             accessModal.style.opacity = '0';
             
-            // Đợi hiệu ứng của accessModal (là phần tử chính của modal) hoàn tất
-            // rồi mới thêm class 'hidden' để tránh giật cục
             accessModal.addEventListener('transitionend', function handleTransitionEnd(e) {
-                // Chỉ xử lý khi transition của chính accessModal và là opacity
                 if (e.target === accessModal && e.propertyName === 'opacity') {
                     accessModal.classList.add('hidden');
-                    // Gỡ bỏ listener để tránh bị gọi lại ngoài ý muốn nếu có các transition khác
                     accessModal.removeEventListener('transitionend', handleTransitionEnd);
                 }
             });
