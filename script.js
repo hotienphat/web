@@ -59,10 +59,10 @@ const audioPlaylist = [
         albumArt: "./Backround sound/Phepmaulogo.jpg" // Đường dẫn đến ảnh album
     },
     {
-        title: "My Curse, My Fate",
-        artist: "Sān-Z · HOYO-MiX",
-        src: "./Backround sound/My Curse, My Fate - Sān-Z.mp3", // Đảm bảo đường dẫn này đúng
-        albumArt: "./Backround sound/My Curse, My Fate logo.png" // Đảm bảo đường dẫn này đúng
+        title: "Còn Gì Đẹp Hơn (Mưa Đỏ Original Soundtrack)",
+        artist: "Nguyễn Hùng",
+        src: "./Backround sound/congidephon.mp3", // Đảm bảo đường dẫn này đúng
+        albumArt: "./Backround sound/CGDH.jpg" // Đảm bảo đường dẫn này đúng
     }
 ];
 let currentTrackIndex = 0;
