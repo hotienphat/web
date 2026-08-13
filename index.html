@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Trang cá nhân của Hồ Tiến Phát (Fot) - Lập trình, Nghe nhạc, Chơi game. Khám phá không gian số của mình!">
-    <link rel="icon" type="image/x-icon" href="./Backround sound/Logoweb.svg">
+    <link rel="icon" type="image/x-icon" href="./Backround sound/avt.png">
     <title>Hồ Tiến Phát — Portfolio</title>
 
     <!-- Fonts are loaded via CSS @import -->
@@ -22,9 +22,9 @@
     </div>
 
     <!-- ===== BACKGROUND CANVASES ===== -->
-    <canvas id="particles-canvas"></canvas>
-    <canvas id="cursor-trail-canvas"></canvas>
-    <div class="noise-overlay"></div>
+    <canvas id="particles-canvas" aria-hidden="true"></canvas>
+    <canvas id="cursor-trail-canvas" aria-hidden="true"></canvas>
+    <div class="noise-overlay" aria-hidden="true"></div>
 
     <!-- ===== PAGE CONTENT ===== -->
     <div id="page-content" class="hidden">
@@ -34,8 +34,8 @@
             <div class="container header-inner">
                 <a href="#" class="logo-text">Hồ Tiến Phát</a>
                 <div class="search-container">
-                    <input type="text" id="searchInput" placeholder="Tìm kiếm..." class="search-input" autocomplete="off">
-                    <button id="searchButton" title="Tìm kiếm">
+                    <input type="text" id="searchInput" aria-label="Tìm kiếm" placeholder="Tìm kiếm..." class="search-input" autocomplete="off">
+                    <button id="searchButton" title="Tìm kiếm" aria-label="Tìm kiếm">
                         <i class="fas fa-search"></i>
                     </button>
                     <div id="suggestionsDropdown" class="suggestions-dropdown hidden"></div>
@@ -57,17 +57,17 @@
                 <p class="hero-tagline" id="hero-tagline"><span class="typewriter-cursor"></span></p>
 
                 <div class="hero-social-links">
-                    <a href="https://www.facebook.com/KaedeharaKazuha0805" target="_blank" rel="noopener noreferrer" class="social-icon" title="Facebook">
-                        <i class="fab fa-facebook-f"></i>
+                    <a href="https://www.facebook.com/KaedeharaKazuha0805" target="_blank" rel="noopener noreferrer" class="social-icon" title="Facebook" aria-label="Facebook">
+                        <i class="fab fa-facebook-f" aria-hidden="true"></i>
                     </a>
-                    <a href="https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Fhotien_boyneh%2F&is_from_rle" target="_blank" rel="noopener noreferrer" class="social-icon" title="Instagram">
-                        <i class="fab fa-instagram"></i>
+                    <a href="https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Fhotien_boyneh%2F&is_from_rle" target="_blank" rel="noopener noreferrer" class="social-icon" title="Instagram" aria-label="Instagram">
+                        <i class="fab fa-instagram" aria-hidden="true"></i>
                     </a>
-                    <a href="https://www.threads.net/@hotien_boyneh" target="_blank" rel="noopener noreferrer" class="social-icon" title="Threads">
-                        <i class="fab fa-threads"></i>
+                    <a href="https://www.threads.net/@hotien_boyneh" target="_blank" rel="noopener noreferrer" class="social-icon" title="Threads" aria-label="Threads">
+                        <i class="fab fa-threads" aria-hidden="true"></i>
                     </a>
-                    <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="social-icon" title="YouTube">
-                        <i class="fab fa-youtube"></i>
+                    <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="social-icon" title="YouTube" aria-label="YouTube">
+                        <i class="fab fa-youtube" aria-hidden="true"></i>
                     </a>
                 </div>
             </div>
@@ -119,6 +119,24 @@
                 </div>
             </section>
 
+            <!-- SKILLS SECTION -->
+            <section id="skills-section" class="content-section">
+                <div class="section-header reveal-element">
+                    <h2 class="section-title gradient-text">Kỹ Năng & Công Cụ</h2>
+                    <p class="section-subtitle">Những công nghệ và công cụ mình thường sử dụng</p>
+                    <div class="section-divider"></div>
+                </div>
+                <div class="skills-grid reveal-element">
+                    <div class="skill-card" title="HTML5"><i class="fab fa-html5" style="color: #E34F26;"></i><span>HTML5</span></div>
+                    <div class="skill-card" title="CSS3"><i class="fab fa-css3-alt" style="color: #1572B6;"></i><span>CSS3</span></div>
+                    <div class="skill-card" title="JavaScript"><i class="fab fa-js" style="color: #F7DF1E;"></i><span>JavaScript</span></div>
+                    <div class="skill-card" title="React"><i class="fab fa-react" style="color: #61DAFB;"></i><span>React</span></div>
+                    <div class="skill-card" title="Python"><i class="fab fa-python" style="color: #3776AB;"></i><span>Python</span></div>
+                    <div class="skill-card" title="Node.js"><i class="fab fa-node-js" style="color: #339933;"></i><span>Node.js</span></div>
+                    <div class="skill-card" title="GitHub"><i class="fab fa-github" style="color: #ffffff;"></i><span>GitHub</span></div>
+                </div>
+            </section>
+
             <!-- SHORTCUTS -->
             <section id="shortcuts-section" class="content-section">
                 <div class="section-header reveal-element">
@@ -127,6 +145,43 @@
                     <div class="section-divider"></div>
                 </div>
                 <div id="shortcutsContainer"></div>
+            </section>
+
+            <!-- PROJECTS SECTION -->
+            <section id="projects-section" class="content-section">
+                <div class="section-header reveal-element">
+                    <h2 class="section-title gradient-text">Dự Án Nổi Bật</h2>
+                    <p class="section-subtitle">Một số sản phẩm cá nhân mình đã phát triển</p>
+                    <div class="section-divider"></div>
+                </div>
+                <div class="projects-grid reveal-element">
+                    <!-- Project 1 -->
+                    <div class="project-card">
+                        <div class="project-img-wrapper">
+                            <div class="placeholder-img" style="background: linear-gradient(135deg, var(--bg-surface), #1a1a3a); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: rgba(255,255,255,0.1);"><i class="fas fa-laptop-code"></i></div>
+                        </div>
+                        <div class="project-content">
+                            <h3>Portfolio 3D Interactive</h3>
+                            <p>Trang web cá nhân mang phong cách Glassmorphism với hiệu ứng hạt phân tử, trình phát nhạc bong bóng và sóng âm hình tròn.</p>
+                            <div class="project-tags">
+                                <span>HTML5</span><span>CSS3</span><span>Vanilla JS</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Project 2 -->
+                    <div class="project-card">
+                        <div class="project-img-wrapper">
+                            <div class="placeholder-img" style="background: linear-gradient(135deg, var(--bg-surface), #1a1a3a); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: rgba(255,255,255,0.1);"><i class="fas fa-music"></i></div>
+                        </div>
+                        <div class="project-content">
+                            <h3>Web Audio Visualizer</h3>
+                            <p>Ứng dụng chơi nhạc tích hợp AudioContext API, phân tích và vẽ sóng âm thanh thời gian thực ngay trên thẻ Canvas.</p>
+                            <div class="project-tags">
+                                <span>Web Audio API</span><span>Canvas</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <!-- DONATE -->
@@ -199,6 +254,30 @@
                 </div>
             </section>
 
+            <!-- CONTACT SECTION -->
+            <section id="contact-section" class="content-section">
+                <div class="section-header reveal-element">
+                    <h2 class="section-title gradient-text">Liên Hệ</h2>
+                    <p class="section-subtitle">Sẵn sàng hợp tác hoặc trao đổi? Hãy để lại lời nhắn cho mình!</p>
+                    <div class="section-divider"></div>
+                </div>
+                <div class="contact-container reveal-element">
+                    <form class="contact-form" action="https://formsubmit.co/tienfot208@gmail.com" method="POST">
+                        <!-- Cấu hình ẩn của FormSubmit -->
+                        <input type="hidden" name="_subject" value="[Portfolio] Có tin nhắn liên hệ mới!">
+                        <input type="hidden" name="_captcha" value="false">
+                        
+                        <div class="form-group">
+                            <input type="text" name="Tên" placeholder="Tên của bạn" required class="form-input">
+                            <input type="email" name="Email" placeholder="Email của bạn" required class="form-input">
+                        </div>
+                        <input type="text" name="Chủ đề" placeholder="Chủ đề (Không bắt buộc)" class="form-input">
+                        <textarea name="Nội dung" placeholder="Nội dung tin nhắn..." required class="form-textarea" rows="4"></textarea>
+                        <button type="submit" class="submit-btn">Gửi Tin Nhắn <i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </section>
+
         </main>
 
         <!-- FOOTER -->
@@ -223,6 +302,9 @@
 
     <!-- ===== LYRICS OVERLAY ===== -->
     <div id="lyricsOverlay">
+        <button id="closeLyricsBtn" class="close-lyrics-btn" title="Đóng lời bài hát" aria-label="Đóng lời bài hát">
+            <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
         <p id="currentLyric"></p>
         <p id="nextLyric"></p>
     </div>
@@ -256,17 +338,17 @@
             <!-- Controls -->
             <div class="player-controls">
                 <div class="control-buttons">
-                    <button id="prevTrackBtn" title="Bài trước" class="music-control-button">
-                        <i class="fas fa-backward-step fa-lg"></i>
+                    <button id="prevTrackBtn" title="Bài trước" aria-label="Bài trước" class="music-control-button">
+                        <i class="fas fa-backward-step fa-lg" aria-hidden="true"></i>
                     </button>
-                    <button id="playPauseMusicBtn" title="Phát/Tạm dừng" class="music-control-button">
-                        <i class="fas fa-play fa-lg"></i>
+                    <button id="playPauseMusicBtn" title="Phát/Tạm dừng" aria-label="Phát/Tạm dừng" class="music-control-button">
+                        <i class="fas fa-play fa-lg" aria-hidden="true"></i>
                     </button>
-                    <button id="stopMusicBtn" title="Dừng" class="music-control-button">
-                        <i class="fas fa-stop fa-lg"></i>
+                    <button id="stopMusicBtn" title="Dừng" aria-label="Dừng" class="music-control-button">
+                        <i class="fas fa-stop fa-lg" aria-hidden="true"></i>
                     </button>
-                    <button id="nextTrackBtn" title="Bài kế tiếp" class="music-control-button">
-                        <i class="fas fa-forward-step fa-lg"></i>
+                    <button id="nextTrackBtn" title="Bài kế tiếp" aria-label="Bài kế tiếp" class="music-control-button">
+                        <i class="fas fa-forward-step fa-lg" aria-hidden="true"></i>
                     </button>
                 </div>
                 <div class="progress-wrapper">
@@ -278,10 +360,13 @@
 
             <!-- Volume -->
             <div class="volume-controls">
-                <button id="volumeBtn" title="Tắt/Mở tiếng" class="music-control-button">
-                    <i class="fas fa-volume-high"></i>
+                <button id="toggleLyricsBtn" title="Bật/Tắt Lời Bài Hát" aria-label="Bật/Tắt Lời Bài Hát" class="music-control-button" style="color: var(--accent-cyan);">
+                    <i class="fas fa-closed-captioning" aria-hidden="true"></i>
                 </button>
-                <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+                <button id="volumeBtn" title="Tắt/Mở tiếng" aria-label="Tắt/Mở tiếng" class="music-control-button">
+                    <i class="fas fa-volume-high" aria-hidden="true"></i>
+                </button>
+                <input type="range" id="volumeSlider" aria-label="Âm lượng" min="0" max="1" step="0.01" value="1">
             </div>
         </div>
     </div>
