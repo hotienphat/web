@@ -118,6 +118,7 @@ let playPauseMusicBtn, stopMusicBtn, musicProgressBar, albumArtElement;
 let currentTimeEl, durationEl, songTitleEl, songArtistEl;
 let volumeBtn, volumeSlider, prevTrackBtn, nextTrackBtn;
 let lyricsOverlay, currentLyricEl, nextLyricEl, nowPlayingIndicator;
+let isLyricsEnabled = true;
 
 // Search
 let searchInput, suggestionsDropdown, searchKeywords = [];
@@ -130,11 +131,18 @@ class ParticleSystem {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
         if (!this.canvas) return;
+        
+        // Disable if user prefers reduced motion
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            this.canvas.style.display = 'none';
+            return;
+        }
+        
         this.ctx = this.canvas.getContext('2d');
         this.particles = [];
         this.mouseX = 0;
         this.mouseY = 0;
-        this.particleCount = window.innerWidth < 768 ? 50 : 120;
+        this.particleCount = window.innerWidth < 768 ? 25 : 100;
         this.connectionDistance = 160;
         this.rafId = null;
 
@@ -236,8 +244,11 @@ class CursorTrail {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
         if (!this.canvas) return;
-        // Disable on touch devices
-        if ('ontouchstart' in window) { this.canvas.style.display = 'none'; return; }
+        // Disable on touch devices or if prefers reduced motion
+        if ('ontouchstart' in window || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { 
+            this.canvas.style.display = 'none'; 
+            return; 
+        }
 
         this.ctx = this.canvas.getContext('2d');
         this.points = [];
@@ -348,8 +359,8 @@ function typewriterEffect(elementId, texts, speed = 60, pause = 2000) {
         setTimeout(type, nextDelay);
     }
 
-    // Start after a delay for hero animation
-    setTimeout(type, 1800);
+    // Start after a delay for hero animation (reduced for faster loading)
+    setTimeout(type, 800);
 }
 
 // ============================================
@@ -600,6 +611,9 @@ function initMusicPlayer() {
     const playerContainer = document.getElementById('musicPlayerContainer');
     const playerBubble = document.getElementById('playerBubble');
     const closePlayerBtn = document.getElementById('closePlayerBtn');
+    const playerPanel = document.getElementById('playerPanel');
+    const toggleLyricsBtn = document.getElementById('toggleLyricsBtn');
+    const closeLyricsBtn = document.getElementById('closeLyricsBtn');
     
     if (playerBubble && playerContainer) {
         playerBubble.addEventListener('click', () => {
@@ -663,6 +677,47 @@ function initMusicPlayer() {
     prevTrackBtn.addEventListener('click', playPrevTrack);
     nextTrackBtn.addEventListener('click', playNextTrack);
     updateTrackButtonsState();
+    updateVolumeIcon();
+
+    // Toggle Lyrics Button
+    if (toggleLyricsBtn) {
+        toggleLyricsBtn.addEventListener('click', () => {
+            isLyricsEnabled = !isLyricsEnabled;
+            updateLyricsIcon();
+            if (audioPlayer) updateLyrics(audioPlayer.currentTime);
+        });
+    }
+    
+    // Close Lyrics Button
+    if (closeLyricsBtn) {
+        closeLyricsBtn.addEventListener('click', () => {
+            isLyricsEnabled = false;
+            updateLyricsIcon();
+            if (audioPlayer) updateLyrics(audioPlayer.currentTime);
+        });
+    }
+}
+
+function updateLyricsIcon() {
+    if (!toggleLyricsBtn) return;
+    toggleLyricsBtn.style.opacity = isLyricsEnabled ? '1' : '0.5';
+    toggleLyricsBtn.style.color = isLyricsEnabled ? 'var(--accent-cyan)' : 'inherit';
+}
+
+function togglePlayerPanel(e) {
+    if (!audioPlayer) return;
+    if (!isVisualizerInitialized) setupAudioGraph();
+
+    if (audioPlayer.paused || audioPlayer.ended) {
+        if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume().then(() => audioPlayer.play().catch(handlePlayError)).catch(handlePlayError);
+        } else {
+            audioPlayer.play().catch(handlePlayError);
+        }
+    } else {
+        audioPlayer.pause();
+    }
+    if (audioPlayer) updateLyrics(audioPlayer.currentTime);
 }
 
 function loadTrack(idx) {
@@ -832,8 +887,12 @@ function updateTrackButtonsState() {
 // ============================================
 // LYRICS
 // ============================================
+// Update Lyrics UI
 function updateLyrics(time) {
-    if (!audioPlayer || !lyricsOverlay || !currentLyricEl || !nextLyricEl) return;
+    if (!isLyricsEnabled || !audioPlayer || !lyricsOverlay || !currentLyricEl || !nextLyricEl) {
+        if (lyricsOverlay) lyricsOverlay.classList.remove('visible');
+        return;
+    }
 
     const track = audioPlaylist[currentTrackIndex];
     const hasLyrics = track && track.title && track.title.includes("Phép Màu (Đàn Cá Gỗ OST)");
@@ -1181,7 +1240,7 @@ window.addEventListener('load', () => {
     new ParticleSystem('particles-canvas');
     new CursorTrail('cursor-trail-canvas');
 
-    const minLoadTime = 2500;
+    const minLoadTime = 400; // Reduced from 2500ms to avoid artificial delay
 
     setTimeout(() => {
         // Fade out loading screen
