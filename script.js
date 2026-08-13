@@ -1340,3 +1340,34 @@ window.addEventListener('load', () => {
         });
     }
 });
+
+// ==========================================
+// BẢO VỆ BẢN QUYỀN - CHỐNG SAO CHÉP & F12
+// ==========================================
+
+// 1. Chặn chuột phải
+document.addEventListener('contextmenu', event => event.preventDefault());
+
+// 2. Chặn các phím tắt F12, Ctrl+U, Ctrl+Shift+I, v.v.
+document.addEventListener('keydown', (e) => {
+    // Chặn F12
+    if (e.key === 'F12') {
+        e.preventDefault();
+    }
+    // Chặn Ctrl+Shift+I (Mở DevTools)
+    if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) {
+        e.preventDefault();
+    }
+    // Chặn Ctrl+Shift+J (Console)
+    if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) {
+        e.preventDefault();
+    }
+    // Chặn Ctrl+U (View Source)
+    if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+        e.preventDefault();
+    }
+    // Chặn Ctrl+S (Lưu trang web)
+    if (e.ctrlKey && (e.key === 'S' || e.key === 's')) {
+        e.preventDefault();
+    }
+});
