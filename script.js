@@ -49,14 +49,14 @@ const audioPlaylist = [
     {
         title: "Phép Màu (Đàn Cá Gỗ OST)",
         artist: "Mounter x MAYDAYs, Minh Tốc",
-        src: "./Backround sound/phepmau.mp3",
-        albumArt: "./Backround sound/Phepmaulogo.jpg"
+        src: "./assets/phepmau.mp3",
+        albumArt: "./assets/Phepmaulogo.jpg"
     },
     {
         title: "Còn Gì Đẹp Hơn (Mưa Đỏ Original Soundtrack)",
         artist: "Nguyễn Hùng",
-        src: "./Backround sound/congidephon.mp3",
-        albumArt: "./Backround sound/CGDH.jpg"
+        src: "./assets/congidephon.mp3",
+        albumArt: "./assets/CGDH.jpg"
     }
 ];
 
