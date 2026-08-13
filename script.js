@@ -1345,11 +1345,18 @@ window.addEventListener('load', () => {
 // BẢO VỆ BẢN QUYỀN - CHỐNG SAO CHÉP & F12
 // ==========================================
 
-// 1. Chặn chuột phải
-document.addEventListener('contextmenu', event => event.preventDefault());
+// 1. Chặn chuột phải (nhưng cho phép trên input/textarea để paste)
+document.addEventListener('contextmenu', event => {
+    if (event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
+        event.preventDefault();
+    }
+});
 
 // 2. Chặn các phím tắt F12, Ctrl+U, Ctrl+Shift+I, v.v.
 document.addEventListener('keydown', (e) => {
+    // Không block nếu đang gõ trong form
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
     // Chặn F12
     if (e.key === 'F12') {
         e.preventDefault();
