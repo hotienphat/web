@@ -1362,6 +1362,9 @@ input[type="text"], input[type="search"], textarea { cursor: text; }
   transform: translateY(0);
 }
 
+/* Custom Utilities */
+.hidden { display: none !important; }
+
 /* Stagger children */
 .reveal-stagger > * {
   opacity: 0;
