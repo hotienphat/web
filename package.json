@@ -5,7 +5,8 @@
   "main": "script.js",
   "scripts": {
     "build:css": "npx @tailwindcss/cli -i ./input.css -o ./output.css --minify",
-    "watch:css": "npx @tailwindcss/cli -i ./input.css -o ./output.css --watch"
+    "watch:css": "npx @tailwindcss/cli -i ./input.css -o ./output.css --watch",
+    "build:js": "javascript-obfuscator script.js --output script.obfuscated.js --compact true --control-flow-flattening true --dead-code-injection true"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,7 @@
   "homepage": "https://github.com/hotienphat/web#readme",
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.3",
+    "javascript-obfuscator": "^5.5.0",
     "tailwindcss": "^4.3.3"
   }
 }
