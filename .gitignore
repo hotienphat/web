@@ -12,3 +12,7 @@ Desktop.ini
 *.sln
 *.sw?
 .gemini/
+
+# Node
+node_modules/
+package-lock.json
