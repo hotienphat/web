@@ -3,261 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Trang cá nhân của Hồ Tiến Phát (Fot) - Lập trình, Nghe nhạc, Chơi game. Khám phá không gian số của mình!">
     <link rel="icon" type="image/x-icon" href="./Backround sound/Logoweb.svg">
-    <title>Hồ Tiến Phát - Trang Cá Nhân</title>
+    <title>Hồ Tiến Phát — Portfolio</title>
+
+    <!-- Fonts are loaded via CSS @import -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Thêm các style này trực tiếp vào HTML hoặc vào style.css nếu bạn muốn */
-        /* Style cho màn hình loading */
-        #loading-screen {
-            position: fixed;
-            inset: 0;
-            background-color: #111827; /* bg-slate-900 from body */
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            opacity: 1;
-            transition: opacity 0.7s ease-out;
-        }
-
-        .loader {
-            border: 8px solid #374151; /* border-slate-700 */
-            border-top: 8px solid #8b5cf6; /* purple-500 */
-            border-radius: 50%;
-            width: 70px;
-            height: 70px;
-            animation: spin 1.5s linear infinite;
-        }
-
-        #loading-screen p {
-            margin-top: 25px;
-            font-size: 1.15rem; /* text-lg */
-            color: #e5e7eb; /* text-gray-200 */
-            font-weight: 500;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Ẩn nội dung trang và modal ban đầu */
-        #page-content.hidden,
-        #access-modal.hidden {
-            display: none !important;
-        }
-        
-        #page-content {
-            opacity: 0; /* Bắt đầu ẩn để có hiệu ứng fade-in */
-            transition: opacity 0.5s ease-in;
-        }
-
-        /* Style cho modal */
-        #access-modal {
-            opacity: 0; /* Bắt đầu ẩn để có hiệu ứng fade-in */
-            transition: opacity 0.4s ease-out;
-        }
-        #modal-content-area {
-            opacity: 0;
-            transform: scale(0.95);
-            transition: opacity 0.3s ease-out 0.1s, transform 0.3s ease-out 0.1s; /* Delay nhẹ cho content */
-        }
-    </style>
 </head>
-<body class="bg-slate-900 text-gray-200">
+<body>
 
+    <!-- ===== LOADING SCREEN ===== -->
     <div id="loading-screen">
-        <div class="loader"></div>
-        <p>Đang tải trang của Fot...</p>
+        <div class="loader-logo">FOT</div>
+        <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+        <p class="loader-text">Đang tải trang...</p>
     </div>
 
-    <div id="page-content" class="hidden">
-        <div class="min-h-screen flex flex-col pb-28">
-            <header class="p-4 md:p-6 shadow-lg bg-slate-800/50 backdrop-blur-md sticky top-0 z-50">
-                <div class="container mx-auto flex items-center justify-between">
-                    <div class="logo-text">
-                        Hồ Tiến Phát
-                    </div>
-                    <div class="search-container relative flex items-center w-full max-w-md">
-                        <input type="text" id="searchInput" placeholder="Tìm kiếm..." class="search-input w-full px-4 py-2 rounded-l-lg bg-slate-700 border border-slate-500 text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300">
-                        <button id="searchButton" class="px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-r-lg border border-slate-500 -ml-px transition-colors duration-700">
-                            <i class="fas fa-search"></i>
-                        </button>
-                        <div id="suggestionsDropdown" class="suggestions-dropdown absolute top-full left-0 right-0 bg-slate-700 border border-slate-500 rounded-b-lg mt-1 shadow-lg z-10 hidden">
-                            {/* Suggestions will be populated here by JavaScript */}
-                        </div>
-                    </div>
-                </div>
-            </header>
+    <!-- ===== BACKGROUND CANVASES ===== -->
+    <canvas id="particles-canvas"></canvas>
+    <canvas id="cursor-trail-canvas"></canvas>
+    <div class="noise-overlay"></div>
 
-            <main class="flex-grow container mx-auto p-4 md:p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="md:col-span-1 space-y-6">
-                    <div class="flex items-stretch gap-4 md:gap-6">
-                        <div class="relative rounded-lg overflow-hidden shadow-xl flex-auto image-placeholder-container">
-                            <div class="image-placeholder w-full h-full">
-                                </div>
-                            <div id="lyricsOverlay"
-                                 class="absolute bottom-0 left-0 right-0 h-1/3 bg-black bg-opacity-50 backdrop-blur-sm flex flex-col items-center justify-center p-2 md:p-3 text-center
-                                        transition-opacity duration-500 opacity-0 pointer-events-none">
-                                <p id="currentLyric"
-                                   class="text-white text-xs sm:text-sm font-semibold transition-all duration-300 ease-in-out opacity-0 transform translate-y-1"></p>
-                                <p id="nextLyric"
-                                   class="text-gray-400 text-xs transition-opacity duration-300 ease-in-out opacity-0 mt-1"></p>
+    <!-- ===== PAGE CONTENT ===== -->
+    <div id="page-content" class="hidden">
+
+        <!-- HEADER -->
+        <header id="main-header">
+            <div class="container header-inner">
+                <a href="#" class="logo-text">Hồ Tiến Phát</a>
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm..." class="search-input" autocomplete="off">
+                    <button id="searchButton" title="Tìm kiếm">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <div id="suggestionsDropdown" class="suggestions-dropdown hidden"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- HERO SECTION -->
+        <section id="hero-section">
+            <div class="hero-content">
+                <div class="hero-avatar-wrapper">
+                    <div class="avatar-glow-ring"></div>
+                    <div class="hero-avatar">
+                        <img src="./Backround sound/avt.png" alt="Hồ Tiến Phát - Avatar">
+                    </div>
+                    <canvas id="circular-visualizer" width="240" height="240"></canvas>
+                </div>
+                <h1 class="hero-title" id="hero-title">Hồ Tiến Phát</h1>
+                <p class="hero-tagline" id="hero-tagline"><span class="typewriter-cursor"></span></p>
+
+                <div class="hero-social-links">
+                    <a href="https://www.facebook.com/KaedeharaKazuha0805" target="_blank" rel="noopener noreferrer" class="social-icon" title="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Fhotien_boyneh%2F&is_from_rle" target="_blank" rel="noopener noreferrer" class="social-icon" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.threads.net/@hotien_boyneh" target="_blank" rel="noopener noreferrer" class="social-icon" title="Threads">
+                        <i class="fab fa-threads"></i>
+                    </a>
+                    <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="social-icon" title="YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="scroll-indicator">
+                <span>Cuộn xuống</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </section>
+
+        <!-- MAIN CONTENT -->
+        <main class="container">
+
+            <!-- ABOUT ME -->
+            <section id="about-section" class="content-section">
+                <div class="section-header reveal-element">
+                    <h2 class="section-title gradient-text">Về Bản Thân</h2>
+                    <div class="section-divider"></div>
+                </div>
+                <div class="about-grid">
+                    <div class="about-text-block reveal-left">
+                        <p>Xin chào! Tôi là <strong>Hồ Tiến Phát</strong>. Chào mừng bạn đến với không gian cá nhân của tôi.</p>
+                        <p>Đây là nơi tôi chia sẻ những dự án, liên kết yêu thích và một chút về cuộc sống thường ngày. Hy vọng bạn sẽ tìm thấy điều gì đó thú vị ở đây!</p>
+                    </div>
+                    <div class="about-info-cards reveal-right">
+                        <div class="info-card">
+                            <div class="info-card-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            <div>
+                                <div class="info-card-label">Đến từ</div>
+                                <div class="info-card-text">Lâm Đồng, Việt Nam</div>
                             </div>
                         </div>
-                        <canvas id="musicVisualizer" class="rounded-lg shadow-xl flex-shrink-0"></canvas>
-                    </div>
-
-                    <div id="aboutMeSection" class="p-6 bg-slate-800 rounded-xl shadow-lg">
-                        <h3 class="text-xl font-semibold mb-4 text-purple-300 text-center">VỀ BẢN THÂN</h3>
-                        <p class="text-sm text-gray-300 leading-relaxed mb-2">
-                            Xin chào! Tôi là Hồ Tiến Phát. Chào mừng bạn đến với không gian cá nhân của tôi.
-                        </p>
-                        <p class="text-sm text-gray-300 leading-relaxed">
-                            Đây là nơi tôi chia sẻ những dự án, liên kết yêu thích và một chút về cuộc sống thường ngày.
-                            Hy vọng bạn sẽ tìm thấy điều gì đó thú vị ở đây!
-                        </p>
-                        <div class="mt-4 pt-4 border-t border-slate-700">
-                            <p class="text-sm text-gray-400"><i class="fas fa-map-marker-alt mr-2 text-purple-400"></i>Đến từ: Đắk Nông, Việt Nam</p>
-                            <p class="text-sm text-gray-400 mt-1"><i class="fas fa-briefcase mr-2 text-purple-400"></i>Học tập tại: Trung Tâm GDTX - NN, TH Tỉnh Đắk Nông</p>
-                            <p class="text-sm text-gray-400 mt-1"><i class="fas fa-heart mr-2 text-purple-400"></i>Sở thích: Lập trình, Nghe nhạc, Chơi game</p>
+                        <div class="info-card">
+                            <div class="info-card-icon">
+                                <img src="./Backround sound/hutech.png" alt="HUTECH Logo" style="width: 32px; height: 32px; object-fit: contain;">
+                            </div>
+                            <div>
+                                <div class="info-card-label">Học tập tại</div>
+                                <div class="info-card-text">ĐẠI HỌC CÔNG NGHỆ TP.HCM - HUTECH | CNTT</div>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-card-icon"><i class="fas fa-heart"></i></div>
+                            <div>
+                                <div class="info-card-label">Sở thích</div>
+                                <div class="info-card-text">Lập trình, Nghe nhạc, Chơi game</div>
+                            </div>
                         </div>
                     </div>
-
-                    <div id="donateSection" class="p-6 bg-slate-800 rounded-xl shadow-lg mt-6">
-                        <h3 class="text-xl font-semibold mb-4 text-purple-300 text-center">ỦNG HỘ MÌNH</h3>
-                        <p class="text-sm text-gray-300 leading-relaxed mb-4 text-center">
-                            Nếu bạn thấy những chia sẻ của mình hữu ích và muốn mời mình một ly cà phê, bạn có thể ủng hộ tại đây.
-                            Mỗi đóng góp nhỏ đều là động lực lớn để mình tiếp tục!
-                        </p>
-                        <div class="space-y-4">
-                            <div class="donation-method p-4 bg-slate-700/50 rounded-lg">
-                                <div class="flex items-center justify-between mb-3">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-wallet fa-lg text-pink-500 mr-3"></i> <span class="font-medium text-gray-200">Momo</span>
-                                    </div>
-                                    <button data-qr-target="momoQrPlaceholder" class="toggle-qr-btn bg-purple-600 hover:bg-purple-700 text-white text-xs px-3 py-1.5 rounded-md transition-colors duration-300">
-                                        Hiện QR
-                                    </button>
-                                </div>
-                                <div id="momoQrPlaceholder" class="qr-placeholder hidden mb-3 p-2 bg-white rounded flex items-center justify-center">
-                                    <img src="./Backround sound/Momo.png" alt="Momo QR Code" class="w-[150px] h-[150px] object-contain">
-                                </div>
-                                <div id="momoAccountInfo" class="mt-3 pt-3 border-t border-slate-600 space-y-2 text-sm">
-                                    <div class="flex items-center justify-between">
-                                        <div>
-                                            <span class="font-medium text-gray-400">Số Momo:</span>
-                                            <span id="momoNumber" class="text-gray-200 ml-1">0376178578</span>
-                                        </div>
-                                        <button id="copyMomoNumberBtn" title="Sao chép số Momo" class="bg-pink-500 hover:bg-pink-600 text-white text-xs px-2 py-1 rounded-md transition-colors duration-300 flex items-center">
-                                            <i class="fas fa-copy mr-1"></i> Sao chép
-                                        </button>
-                                    </div>
-                                    <div id="copyMomoNotification" class="text-green-400 text-xs mt-1 hidden">Đã sao chép số Momo!</div>
-                                </div>
-                                </div>
-
-                            <div class="donation-method p-4 bg-slate-700/50 rounded-lg">
-                                <div class="flex items-center justify-between mb-3">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-university fa-lg text-blue-500 mr-3"></i> <span class="font-medium text-gray-200">Chuyển Khoản Ngân Hàng</span>
-                                    </div>
-                                    <button data-qr-target="bankQrPlaceholder" class="toggle-qr-btn bg-purple-600 hover:bg-purple-700 text-white text-xs px-3 py-1.5 rounded-md transition-colors duration-300">
-                                        Hiện QR
-                                    </button>
-                                </div>
-                                <div id="bankQrPlaceholder" class="qr-placeholder hidden mb-3 p-2 bg-white rounded flex items-center justify-center">
-                                     <img src="./Backround sound/Viettin.png" alt="Bank QR Code" class="w-[150px] h-[150px] object-contain">
-                                </div>
-                                <div id="bankAccountInfo" class="mt-3 pt-3 border-t border-slate-600 space-y-2 text-sm">
-                                    <div>
-                                        <span class="font-medium text-gray-400">Ngân hàng:</span>
-                                        <span id="bankName" class="text-gray-200 ml-1">VIETTINBANK</span>
-                                    </div>
-                                    <div class="flex items-center justify-between">
-                                        <div>
-                                            <span class="font-medium text-gray-400">Số tài khoản:</span>
-                                            <span id="accountNumber" class="text-gray-200 ml-1">105882966120</span>
-                                        </div>
-                                        <button id="copyAccountNumberBtn" title="Sao chép số tài khoản" class="bg-purple-500 hover:bg-purple-600 text-white text-xs px-2 py-1 rounded-md transition-colors duration-300 flex items-center">
-                                            <i class="fas fa-copy mr-1"></i> Sao chép
-                                        </button>
-                                    </div>
-                                    <div>
-                                        <span class="font-medium text-gray-400">Chủ tài khoản:</span>
-                                        <span id="accountHolderName" class="text-gray-200 ml-1">HỒ TIẾN PHÁT</span>
-                                    </div>
-                                    <div id="copyNotification" class="text-green-400 text-xs mt-1 hidden">Đã sao chép số tài khoản!</div>
-                                </div>
-                                </div>
-                             </div>
-                    </div>
-                    </div>
-
-                <div class="md:col-span-2 space-y-8">
-                    <div id="shortcutsContainer" class="space-y-8">
-                        </div>
                 </div>
-            </main>
+            </section>
 
-            <footer class="p-4 bg-slate-800/50 text-center text-sm text-gray-400 mt-auto">
-                © <span id="currentYear"></span> Hồ Tiến Phát. All rights reserved.
-            </footer>
-        </div>
+            <!-- SHORTCUTS -->
+            <section id="shortcuts-section" class="content-section">
+                <div class="section-header reveal-element">
+                    <h2 class="section-title gradient-text">Liên Kết Nhanh</h2>
+                    <p class="section-subtitle">Các trang web và công cụ yêu thích của mình</p>
+                    <div class="section-divider"></div>
+                </div>
+                <div id="shortcutsContainer"></div>
+            </section>
+
+            <!-- DONATE -->
+            <section id="donate-section" class="content-section">
+                <div class="section-header reveal-element">
+                    <h2 class="section-title gradient-text">Ủng Hộ Mình</h2>
+                    <p class="section-subtitle">Nếu bạn thấy những chia sẻ của mình hữu ích và muốn mời mình một ly cà phê ☕</p>
+                    <div class="section-divider"></div>
+                </div>
+                <div class="donate-grid">
+                    <!-- Momo -->
+                    <div class="donate-card momo-card reveal-left">
+                        <div class="donate-card-header">
+                            <div class="donate-card-title">
+                                <i class="fas fa-wallet momo-icon"></i>
+                                <span>Momo</span>
+                            </div>
+                            <button data-qr-target="momoQrPlaceholder" class="toggle-qr-btn">Hiện QR</button>
+                        </div>
+                        <div id="momoQrPlaceholder" class="qr-placeholder hidden">
+                            <img src="./Backround sound/Momo.png" alt="Momo QR Code">
+                        </div>
+                        <div class="donate-info">
+                            <div class="donate-info-row">
+                                <div>
+                                    <div class="donate-info-label">Số Momo</div>
+                                    <div class="donate-info-value" id="momoNumber">0376178578</div>
+                                </div>
+                                <button id="copyMomoNumberBtn" class="copy-btn momo-copy" title="Sao chép">
+                                    <i class="fas fa-copy"></i> Sao chép
+                                </button>
+                            </div>
+                            <div id="copyMomoNotification" class="copy-notification">✓ Đã sao chép số Momo!</div>
+                        </div>
+                    </div>
+
+                    <!-- Bank -->
+                    <div class="donate-card bank-card reveal-right">
+                        <div class="donate-card-header">
+                            <div class="donate-card-title">
+                                <i class="fas fa-university bank-icon"></i>
+                                <span>Ngân Hàng</span>
+                            </div>
+                            <button data-qr-target="bankQrPlaceholder" class="toggle-qr-btn">Hiện QR</button>
+                        </div>
+                        <div id="bankQrPlaceholder" class="qr-placeholder hidden">
+                            <img src="./Backround sound/Viettin.png" alt="Bank QR Code">
+                        </div>
+                        <div class="donate-info">
+                            <div class="donate-info-row">
+                                <span class="donate-info-label">Ngân hàng</span>
+                                <span class="donate-info-value" id="bankName">VIETTINBANK</span>
+                            </div>
+                            <div class="donate-info-row">
+                                <div>
+                                    <div class="donate-info-label">Số tài khoản</div>
+                                    <div class="donate-info-value" id="accountNumber">105882966120</div>
+                                </div>
+                                <button id="copyAccountNumberBtn" class="copy-btn bank-copy" title="Sao chép">
+                                    <i class="fas fa-copy"></i> Sao chép
+                                </button>
+                            </div>
+                            <div class="donate-info-row">
+                                <span class="donate-info-label">Chủ tài khoản</span>
+                                <span class="donate-info-value" id="accountHolderName">HỒ TIẾN PHÁT</span>
+                            </div>
+                            <div id="copyNotification" class="copy-notification">✓ Đã sao chép số tài khoản!</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer id="main-footer">
+            <div class="container">
+                <p>© <span id="currentYear"></span> Hồ Tiến Phát. All rights reserved.</p>
+            </div>
+        </footer>
+
     </div>
 
-    <div id="access-modal" class="fixed inset-0 bg-slate-900 bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-[100] hidden">
-        <div id="modal-content-area" class="bg-slate-800 p-6 md:p-8 rounded-xl shadow-2xl w-11/12 max-w-md text-center">
-            <h2 class="text-xl md:text-2xl font-semibold text-purple-300 mb-4">Chào mừng bạn!</h2>
-            <p class="text-gray-300 mb-6 text-sm md:text-base">Bạn có muốn truy cập vào trang cá nhân của Fot không?</p>
-            <button id="acceptAccessBtn" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50">
-                Truy cập
+    <!-- ===== ACCESS MODAL ===== -->
+    <div id="access-modal" class="hidden">
+        <div id="modal-content-area">
+            <h2 class="gradient-text">Chào mừng bạn! ✨</h2>
+            <p>Bạn có muốn truy cập vào trang cá nhân của Fot không?</p>
+            <button id="acceptAccessBtn">
+                <i class="fas fa-rocket" style="margin-right:0.5rem;"></i>Truy cập
             </button>
         </div>
     </div>
 
-    <div id="musicPlayerContainer" class="fixed bottom-0 left-0 right-0 bg-slate-800/80 backdrop-blur-md p-3 shadow-t-xl z-[60]">
-        <div class="container mx-auto flex items-center justify-between gap-4">
-            <div class="flex items-center gap-3 flex-shrink-0">
-                <img id="albumArt" src="./Backround sound/Phepmaulogo.jpg" alt="Album Art" class="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover border-2 border-purple-500">
-                <div class="hidden sm:block">
-                    <p id="songTitle" class="text-sm font-semibold text-purple-300">Phép Màu (Đàn Cá Gỗ OST)</p>
-                    <p id="songArtist" class="text-xs text-gray-400">Mounter x MAYDAYs, Minh Tốc</p>
+    <!-- ===== LYRICS OVERLAY ===== -->
+    <div id="lyricsOverlay">
+        <p id="currentLyric"></p>
+        <p id="nextLyric"></p>
+    </div>
+
+    <!-- ===== MUSIC PLAYER ===== -->
+    <div id="musicPlayerContainer" class="collapsed">
+        <!-- Chat Head Bubble -->
+        <div id="playerBubble" class="player-bubble" title="Mở Trình Phát Nhạc">
+            <img id="bubbleAlbumArt" src="./Backround sound/Phepmaulogo.jpg" alt="Player Bubble" class="bubble-art">
+            <div class="bubble-glow"></div>
+        </div>
+
+        <!-- Expanded Panel -->
+        <div id="playerPanel" class="player-panel">
+            <button id="closePlayerBtn" class="close-player-btn" title="Thu nhỏ">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="player-layout">
+            <!-- Info -->
+            <div class="player-info">
+                <img id="albumArt" src="./Backround sound/Phepmaulogo.jpg" alt="Album Art" class="album-art">
+                <div class="now-playing-indicator" id="nowPlayingIndicator">
+                    <span></span><span></span><span></span>
+                </div>
+                <div class="song-meta">
+                    <p class="song-title" id="songTitle">Phép Màu (Đàn Cá Gỗ OST)</p>
+                    <p class="song-artist" id="songArtist">Mounter x MAYDAYs, Minh Tốc</p>
                 </div>
             </div>
 
-            <div class="flex flex-col items-center justify-center flex-grow sm:mx-3 md:mx-4 min-w-0">
-                <div class="w-full flex items-center justify-center gap-2 sm:gap-3 md:gap-4 mb-1">
-                    <button id="prevTrackBtn" title="Bài trước" class="music-control-button text-gray-400 hover:text-purple-400 disabled:opacity-50 disabled:hover:text-gray-400 p-2 rounded-full">
+            <!-- Controls -->
+            <div class="player-controls">
+                <div class="control-buttons">
+                    <button id="prevTrackBtn" title="Bài trước" class="music-control-button">
                         <i class="fas fa-backward-step fa-lg"></i>
                     </button>
-                    <button id="playPauseMusicBtn" title="Phát/Tạm dừng" class="music-control-button text-purple-400 hover:text-purple-300 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-slate-700 hover:bg-slate-600">
-                        <i class="fas fa-play fa-lg"></i></button>
-                    <button id="stopMusicBtn" title="Dừng" class="music-control-button text-gray-400 hover:text-purple-400 p-2 rounded-full">
+                    <button id="playPauseMusicBtn" title="Phát/Tạm dừng" class="music-control-button">
+                        <i class="fas fa-play fa-lg"></i>
+                    </button>
+                    <button id="stopMusicBtn" title="Dừng" class="music-control-button">
                         <i class="fas fa-stop fa-lg"></i>
                     </button>
-                    <button id="nextTrackBtn" title="Bài kế tiếp" class="music-control-button text-gray-400 hover:text-purple-400 disabled:opacity-50 disabled:hover:text-gray-400 p-2 rounded-full">
+                    <button id="nextTrackBtn" title="Bài kế tiếp" class="music-control-button">
                         <i class="fas fa-forward-step fa-lg"></i>
                     </button>
                 </div>
-                <div class="w-full flex items-center gap-2">
-                    <span id="currentTime" class="text-xs text-gray-400 w-10 text-center">0:00</span>
-                    <input type="range" id="musicProgressBar" value="0" step="1" class="w-full h-2 appearance-none rounded-full bg-slate-600 cursor-pointer music-progress-bar">
-                    <span id="durationTime" class="text-xs text-gray-400 w-10 text-center">0:00</span>
+                <div class="progress-wrapper">
+                    <span id="currentTime">0:00</span>
+                    <input type="range" id="musicProgressBar" value="0" step="1">
+                    <span id="durationTime">0:00</span>
                 </div>
             </div>
-            
-            <div class="flex items-center gap-2 flex-shrink-0">
-                 <button id="volumeBtn" title="Tắt/Mở tiếng" class="music-control-button text-gray-400 hover:text-purple-400 p-2 rounded-full">
+
+            <!-- Volume -->
+            <div class="volume-controls">
+                <button id="volumeBtn" title="Tắt/Mở tiếng" class="music-control-button">
                     <i class="fas fa-volume-high"></i>
                 </button>
-                <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1" class="w-16 md:w-20 h-2 appearance-none rounded-full bg-slate-600 cursor-pointer music-volume-slider">
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
             </div>
         </div>
+    </div>
     </div>
 
     <script src="script.js" defer></script>

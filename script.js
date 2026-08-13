@@ -1,12 +1,7 @@
-// --- START: IDs cho các phần tử DOM mới ---
-const loadingScreenId = 'loading-screen';
-const pageContentId = 'page-content';
-const accessModalId = 'access-modal';
-const acceptAccessBtnId = 'acceptAccessBtn';
-const modalContentAreaId = 'modal-content-area';
-// --- END: IDs ---
+// ============================================
+// DATA CONFIGURATION
+// ============================================
 
-// --- START: EDIT SHORTCUTS HERE (Giữ nguyên từ file của bạn) ---
 const shortcutSections = [
     {
         title: "MẠNG XÃ HỘI",
@@ -49,27 +44,22 @@ const shortcutSections = [
         ]
     },
 ];
-// --- END: EDIT SHORTCUTS HERE ---
 
-// --- START: MUSIC PLAYER CONFIGURATION ---
 const audioPlaylist = [
     {
         title: "Phép Màu (Đàn Cá Gỗ OST)",
         artist: "Mounter x MAYDAYs, Minh Tốc",
-        src: "./Backround sound/phepmau.mp3", // Đường dẫn đến file nhạc
-        albumArt: "./Backround sound/Phepmaulogo.jpg" // Đường dẫn đến ảnh album
+        src: "./Backround sound/phepmau.mp3",
+        albumArt: "./Backround sound/Phepmaulogo.jpg"
     },
     {
         title: "Còn Gì Đẹp Hơn (Mưa Đỏ Original Soundtrack)",
         artist: "Nguyễn Hùng",
-        src: "./Backround sound/congidephon.mp3", // Đảm bảo đường dẫn này đúng
-        albumArt: "./Backround sound/CGDH.jpg" // Đảm bảo đường dẫn này đúng
+        src: "./Backround sound/congidephon.mp3",
+        albumArt: "./Backround sound/CGDH.jpg"
     }
 ];
-let currentTrackIndex = 0;
-// --- END: MUSIC PLAYER CONFIGURATION ---
 
-// --- LYRICS DATA for "Phép Màu" ---
 const phepMauLyrics = [
     { time: 0,   text: "Bài hát: Phép Màu - Mounter x MAYDAYs, Minh Tốc" },
     { time: 3,   text: "Ngày thay đêm, vội trôi giấc mơ êm đềm" },
@@ -106,88 +96,417 @@ const phepMauLyrics = [
     { time: 244, text: "Quãng đời mai sau luôn cạnh nhau" },
     { time: 255, text: "HẾT" },
 ];
+
+const heroTaglines = [
+    "Lập trình viên • Gamer • Người yêu nhạc 🎵",
+    "Đến từ Lâm Đồng, Việt Nam 🇻🇳",
+    "Chào mừng đến không gian số của mình ✨"
+];
+
+// ============================================
+// GLOBAL STATE
+// ============================================
+let currentTrackIndex = 0;
 let currentLyricIndex = -1;
-// --- END LYRICS DATA ---
-
-// --- Global variables for the music player ---
 let audioPlayer;
-let playPauseMusicBtn, stopMusicBtn, musicProgressBar, albumArtElement, currentTimeEl, durationEl;
-let songTitleEl, songArtistEl;
-let volumeBtn, volumeSlider;
-let prevTrackBtn, nextTrackBtn;
-let lyricsOverlay, currentLyricEl, nextLyricEl;
-let audioContext;
-let analyser;
-let sourceNode;
-let visualizerCanvas, visualizerCtx;
-let dataArray;
-let rafId;
+let audioContext, analyser, sourceNode, dataArray;
 let isVisualizerInitialized = false;
-// --- END Global variables for music player ---
+let circularVisualizerCanvas, circularVisualizerCtx, circularRafId;
 
-// --- START: SEARCH SUGGESTIONS ---
-let searchKeywords = [];
-let searchInput, suggestionsDropdown;
+// Music player DOM refs
+let playPauseMusicBtn, stopMusicBtn, musicProgressBar, albumArtElement;
+let currentTimeEl, durationEl, songTitleEl, songArtistEl;
+let volumeBtn, volumeSlider, prevTrackBtn, nextTrackBtn;
+let lyricsOverlay, currentLyricEl, nextLyricEl, nowPlayingIndicator;
+
+// Search
+let searchInput, suggestionsDropdown, searchKeywords = [];
 let activeSuggestionIndex = -1;
 
+// ============================================
+// PARTICLE SYSTEM
+// ============================================
+class ParticleSystem {
+    constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        if (!this.canvas) return;
+        this.ctx = this.canvas.getContext('2d');
+        this.particles = [];
+        this.mouseX = 0;
+        this.mouseY = 0;
+        this.particleCount = window.innerWidth < 768 ? 50 : 120;
+        this.connectionDistance = 160;
+        this.rafId = null;
+
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+        window.addEventListener('mousemove', (e) => {
+            this.mouseX = e.clientX;
+            this.mouseY = e.clientY;
+        });
+
+        this.init();
+        this.animate();
+    }
+
+    resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    }
+
+    init() {
+        this.particles = [];
+        for (let i = 0; i < this.particleCount; i++) {
+            this.particles.push({
+                x: Math.random() * this.canvas.width,
+                y: Math.random() * this.canvas.height,
+                vx: (Math.random() - 0.5) * 1.0, // Tăng tốc độ bay
+                vy: (Math.random() - 0.5) * 1.0,
+                radius: Math.random() * 2 + 1, // Kích thước hạt to hơn chút
+                opacity: Math.random() * 0.7 + 0.3,
+                color: Math.random() > 0.5 ? '168, 85, 247' : '34, 211, 238'
+            });
+        }
+    }
+
+    animate() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        for (let i = 0; i < this.particles.length; i++) {
+            const p = this.particles[i];
+
+            // Update position
+            p.x += p.vx;
+            p.y += p.vy;
+
+            // Wrap around edges
+            if (p.x < 0) p.x = this.canvas.width;
+            if (p.x > this.canvas.width) p.x = 0;
+            if (p.y < 0) p.y = this.canvas.height;
+            if (p.y > this.canvas.height) p.y = 0;
+
+            // Draw particle
+            this.ctx.beginPath();
+            this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            this.ctx.fillStyle = `rgba(${p.color}, ${p.opacity})`;
+            this.ctx.fill();
+
+            // Draw connections
+            for (let j = i + 1; j < this.particles.length; j++) {
+                const p2 = this.particles[j];
+                const dx = p.x - p2.x;
+                const dy = p.y - p2.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < this.connectionDistance) {
+                    const lineOpacity = (1 - dist / this.connectionDistance) * 0.3; // Rõ đường nối hơn
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(p.x, p.y);
+                    this.ctx.lineTo(p2.x, p2.y);
+                    // Dùng màu mix giữa 2 hạt cho đường nối
+                    this.ctx.strokeStyle = `rgba(168, 85, 247, ${lineOpacity})`;
+                    this.ctx.lineWidth = 0.8;
+                    this.ctx.stroke();
+                }
+            }
+
+            // Mouse interaction — gentle push
+            const mdx = p.x - this.mouseX;
+            const mdy = p.y - this.mouseY;
+            const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
+            if (mDist < 100) {
+                const force = (100 - mDist) / 100 * 0.02;
+                p.vx += mdx * force;
+                p.vy += mdy * force;
+            }
+
+            // Dampen velocity
+            p.vx *= 0.99;
+            p.vy *= 0.99;
+        }
+
+        this.rafId = requestAnimationFrame(() => this.animate());
+    }
+}
+
+// ============================================
+// CURSOR TRAIL
+// ============================================
+class CursorTrail {
+    constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        if (!this.canvas) return;
+        // Disable on touch devices
+        if ('ontouchstart' in window) { this.canvas.style.display = 'none'; return; }
+
+        this.ctx = this.canvas.getContext('2d');
+        this.points = [];
+        this.maxPoints = 20;
+        this.rafId = null;
+
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+        window.addEventListener('mousemove', (e) => {
+            this.points.push({ x: e.clientX, y: e.clientY, life: 1 });
+            if (this.points.length > this.maxPoints) this.points.shift();
+        });
+
+        this.animate();
+    }
+
+    resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    }
+
+    animate() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        for (let i = 0; i < this.points.length; i++) {
+            const p = this.points[i];
+            p.life -= 0.04;
+            if (p.life <= 0) {
+                this.points.splice(i, 1);
+                i--;
+                continue;
+            }
+
+            const size = p.life * 4;
+            const opacity = p.life * 0.5;
+            this.ctx.beginPath();
+            this.ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+            this.ctx.fillStyle = `rgba(168, 85, 247, ${opacity})`;
+            this.ctx.fill();
+        }
+
+        this.rafId = requestAnimationFrame(() => this.animate());
+    }
+}
+
+// ============================================
+// SCROLL REVEAL (IntersectionObserver)
+// ============================================
+function initScrollReveal() {
+    const revealElements = document.querySelectorAll('.reveal-element, .reveal-left, .reveal-right, .reveal-stagger');
+    if (!revealElements.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    revealElements.forEach(el => observer.observe(el));
+}
+
+// ============================================
+// TYPEWRITER EFFECT
+// ============================================
+function typewriterEffect(elementId, texts, speed = 60, pause = 2000) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+
+    let textIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    let cursorSpan = el.querySelector('.typewriter-cursor');
+
+    function type() {
+        const currentText = texts[textIndex];
+
+        if (isDeleting) {
+            charIndex--;
+        } else {
+            charIndex++;
+        }
+
+        // Update text content, keep cursor
+        el.textContent = currentText.substring(0, charIndex);
+        if (cursorSpan) {
+            cursorSpan = document.createElement('span');
+            cursorSpan.className = 'typewriter-cursor';
+        }
+        el.appendChild(cursorSpan);
+
+        let nextDelay = isDeleting ? speed / 2 : speed;
+
+        if (!isDeleting && charIndex === currentText.length) {
+            nextDelay = pause;
+            isDeleting = true;
+        } else if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            textIndex = (textIndex + 1) % texts.length;
+            nextDelay = 300;
+        }
+
+        setTimeout(type, nextDelay);
+    }
+
+    // Start after a delay for hero animation
+    setTimeout(type, 1800);
+}
+
+// ============================================
+// 3D TILT EFFECT
+// ============================================
+function init3DTilt() {
+    document.addEventListener('mousemove', (e) => {
+        const cards = document.querySelectorAll('.shortcut-card');
+        cards.forEach(card => {
+            const rect = card.getBoundingClientRect();
+            const cardCenterX = rect.left + rect.width / 2;
+            const cardCenterY = rect.top + rect.height / 2;
+            const dx = e.clientX - cardCenterX;
+            const dy = e.clientY - cardCenterY;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < 300) {
+                const rotateX = -(dy / 20);
+                const rotateY = dx / 20;
+                const intensity = Math.max(0, 1 - dist / 300);
+                card.style.transform = `perspective(800px) rotateX(${rotateX * intensity}deg) rotateY(${rotateY * intensity}deg) translateY(-4px)`;
+
+                // Update radial gradient position for spotlight
+                const relX = ((e.clientX - rect.left) / rect.width) * 100;
+                const relY = ((e.clientY - rect.top) / rect.height) * 100;
+                card.style.setProperty('--mouse-x', relX + '%');
+                card.style.setProperty('--mouse-y', relY + '%');
+            } else {
+                card.style.transform = '';
+            }
+        });
+    });
+
+    // Reset on mouse leave
+    document.addEventListener('mouseleave', () => {
+        document.querySelectorAll('.shortcut-card').forEach(card => {
+            card.style.transform = '';
+        });
+    });
+}
+
+// ============================================
+// RIPPLE EFFECT
+// ============================================
+function addRipple(e) {
+    const target = e.currentTarget;
+    const rect = target.getBoundingClientRect();
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple-effect';
+    const size = Math.max(rect.width, rect.height);
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+    ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+    target.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+}
+
+// ============================================
+// HEADER SCROLL EFFECT
+// ============================================
+function initHeaderScroll() {
+    const header = document.getElementById('main-header');
+    if (!header) return;
+
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                header.classList.toggle('scrolled', window.scrollY > 50);
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+}
+
+// ============================================
+// RENDER SHORTCUTS
+// ============================================
+function renderShortcuts() {
+    const container = document.getElementById('shortcutsContainer');
+    if (!container) return;
+    container.innerHTML = '';
+
+    shortcutSections.forEach((section, sIndex) => {
+        const groupDiv = document.createElement('div');
+        groupDiv.className = 'shortcuts-group reveal-element';
+
+        const titleEl = document.createElement('h3');
+        titleEl.className = 'shortcuts-group-title';
+        titleEl.textContent = section.title;
+        groupDiv.appendChild(titleEl);
+
+        const gridDiv = document.createElement('div');
+        gridDiv.className = 'shortcuts-grid reveal-stagger';
+
+        section.shortcuts.forEach(shortcut => {
+            const link = document.createElement('a');
+            link.href = shortcut.url;
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+            link.className = 'shortcut-card';
+            link.addEventListener('click', addRipple);
+
+            const iconEl = document.createElement('i');
+            const prefix = shortcut.iconPrefixOverride || section.iconPrefix || 'fas';
+            iconEl.className = `${prefix} fa-${shortcut.icon} shortcut-card-icon`;
+            link.appendChild(iconEl);
+
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'shortcut-card-name';
+            nameSpan.textContent = shortcut.name;
+            link.appendChild(nameSpan);
+
+            gridDiv.appendChild(link);
+        });
+
+        groupDiv.appendChild(gridDiv);
+        container.appendChild(groupDiv);
+    });
+}
+
+// ============================================
+// SEARCH SUGGESTIONS
+// ============================================
 function generateSearchKeywords() {
     const keywords = new Set();
     shortcutSections.forEach(section => {
         keywords.add(section.title.toLowerCase());
-        section.shortcuts.forEach(shortcut => {
-            keywords.add(shortcut.name.toLowerCase());
-        });
+        section.shortcuts.forEach(s => keywords.add(s.name.toLowerCase()));
     });
-    keywords.add("về bản thân");
-    keywords.add("thông tin cá nhân");
-    keywords.add("ủng hộ");
-    keywords.add("donate");
-    keywords.add("momo");
-    keywords.add("ngân hàng");
-    keywords.add("liên hệ");
-    keywords.add("nhạc");
-    keywords.add("music player");
-
-    audioPlaylist.forEach(song => {
-        if (song.title) {
-            keywords.add(song.title.toLowerCase());
-        }
-    });
-
-    const aboutMeSection = document.getElementById('aboutMeSection');
-    if (aboutMeSection) {
-        const textContent = aboutMeSection.textContent || aboutMeSection.innerText;
-        const words = textContent.toLowerCase().match(/\b(\w{3,})\b/g);
-        if (words) {
-            words.forEach(word => keywords.add(word));
-        }
-    }
-    keywords.add("trang cá nhân");
-    keywords.add("hồ tiến phát");
+    keywords.add("về bản thân"); keywords.add("thông tin cá nhân");
+    keywords.add("ủng hộ"); keywords.add("donate");
+    keywords.add("momo"); keywords.add("ngân hàng");
+    keywords.add("liên hệ"); keywords.add("nhạc"); keywords.add("music player");
+    audioPlaylist.forEach(song => { if (song.title) keywords.add(song.title.toLowerCase()); });
+    keywords.add("trang cá nhân"); keywords.add("hồ tiến phát");
     searchKeywords = Array.from(keywords);
 }
 
 function displaySuggestions() {
-    const inputValue = searchInput.value.toLowerCase().trim();
+    const val = searchInput.value.toLowerCase().trim();
     suggestionsDropdown.innerHTML = '';
     activeSuggestionIndex = -1;
-    if (inputValue.length === 0) {
-        suggestionsDropdown.classList.add('hidden');
-        return;
-    }
-    const filteredSuggestions = searchKeywords.filter(keyword =>
-        keyword.toLowerCase().includes(inputValue)
-    );
-    if (filteredSuggestions.length > 0) {
-        filteredSuggestions.slice(0, 7).forEach((suggestion) => {
-            const suggestionItem = document.createElement('div');
-            suggestionItem.classList.add('suggestion-item');
-            suggestionItem.textContent = suggestion;
-            suggestionItem.addEventListener('click', () => {
-                searchInput.value = suggestion;
+    if (!val.length) { suggestionsDropdown.classList.add('hidden'); return; }
+
+    const filtered = searchKeywords.filter(k => k.includes(val));
+    if (filtered.length) {
+        filtered.slice(0, 7).forEach(s => {
+            const item = document.createElement('div');
+            item.className = 'suggestion-item';
+            item.textContent = s;
+            item.addEventListener('click', () => {
+                searchInput.value = s;
                 suggestionsDropdown.classList.add('hidden');
             });
-            suggestionsDropdown.appendChild(suggestionItem);
+            suggestionsDropdown.appendChild(item);
         });
         suggestionsDropdown.classList.remove('hidden');
     } else {
@@ -197,10 +516,8 @@ function displaySuggestions() {
 
 function handleSuggestionKeyboardNav(e) {
     const items = suggestionsDropdown.querySelectorAll('.suggestion-item');
-    if (items.length === 0 || suggestionsDropdown.classList.contains('hidden')) {
-        if (e.key === 'Enter') {
-            performSearch();
-        }
+    if (!items.length || suggestionsDropdown.classList.contains('hidden')) {
+        if (e.key === 'Enter') performSearch();
         return;
     }
     if (e.key === 'ArrowDown') {
@@ -224,92 +541,45 @@ function handleSuggestionKeyboardNav(e) {
 }
 
 function updateActiveSuggestion(items) {
-    items.forEach(item => item.classList.remove('active-suggestion'));
+    items.forEach(i => i.classList.remove('active-suggestion'));
     if (activeSuggestionIndex > -1 && items[activeSuggestionIndex]) {
         items[activeSuggestionIndex].classList.add('active-suggestion');
-        items[activeSuggestionIndex].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        items[activeSuggestionIndex].scrollIntoView({ block: 'nearest' });
     }
 }
 
-function initializeSearchSuggestions() {
+function performSearch() {
+    if (!searchInput) return;
+    const query = searchInput.value.trim();
+    if (query) window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+    if (suggestionsDropdown) suggestionsDropdown.classList.add('hidden');
+}
+
+function initSearchSuggestions() {
     searchInput = document.getElementById('searchInput');
     suggestionsDropdown = document.getElementById('suggestionsDropdown');
-    if (!searchInput || !suggestionsDropdown) {
-        console.error("Search input or suggestions dropdown not found for suggestions functionality.");
-        return;
-    }
+    if (!searchInput || !suggestionsDropdown) return;
+
     generateSearchKeywords();
     searchInput.addEventListener('input', displaySuggestions);
     searchInput.addEventListener('keydown', handleSuggestionKeyboardNav);
-    document.addEventListener('click', (event) => {
-        if (searchInput && suggestionsDropdown && !searchInput.contains(event.target) && !suggestionsDropdown.contains(event.target)) {
+    document.addEventListener('click', (e) => {
+        if (!searchInput.contains(e.target) && !suggestionsDropdown.contains(e.target)) {
             suggestionsDropdown.classList.add('hidden');
         }
     });
     searchInput.addEventListener('focus', () => {
-        if (searchInput.value.length > 0) {
-             displaySuggestions();
-        }
-    });
-}
-// --- END: SEARCH SUGGESTIONS ---
-
-// --- START: Các hàm gốc khác ---
-function renderShortcuts() {
-    const container = document.getElementById('shortcutsContainer');
-    if (!container) {
-        console.error("Shortcut container not found!");
-        return;
-    }
-    container.innerHTML = '';
-    shortcutSections.forEach(section => {
-        const sectionDiv = document.createElement('div');
-        sectionDiv.className = 'p-6 bg-slate-800 rounded-xl shadow-lg';
-        const titleElement = document.createElement('h2');
-        titleElement.className = 'text-2xl font-semibold mb-6 section-title tracking-wider';
-        titleElement.textContent = section.title;
-        sectionDiv.appendChild(titleElement);
-        const gridDiv = document.createElement('div');
-        gridDiv.className = 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4';
-        section.shortcuts.forEach(shortcut => {
-            const link = document.createElement('a');
-            link.href = shortcut.url;
-            link.target = "_blank";
-            link.rel = "noopener noreferrer";
-            link.className = 'shortcut-button p-4 rounded-lg text-center flex flex-col items-center justify-center h-32';
-            const iconElement = document.createElement('i');
-            const prefix = shortcut.iconPrefixOverride || section.iconPrefix || 'fas';
-            iconElement.className = `${prefix} fa-${shortcut.icon} fa-2x mb-2 text-purple-400`;
-            link.appendChild(iconElement);
-            const nameSpan = document.createElement('span');
-            nameSpan.className = 'text-sm font-medium';
-            nameSpan.textContent = shortcut.name;
-            link.appendChild(nameSpan);
-            gridDiv.appendChild(link);
-        });
-        sectionDiv.appendChild(gridDiv);
-        container.appendChild(sectionDiv);
+        if (searchInput.value.length > 0) displaySuggestions();
     });
 }
 
-function performSearch() {
-    if (!searchInput) {
-        console.error("Search input element not found for performSearch!");
-        return;
-    }
-    const query = searchInput.value.trim();
-    if (query) {
-        const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-        window.open(googleSearchUrl, '_blank');
-    }
-    if (suggestionsDropdown) {
-        suggestionsDropdown.classList.add('hidden');
-    }
-}
-
-function initializeMusicPlayer() {
+// ============================================
+// MUSIC PLAYER
+// ============================================
+function initMusicPlayer() {
     audioPlayer = new Audio();
-    audioPlayer.crossOrigin = "anonymous";
+    // Removed crossOrigin="anonymous" to fix local file:// playback
+
     playPauseMusicBtn = document.getElementById('playPauseMusicBtn');
     stopMusicBtn = document.getElementById('stopMusicBtn');
     musicProgressBar = document.getElementById('musicProgressBar');
@@ -325,12 +595,32 @@ function initializeMusicPlayer() {
     lyricsOverlay = document.getElementById('lyricsOverlay');
     currentLyricEl = document.getElementById('currentLyric');
     nextLyricEl = document.getElementById('nextLyric');
+    
+    // Bubble UI Logic
+    const playerContainer = document.getElementById('musicPlayerContainer');
+    const playerBubble = document.getElementById('playerBubble');
+    const closePlayerBtn = document.getElementById('closePlayerBtn');
+    
+    if (playerBubble && playerContainer) {
+        playerBubble.addEventListener('click', () => {
+            playerContainer.classList.remove('collapsed');
+        });
+    }
+    if (closePlayerBtn && playerContainer) {
+        closePlayerBtn.addEventListener('click', () => {
+            playerContainer.classList.add('collapsed');
+        });
+    }
+    nowPlayingIndicator = document.getElementById('nowPlayingIndicator');
 
-    const essentialElements = [playPauseMusicBtn, stopMusicBtn, musicProgressBar, albumArtElement, currentTimeEl, durationEl, songTitleEl, songArtistEl, volumeBtn, volumeSlider, prevTrackBtn, nextTrackBtn, lyricsOverlay, currentLyricEl, nextLyricEl];
-    if (essentialElements.some(el => !el)) {
-        console.error("Một hoặc nhiều phần tử của trình phát nhạc hoặc lời bài hát không được tìm thấy trong DOM!");
-        const playerContainer = document.getElementById('musicPlayerContainer');
-        if(playerContainer) playerContainer.style.display = 'none';
+    const essentials = [playPauseMusicBtn, stopMusicBtn, musicProgressBar, albumArtElement,
+        currentTimeEl, durationEl, songTitleEl, songArtistEl, volumeBtn, volumeSlider,
+        prevTrackBtn, nextTrackBtn, lyricsOverlay, currentLyricEl, nextLyricEl];
+
+    if (essentials.some(el => !el)) {
+        console.error("Missing music player DOM elements!");
+        const pc = document.getElementById('musicPlayerContainer');
+        if (pc) pc.style.display = 'none';
         return;
     }
 
@@ -341,119 +631,107 @@ function initializeMusicPlayer() {
     stopMusicBtn.addEventListener('click', stopAudio);
     musicProgressBar.addEventListener('input', seekAudio);
 
-    // Event listeners for audio state changes
     audioPlayer.addEventListener('timeupdate', () => {
         updateProgressBar();
-        if (audioPlayer) {
-             updateLyrics(audioPlayer.currentTime);
-        }
+        if (audioPlayer) updateLyrics(audioPlayer.currentTime);
     });
     audioPlayer.addEventListener('loadedmetadata', setAudioDuration);
-    audioPlayer.addEventListener('ended', playNextTrackHandler);
-
-    // *** NEW: Add event listeners to sync play/pause button icon reliably ***
-    audioPlayer.addEventListener('play', updatePlayPauseIcon);
-    audioPlayer.addEventListener('pause', updatePlayPauseIcon);
-    // *** END NEW ***
+    audioPlayer.addEventListener('ended', playNextTrack);
+    audioPlayer.addEventListener('play', () => {
+        updatePlayPauseIcon();
+        if (albumArtElement) {
+            albumArtElement.classList.add('spinning');
+            albumArtElement.classList.remove('paused');
+        }
+        const bubbleArt = document.getElementById('bubbleAlbumArt');
+        if (bubbleArt) {
+            bubbleArt.classList.add('spinning');
+            bubbleArt.classList.remove('paused');
+        }
+        if (nowPlayingIndicator) nowPlayingIndicator.classList.add('active');
+    });
+    audioPlayer.addEventListener('pause', () => {
+        updatePlayPauseIcon();
+        if (albumArtElement) albumArtElement.classList.add('paused');
+        const bubbleArt = document.getElementById('bubbleAlbumArt');
+        if (bubbleArt) bubbleArt.classList.add('paused');
+        if (nowPlayingIndicator && audioPlayer.currentTime === 0) nowPlayingIndicator.classList.remove('active');
+    });
 
     volumeSlider.addEventListener('input', setVolume);
     volumeBtn.addEventListener('click', toggleMute);
-
-    prevTrackBtn.addEventListener('click', playPrevTrackHandler);
-    nextTrackBtn.addEventListener('click', playNextTrackHandler);
-
+    prevTrackBtn.addEventListener('click', playPrevTrack);
+    nextTrackBtn.addEventListener('click', playNextTrack);
     updateTrackButtonsState();
 }
 
-function loadTrack(trackIndex) {
-    if (trackIndex < 0 || trackIndex >= audioPlaylist.length) {
-        console.error("Chỉ số bài hát không hợp lệ:", trackIndex);
-        return;
-    }
-    const track = audioPlaylist[trackIndex];
-    // const wasPlaying = audioPlayer && !audioPlayer.paused; // Keep track if it was playing
-    const currentVolume = audioPlayer ? audioPlayer.volume : 1;
-    const currentMutedState = audioPlayer ? audioPlayer.muted : false;
+function loadTrack(idx) {
+    if (idx < 0 || idx >= audioPlaylist.length) return;
+    const track = audioPlaylist[idx];
+    const vol = audioPlayer ? audioPlayer.volume : 1;
+    const muted = audioPlayer ? audioPlayer.muted : false;
 
     audioPlayer.src = track.src;
-    audioPlayer.volume = currentVolume;
-    audioPlayer.muted = currentMutedState;
+    audioPlayer.volume = vol;
+    audioPlayer.muted = muted;
 
-    albumArtElement.src = track.albumArt;
-    albumArtElement.alt = track.title + " - Album Art";
-    songTitleEl.textContent = track.title;
-    songArtistEl.textContent = track.artist;
-
-    musicProgressBar.value = 0;
-    currentTimeEl.textContent = formatTime(0);
+    if (albumArtElement) { albumArtElement.src = track.albumArt; albumArtElement.alt = track.title; }
+    const bubbleArt = document.getElementById('bubbleAlbumArt');
+    if (bubbleArt) { bubbleArt.src = track.albumArt; bubbleArt.alt = track.title; }
+    if (songTitleEl) songTitleEl.textContent = track.title;
+    if (songArtistEl) songArtistEl.textContent = track.artist;
+    if (musicProgressBar) musicProgressBar.value = 0;
+    if (currentTimeEl) currentTimeEl.textContent = formatTime(0);
 
     currentLyricIndex = -1;
     updateLyrics(0);
-
-    updatePlayPauseIcon(); // Update icon based on current state after loading
+    updatePlayPauseIcon();
     updateTrackButtonsState();
     updateVolumeIcon();
 }
 
 function togglePlayPause() {
     if (!audioPlayer) return;
-
-    if (!isVisualizerInitialized && audioPlayer) {
-        setupAudioGraph();
-    }
+    if (!isVisualizerInitialized) setupAudioGraph();
 
     if (audioPlayer.paused || audioPlayer.ended) {
         if (audioContext && audioContext.state === 'suspended') {
-            audioContext.resume().then(() => {
-                audioPlayer.play().catch(handlePlayError);
-            }).catch(handlePlayError);
+            audioContext.resume().then(() => audioPlayer.play().catch(handlePlayError)).catch(handlePlayError);
         } else {
             audioPlayer.play().catch(handlePlayError);
         }
     } else {
         audioPlayer.pause();
     }
-    // updatePlayPauseIcon(); // This will be handled by the 'play' or 'pause' event listeners
     if (audioPlayer) updateLyrics(audioPlayer.currentTime);
 }
 
 function stopAudio() {
     if (!audioPlayer) return;
-    audioPlayer.pause(); // This will trigger the 'pause' event, which calls updatePlayPauseIcon
+    audioPlayer.pause();
     audioPlayer.currentTime = 0;
-    // updatePlayPauseIcon(); // Already handled by 'pause' event listener
 
-    if (rafId) {
-        cancelAnimationFrame(rafId);
-        rafId = null;
-        if(visualizerCtx && visualizerCanvas) {
-            visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
-        }
+    if (circularRafId) { cancelAnimationFrame(circularRafId); circularRafId = null; }
+    if (circularVisualizerCtx && circularVisualizerCanvas) {
+        circularVisualizerCtx.clearRect(0, 0, circularVisualizerCanvas.width, circularVisualizerCanvas.height);
     }
-    if (lyricsOverlay) {
-        lyricsOverlay.classList.remove('opacity-100', 'pointer-events-auto');
-        lyricsOverlay.classList.add('opacity-0', 'pointer-events-none');
-    }
-    if (currentLyricEl) {
-        currentLyricEl.textContent = '';
-        currentLyricEl.classList.remove('active', 'opacity-100', 'translate-y-0');
-        currentLyricEl.classList.add('opacity-0', 'translate-y-1');
-    }
-    if (nextLyricEl) {
-        nextLyricEl.textContent = '';
-        nextLyricEl.classList.remove('visible', 'opacity-100');
-        nextLyricEl.classList.add('opacity-0');
-    }
+    if (albumArtElement) { albumArtElement.classList.remove('spinning'); albumArtElement.classList.remove('paused'); }
+    const bubbleArt = document.getElementById('bubbleAlbumArt');
+    if (bubbleArt) { bubbleArt.classList.remove('spinning'); bubbleArt.classList.remove('paused'); }
+    if (nowPlayingIndicator) nowPlayingIndicator.classList.remove('active');
+
+    // Reset lyrics
+    if (lyricsOverlay) lyricsOverlay.classList.remove('visible');
+    if (currentLyricEl) { currentLyricEl.textContent = ''; currentLyricEl.classList.remove('active'); }
+    if (nextLyricEl) { nextLyricEl.textContent = ''; nextLyricEl.classList.remove('visible'); }
     currentLyricIndex = -1;
 }
 
 function updatePlayPauseIcon() {
     if (!playPauseMusicBtn || !audioPlayer) return;
-    if (audioPlayer.paused || audioPlayer.ended) {
-        playPauseMusicBtn.innerHTML = '<i class="fas fa-play fa-lg"></i>';
-    } else {
-        playPauseMusicBtn.innerHTML = '<i class="fas fa-pause fa-lg"></i>';
-    }
+    playPauseMusicBtn.innerHTML = audioPlayer.paused || audioPlayer.ended
+        ? '<i class="fas fa-play fa-lg"></i>'
+        : '<i class="fas fa-pause fa-lg"></i>';
 }
 
 function updateProgressBar() {
@@ -477,28 +755,22 @@ function seekAudio() {
     audioPlayer.currentTime = musicProgressBar.value;
 }
 
-function formatTime(timeInSeconds) {
-    if (isNaN(timeInSeconds) || timeInSeconds < 0) timeInSeconds = 0;
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = Math.floor(timeInSeconds % 60);
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+function formatTime(t) {
+    if (isNaN(t) || t < 0) t = 0;
+    const m = Math.floor(t / 60);
+    const s = Math.floor(t % 60);
+    return `${m}:${s < 10 ? '0' : ''}${s}`;
 }
 
-function handlePlayError(error) {
-    console.error("Lỗi khi phát nhạc:", error.name, error.message);
-    if (error.name === 'NotAllowedError') {
-        console.warn("Autoplay blocked by browser. User interaction required.");
-    } else if (error.name === 'AbortError') {
-        console.info("Playback aborted.");
-    }
-    // updatePlayPauseIcon(); // This will be handled by 'pause' event if play fails and causes pause
+function handlePlayError(err) {
+    console.error("Play error:", err.name, err.message);
 }
 
 function setVolume() {
     if (!audioPlayer || !volumeSlider) return;
-    const newVolume = parseFloat(volumeSlider.value);
-    audioPlayer.volume = newVolume;
-    audioPlayer.muted = (newVolume === 0);
+    const v = parseFloat(volumeSlider.value);
+    audioPlayer.volume = v;
+    audioPlayer.muted = (v === 0);
     updateVolumeIcon();
 }
 
@@ -507,415 +779,412 @@ function toggleMute() {
     audioPlayer.muted = !audioPlayer.muted;
     if (!audioPlayer.muted && audioPlayer.volume === 0) {
         audioPlayer.volume = 0.5;
-        if (volumeSlider) volumeSlider.value = audioPlayer.volume.toString();
+        if (volumeSlider) volumeSlider.value = '0.5';
     }
     updateVolumeIcon();
 }
 
 function updateVolumeIcon() {
-    if(!volumeBtn || !audioPlayer) return;
-    volumeBtn.innerHTML = '';
-    const icon = document.createElement('i');
-    icon.classList.add('fas');
-    if (audioPlayer.muted || audioPlayer.volume === 0) {
-        icon.classList.add('fa-volume-xmark');
-    } else if (audioPlayer.volume < 0.5) {
-        icon.classList.add('fa-volume-low');
-    } else {
-        icon.classList.add('fa-volume-high');
-    }
-    volumeBtn.appendChild(icon);
+    if (!volumeBtn || !audioPlayer) return;
+    const iconClass = audioPlayer.muted || audioPlayer.volume === 0
+        ? 'fa-volume-xmark'
+        : audioPlayer.volume < 0.5 ? 'fa-volume-low' : 'fa-volume-high';
+    volumeBtn.innerHTML = `<i class="fas ${iconClass}"></i>`;
 }
 
-function playNextTrackHandler() {
+function playNextTrack() {
+    const wasPlaying = audioPlayer && !audioPlayer.paused;
     currentTrackIndex = (currentTrackIndex + 1) % audioPlaylist.length;
-    const wasPlaying = !audioPlayer.paused; // Check before loading new track
     loadTrack(currentTrackIndex);
-    if (audioPlayer) {
-        // If it was playing before, or if it's the first track, try to play.
-        // The 'ended' event naturally leads to playing the next track.
-        // For manual next clicks, we also want it to play.
-        if (wasPlaying || audioPlaylist.length > 0) {
-             if (audioContext && audioContext.state === 'suspended') {
-                audioContext.resume().then(() => {
-                    audioPlayer.play().catch(handlePlayError);
-                }).catch(handlePlayError);
-            } else {
-                audioPlayer.play().catch(handlePlayError);
-            }
+    if (wasPlaying || audioPlaylist.length > 0) {
+        if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume().then(() => audioPlayer.play().catch(handlePlayError)).catch(handlePlayError);
+        } else {
+            audioPlayer.play().catch(handlePlayError);
         }
     }
 }
 
-function playPrevTrackHandler() {
+function playPrevTrack() {
+    const wasPlaying = audioPlayer && !audioPlayer.paused;
     currentTrackIndex = (currentTrackIndex - 1 + audioPlaylist.length) % audioPlaylist.length;
-    const wasPlaying = !audioPlayer.paused; // Check before loading new track
     loadTrack(currentTrackIndex);
-    if (audioPlayer) {
-         if (wasPlaying || audioPlaylist.length > 0) {
-            if (audioContext && audioContext.state === 'suspended') {
-                audioContext.resume().then(() => {
-                    audioPlayer.play().catch(handlePlayError);
-                }).catch(handlePlayError);
-            } else {
-                audioPlayer.play().catch(handlePlayError);
-            }
+    if (wasPlaying || audioPlaylist.length > 0) {
+        if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume().then(() => audioPlayer.play().catch(handlePlayError)).catch(handlePlayError);
+        } else {
+            audioPlayer.play().catch(handlePlayError);
         }
     }
 }
 
 function updateTrackButtonsState() {
-    if(!prevTrackBtn || !nextTrackBtn) return;
-    const disableButtons = audioPlaylist.length <= 1;
-    prevTrackBtn.disabled = disableButtons;
-    nextTrackBtn.disabled = disableButtons;
-
+    if (!prevTrackBtn || !nextTrackBtn) return;
+    const disable = audioPlaylist.length <= 1;
+    prevTrackBtn.disabled = disable;
+    nextTrackBtn.disabled = disable;
     [prevTrackBtn, nextTrackBtn].forEach(btn => {
-        btn.classList.toggle('opacity-50', disableButtons);
-        btn.classList.toggle('cursor-not-allowed', disableButtons);
+        btn.style.opacity = disable ? '0.4' : '1';
+        btn.style.pointerEvents = disable ? 'none' : 'auto';
     });
 }
 
-function updateLyrics(currentTime) {
+// ============================================
+// LYRICS
+// ============================================
+function updateLyrics(time) {
     if (!audioPlayer || !lyricsOverlay || !currentLyricEl || !nextLyricEl) return;
 
-    const currentTrack = audioPlaylist[currentTrackIndex];
-    if (!currentTrack || !currentTrack.title || !currentTrack.title.includes("Phép Màu (Đàn Cá Gỗ OST)") || typeof phepMauLyrics === 'undefined') {
-        lyricsOverlay.classList.remove('opacity-100', 'pointer-events-auto');
-        lyricsOverlay.classList.add('opacity-0', 'pointer-events-none');
-        currentLyricEl.textContent = '';
-        nextLyricEl.textContent = '';
-        currentLyricEl.classList.remove('active', 'opacity-100', 'translate-y-0');
-        currentLyricEl.classList.add('opacity-0', 'translate-y-1');
-        nextLyricEl.classList.remove('visible', 'opacity-100');
-        nextLyricEl.classList.add('opacity-0');
+    const track = audioPlaylist[currentTrackIndex];
+    const hasLyrics = track && track.title && track.title.includes("Phép Màu (Đàn Cá Gỗ OST)");
+
+    if (!hasLyrics) {
+        lyricsOverlay.classList.remove('visible');
+        currentLyricEl.textContent = ''; currentLyricEl.classList.remove('active');
+        nextLyricEl.textContent = ''; nextLyricEl.classList.remove('visible');
         currentLyricIndex = -1;
         return;
     }
 
     if (!audioPlayer.paused || audioPlayer.readyState >= 2) {
-        lyricsOverlay.classList.add('opacity-100', 'pointer-events-auto');
-        lyricsOverlay.classList.remove('opacity-0', 'pointer-events-none');
+        lyricsOverlay.classList.add('visible');
     } else {
-        lyricsOverlay.classList.remove('opacity-100', 'pointer-events-auto');
-        lyricsOverlay.classList.add('opacity-0', 'pointer-events-none');
+        lyricsOverlay.classList.remove('visible');
     }
 
-    let newLyricIndex = -1;
+    let newIdx = -1;
     for (let i = 0; i < phepMauLyrics.length; i++) {
-        if (currentTime >= phepMauLyrics[i].time) {
-            newLyricIndex = i;
-        } else {
-            break;
-        }
+        if (time >= phepMauLyrics[i].time) newIdx = i;
+        else break;
     }
 
-    if (newLyricIndex !== currentLyricIndex) {
-        currentLyricIndex = newLyricIndex;
+    if (newIdx !== currentLyricIndex) {
+        currentLyricIndex = newIdx;
 
         if (currentLyricIndex !== -1 && phepMauLyrics[currentLyricIndex]) {
-            currentLyricEl.classList.remove('active', 'opacity-100', 'translate-y-0');
-            currentLyricEl.classList.add('opacity-0', 'translate-y-1');
+            currentLyricEl.classList.remove('active');
             setTimeout(() => {
                 currentLyricEl.textContent = phepMauLyrics[currentLyricIndex].text;
-                currentLyricEl.classList.add('active', 'opacity-100', 'translate-y-0');
-                currentLyricEl.classList.remove('opacity-0', 'translate-y-1');
+                currentLyricEl.classList.add('active');
             }, 50);
         } else {
             currentLyricEl.textContent = '';
-            currentLyricEl.classList.remove('active', 'opacity-100', 'translate-y-0');
-            currentLyricEl.classList.add('opacity-0', 'translate-y-1');
+            currentLyricEl.classList.remove('active');
         }
 
-        const nextIndex = currentLyricIndex + 1;
-        if (nextIndex < phepMauLyrics.length && phepMauLyrics[nextIndex] && phepMauLyrics[nextIndex].text.trim() !== "") {
-             nextLyricEl.classList.remove('visible', 'opacity-100');
-             nextLyricEl.classList.add('opacity-0');
-             setTimeout(() => {
-                nextLyricEl.textContent = phepMauLyrics[nextIndex].text;
-                nextLyricEl.classList.add('visible', 'opacity-100');
-                nextLyricEl.classList.remove('opacity-0');
+        const nextIdx = currentLyricIndex + 1;
+        if (nextIdx < phepMauLyrics.length && phepMauLyrics[nextIdx] && phepMauLyrics[nextIdx].text.trim()) {
+            nextLyricEl.classList.remove('visible');
+            setTimeout(() => {
+                nextLyricEl.textContent = phepMauLyrics[nextIdx].text;
+                nextLyricEl.classList.add('visible');
             }, 100);
         } else {
             nextLyricEl.textContent = '';
-            nextLyricEl.classList.remove('visible', 'opacity-100');
-            nextLyricEl.classList.add('opacity-0');
+            nextLyricEl.classList.remove('visible');
         }
     }
 }
 
+// ============================================
+// AUDIO GRAPH & CIRCULAR VISUALIZER
+// ============================================
 function setupAudioGraph() {
     if (isVisualizerInitialized || !audioPlayer) return;
-
+    
+    if (window.location.protocol === 'file:') {
+        console.warn("Visualizer is running in FAKE mode for local files to prevent audio silencing.");
+        isVisualizerInitialized = "fake"; 
+        dataArray = new Uint8Array(64);
+        return;
+    }
+    
     try {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         analyser = audioContext.createAnalyser();
         analyser.fftSize = 256;
-
         if (!sourceNode || sourceNode.mediaElement !== audioPlayer) {
             sourceNode = audioContext.createMediaElementSource(audioPlayer);
         }
-
         sourceNode.connect(analyser);
         analyser.connect(audioContext.destination);
-
         dataArray = new Uint8Array(analyser.frequencyBinCount);
         isVisualizerInitialized = true;
-        console.log("Audio graph setup complete for visualizer.");
     } catch (e) {
-        console.error("Lỗi khởi tạo AudioContext hoặc Analyser cho visualizer:", e);
-        if (visualizerCanvas) visualizerCanvas.style.display = 'none';
+        console.error("AudioContext setup error:", e);
         isVisualizerInitialized = false;
     }
 }
 
-function initializeVisualizerCanvas() {
-    visualizerCanvas = document.getElementById('musicVisualizer');
-    const imagePlaceholderContainer = document.querySelector('.image-placeholder-container');
-
-    if (!visualizerCanvas || !imagePlaceholderContainer) {
-        console.error("Visualizer: Không tìm thấy canvas hoặc image placeholder container.");
-        if (visualizerCanvas) visualizerCanvas.style.display = 'none';
-        return;
-    }
-
-    visualizerCtx = visualizerCanvas.getContext('2d');
-
-    function setCanvasDimensions() {
-        if (!imagePlaceholderContainer || !visualizerCanvas) return;
-        const avatarRect = imagePlaceholderContainer.getBoundingClientRect();
-        visualizerCanvas.height = avatarRect.height > 0 ? avatarRect.height : 300;
-        visualizerCanvas.width = 60;
-
-        if (visualizerCtx && (!rafId || (audioPlayer && audioPlayer.paused))) {
-             visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
-        }
-    }
-
-    setCanvasDimensions();
-    window.addEventListener('resize', setCanvasDimensions);
+function initCircularVisualizer() {
+    circularVisualizerCanvas = document.getElementById('circular-visualizer');
+    if (!circularVisualizerCanvas) return;
+    circularVisualizerCtx = circularVisualizerCanvas.getContext('2d');
 
     if (audioPlayer) {
         audioPlayer.addEventListener('play', () => {
-            if (!isVisualizerInitialized) {
-                setupAudioGraph();
-            }
-            if (isVisualizerInitialized && audioContext && audioContext.state === 'suspended') {
-                audioContext.resume().then(() => {
-                    if (!rafId) drawVisualizerLoop();
-                }).catch(e => console.error("Error resuming AudioContext for visualizer:", e));
-            } else if (isVisualizerInitialized && !rafId) {
-                drawVisualizerLoop();
+            if (!isVisualizerInitialized) setupAudioGraph();
+            if (isVisualizerInitialized === "fake") {
+                if (!circularRafId) drawCircularVisualizer();
+            } else if (isVisualizerInitialized && audioContext && audioContext.state === 'suspended') {
+                audioContext.resume().then(() => { if (!circularRafId) drawCircularVisualizer(); });
+            } else if (isVisualizerInitialized && !circularRafId) {
+                drawCircularVisualizer();
             }
         });
-
         audioPlayer.addEventListener('pause', () => {
-            if (rafId) {
-                cancelAnimationFrame(rafId);
-                rafId = null;
-            }
+            if (circularRafId) { cancelAnimationFrame(circularRafId); circularRafId = null; }
         });
-
         audioPlayer.addEventListener('ended', () => {
-            if (rafId) {
-                cancelAnimationFrame(rafId);
-                rafId = null;
-                if(visualizerCtx && visualizerCanvas) {
-                    visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
-                }
+            if (circularRafId) { cancelAnimationFrame(circularRafId); circularRafId = null; }
+            if (circularVisualizerCtx && circularVisualizerCanvas) {
+                circularVisualizerCtx.clearRect(0, 0, circularVisualizerCanvas.width, circularVisualizerCanvas.height);
             }
         });
     }
 }
 
-function drawVisualizerLoop() {
-    if (!isVisualizerInitialized || !analyser || !visualizerCtx || !dataArray || !visualizerCanvas) {
-        if (rafId) cancelAnimationFrame(rafId);
-        rafId = null;
+function drawCircularVisualizer() {
+    if (!isVisualizerInitialized || !circularVisualizerCtx || !dataArray || !circularVisualizerCanvas) {
+        if (circularRafId) cancelAnimationFrame(circularRafId);
+        circularRafId = null;
         return;
     }
 
-    rafId = requestAnimationFrame(drawVisualizerLoop);
+    circularRafId = requestAnimationFrame(drawCircularVisualizer);
+    
+    if (isVisualizerInitialized === "fake") {
+        const time = Date.now() / 150;
+        const isPlaying = audioPlayer && !audioPlayer.paused && !audioPlayer.ended && audioPlayer.currentTime > 0;
+        
+        for (let i = 0; i < dataArray.length; i++) {
+            if (isPlaying) {
+                const noise = Math.sin(time * 0.5 + i * 0.2) * Math.cos(time * 0.3 - i * 0.1) * Math.sin(time * 0.1);
+                let val = (0.2 + 0.8 * Math.abs(noise)) * 180;
+                const beat = Math.pow(Math.sin(time * 0.25), 6);
+                if (i % 2 === 0) val += beat * 75; 
+                dataArray[i] = Math.min(255, Math.max(0, val));
+            } else {
+                dataArray[i] = Math.max(0, dataArray[i] - 10);
+            }
+        }
+    } else {
+        if (!analyser) return;
+        analyser.getByteFrequencyData(dataArray);
+    }
 
-    analyser.getByteFrequencyData(dataArray);
+    // Handle high DPI and CSS scaling efficiently
+    const rect = circularVisualizerCanvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    // Set actual size in memory (scaled by DPR)
+    const displayWidth = Math.round(rect.width * dpr);
+    const displayHeight = Math.round(rect.height * dpr);
 
-    visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+    if (circularVisualizerCanvas.width !== displayWidth || circularVisualizerCanvas.height !== displayHeight) {
+        circularVisualizerCanvas.width = displayWidth;
+        circularVisualizerCanvas.height = displayHeight;
+    }
 
-    const numBars = 32;
-    const barThickness = (visualizerCanvas.height / numBars) * 0.75;
-    const barSpacing = (visualizerCanvas.height / numBars) * 0.25;
-    let currentY = barSpacing / 2;
+    const w = circularVisualizerCanvas.width;
+    const h = circularVisualizerCanvas.height;
+    const cx = w / 2;
+    const cy = h / 2;
+    
+    // Dynamically calculate radius based on container size
+    // Desktop: avatar is 180px -> radius 90px. Mobile: avatar is 140px -> radius 70px.
+    const isMobile = w < 220 * dpr;
+    const innerRadius = (isMobile ? 74 : 94) * dpr; // 4px gap from avatar scaled
+    const maxBarLength = (w / 2) - innerRadius - 2 * dpr;
+    const numBars = 64;
 
-    const bufferLength = analyser.frequencyBinCount;
+    circularVisualizerCtx.clearRect(0, 0, w, h);
+
+    const bufLen = isVisualizerInitialized === "fake" ? dataArray.length : (analyser ? analyser.frequencyBinCount : dataArray.length);
 
     for (let i = 0; i < numBars; i++) {
-        const dataArrayIndex = Math.min(bufferLength - 1, Math.floor((i / numBars) * (bufferLength * 0.75)));
-        const barLengthFraction = dataArray[dataArrayIndex] / 255.0;
-        let barLength = barLengthFraction * visualizerCanvas.width;
+        const dataIdx = Math.min(bufLen - 1, Math.floor((i / numBars) * (bufLen * 0.7)));
+        const amplitude = dataArray[dataIdx] / 255;
+        const barLen = Math.max(2 * dpr, amplitude * maxBarLength);
 
-        if (barLength < 1 && dataArray[dataArrayIndex] > 0) barLength = 1;
-        if (barLength > visualizerCanvas.width) barLength = visualizerCanvas.width;
+        const angle = (i / numBars) * Math.PI * 2 - Math.PI / 2;
+        const x1 = cx + Math.cos(angle) * innerRadius;
+        const y1 = cy + Math.sin(angle) * innerRadius;
+        const x2 = cx + Math.cos(angle) * (innerRadius + barLen);
+        const y2 = cy + Math.sin(angle) * (innerRadius + barLen);
 
-        visualizerCtx.fillStyle = '#a78bfa';
-        visualizerCtx.fillRect(0, currentY, barLength, barThickness);
+        circularVisualizerCtx.beginPath();
+        circularVisualizerCtx.moveTo(x1, y1);
+        circularVisualizerCtx.lineTo(x2, y2);
+        circularVisualizerCtx.lineWidth = (isMobile ? 1.5 : 2.5) * dpr;
+        circularVisualizerCtx.lineCap = 'round';
 
-        currentY += barThickness + barSpacing;
+        // Gradient from purple to cyan based on position
+        const hue = 270 + (i / numBars) * 90; // purple to cyan
+        circularVisualizerCtx.strokeStyle = `hsla(${hue}, 80%, 65%, ${0.4 + amplitude * 0.6})`;
+        circularVisualizerCtx.shadowBlur = amplitude * 12 * dpr;
+        circularVisualizerCtx.shadowColor = `hsla(${hue}, 80%, 65%, 0.6)`;
+        circularVisualizerCtx.stroke();
     }
+
+    // Reset shadow
+    circularVisualizerCtx.shadowBlur = 0;
 }
 
-
-function initializeDonateSection() {
-    const toggleQrButtons = document.querySelectorAll('.toggle-qr-btn');
-    toggleQrButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const targetId = button.dataset.qrTarget;
-            const qrPlaceholder = document.getElementById(targetId);
-            if (qrPlaceholder) {
-                const isHidden = qrPlaceholder.classList.contains('hidden');
-                if (isHidden) {
-                    qrPlaceholder.classList.remove('hidden');
-                    button.textContent = 'Ẩn QR';
-                } else {
-                    qrPlaceholder.classList.add('hidden');
-                    button.textContent = 'Hiện QR';
-                }
-            }
+// ============================================
+// DONATE SECTION
+// ============================================
+function initDonateSection() {
+    document.querySelectorAll('.toggle-qr-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.dataset.qrTarget;
+            const qr = document.getElementById(targetId);
+            if (!qr) return;
+            const isHidden = qr.classList.contains('hidden');
+            qr.classList.toggle('hidden', !isHidden);
+            btn.textContent = isHidden ? 'Ẩn QR' : 'Hiện QR';
         });
     });
 }
 
-function copyTextToClipboard(text, notificationElement) {
-    if (!text) {
-        console.warn("Không có nội dung để sao chép.");
-        return;
-    }
+function copyTextToClipboard(text, notifEl) {
+    if (!text) return;
+    const showNotif = () => {
+        if (!notifEl) return;
+        notifEl.classList.add('show');
+        notifEl.style.display = 'block';
+        setTimeout(() => { notifEl.classList.remove('show'); notifEl.style.display = 'none'; }, 2000);
+    };
 
     if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(() => {
-            if (notificationElement) {
-                notificationElement.classList.remove('hidden');
-                setTimeout(() => {
-                    notificationElement.classList.add('hidden');
-                }, 2000);
-            }
-        }).catch(err => {
-            console.error('Không thể sao chép bằng navigator.clipboard: ', err);
-            copyTextWithExecCommand(text, notificationElement);
-        });
+        navigator.clipboard.writeText(text).then(showNotif).catch(() => fallbackCopy(text, showNotif));
     } else {
-        copyTextWithExecCommand(text, notificationElement);
+        fallbackCopy(text, showNotif);
     }
 }
 
-function copyTextWithExecCommand(text, notificationElement) {
-    const textArea = document.createElement("textarea");
-    textArea.value = text;
-    textArea.style.position = "fixed";
-    textArea.style.left = "-9999px";
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    try {
-        const successful = document.execCommand('copy');
-        if (successful) {
-            if (notificationElement) {
-                notificationElement.classList.remove('hidden');
-                setTimeout(() => {
-                    notificationElement.classList.add('hidden');
-                }, 2000);
-            }
-        } else {
-            console.error('Không thể sao chép bằng document.execCommand.');
-        }
-    } catch (err) {
-        console.error('Lỗi khi sao chép bằng document.execCommand: ', err);
-    }
-    document.body.removeChild(textArea);
+function fallbackCopy(text, callback) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;left:-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try { if (document.execCommand('copy')) callback(); }
+    catch (e) { console.error('Copy failed:', e); }
+    document.body.removeChild(ta);
 }
 
+function initCopyButtons() {
+    const momoBtn = document.getElementById('copyMomoNumberBtn');
+    const momoNum = document.getElementById('momoNumber');
+    const momoNotif = document.getElementById('copyMomoNotification');
 
-function initializeCopyButtons() {
-    const copyMomoBtn = document.getElementById('copyMomoNumberBtn');
-    const momoNumberEl = document.getElementById('momoNumber');
-    const momoNotificationEl = document.getElementById('copyMomoNotification');
+    const bankBtn = document.getElementById('copyAccountNumberBtn');
+    const bankNum = document.getElementById('accountNumber');
+    const bankNotif = document.getElementById('copyNotification');
 
-    const copyBankBtn = document.getElementById('copyAccountNumberBtn');
-    const accountNumberEl = document.getElementById('accountNumber');
-    const bankNotificationEl = document.getElementById('copyNotification');
-
-    if (copyMomoBtn && momoNumberEl && momoNotificationEl) {
-        copyMomoBtn.addEventListener('click', () => {
-            copyTextToClipboard(momoNumberEl.textContent.trim(), momoNotificationEl);
-        });
-    } else {
-        console.warn("Không tìm thấy các phần tử để sao chép số Momo.");
+    if (momoBtn && momoNum) {
+        momoBtn.addEventListener('click', () => copyTextToClipboard(momoNum.textContent.trim(), momoNotif));
     }
-
-    if (copyBankBtn && accountNumberEl && bankNotificationEl) {
-        copyBankBtn.addEventListener('click', () => {
-            copyTextToClipboard(accountNumberEl.textContent.trim(), bankNotificationEl);
-        });
-    } else {
-        console.warn("Không tìm thấy các phần tử để sao chép số tài khoản ngân hàng.");
+    if (bankBtn && bankNum) {
+        bankBtn.addEventListener('click', () => copyTextToClipboard(bankNum.textContent.trim(), bankNotif));
     }
 }
-// --- END: Các hàm gốc ---
 
+// ============================================
+// SPLIT TEXT ANIMATION (Hero Title)
+// ============================================
+function splitTextAnimation() {
+    const title = document.getElementById('hero-title');
+    if (!title) return;
 
-// --- Hàm khởi tạo toàn bộ ứng dụng trang ---
-function initializePageApplication() {
+    const text = title.textContent;
+    title.textContent = '';
+    title.style.opacity = '1';
+
+    [...text].forEach((char, i) => {
+        const span = document.createElement('span');
+        span.className = 'char';
+        span.textContent = char === ' ' ? '\u00A0' : char;
+        span.style.animationDelay = `${0.5 + i * 0.04}s`;
+        title.appendChild(span);
+    });
+}
+
+// ============================================
+// PAGE INITIALIZATION
+// ============================================
+function initializePageApp() {
+    // Split text animation for hero title
+    splitTextAnimation();
+
+    // Typewriter for tagline
+    typewriterEffect('hero-tagline', heroTaglines, 50, 2500);
+
+    // Render shortcuts
     renderShortcuts();
-    initializeMusicPlayer();
-    initializeSearchSuggestions();
 
-    if (document.getElementById('musicPlayerContainer')) {
-        initializeVisualizerCanvas();
-    }
+    // Music player
+    initMusicPlayer();
 
-    if (audioPlayer) {
-        updateLyrics(audioPlayer.currentTime);
-    }
+    // Circular visualizer
+    initCircularVisualizer();
 
-    const searchButton = document.getElementById('searchButton');
-    if (searchButton) {
-        searchButton.addEventListener('click', performSearch);
-    }
+    // Search
+    initSearchSuggestions();
+
+    // Donate
+    initDonateSection();
+    initCopyButtons();
+
+    // Header scroll effect
+    initHeaderScroll();
+
+    // Scroll reveal (after DOM is populated)
+    requestAnimationFrame(() => {
+        initScrollReveal();
+    });
+
+    // 3D Tilt effect on cards
+    init3DTilt();
+
+    // Footer year
+    const yearEl = document.getElementById('currentYear');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+    // Search button
+    const searchBtn = document.getElementById('searchButton');
+    if (searchBtn) searchBtn.addEventListener('click', performSearch);
+
     const searchInputEl = document.getElementById('searchInput');
     if (searchInputEl) {
-        searchInputEl.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                performSearch();
-            }
+        searchInputEl.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performSearch();
         });
     }
 
-
-    const currentYearElement = document.getElementById('currentYear');
-    if (currentYearElement) {
-        currentYearElement.textContent = new Date().getFullYear();
-    }
-
-    initializeDonateSection();
-    initializeCopyButtons();
-
-    console.log("Ứng dụng trang đã được khởi tạo.");
+    console.log("✨ Page application initialized!");
 }
-// --- END: Hàm khởi tạo ứng dụng ---
 
-
-// --- Logic Tải Trang Mới ---
+// ============================================
+// PAGE LOAD FLOW
+// ============================================
 window.addEventListener('load', () => {
-    const loadingScreen = document.getElementById(loadingScreenId);
-    const pageContent = document.getElementById(pageContentId);
-    const accessModal = document.getElementById(accessModalId);
-    const acceptButton = document.getElementById(acceptAccessBtnId);
-    const modalContentArea = document.getElementById(modalContentAreaId);
-
-    const minLoadingTime = 2500;
+    const loadingScreen = document.getElementById('loading-screen');
+    const pageContent = document.getElementById('page-content');
+    const accessModal = document.getElementById('access-modal');
+    const acceptBtn = document.getElementById('acceptAccessBtn');
+    const modalContent = document.getElementById('modal-content-area');
 
     document.body.classList.add('loading');
 
+    // Initialize background effects immediately
+    new ParticleSystem('particles-canvas');
+    new CursorTrail('cursor-trail-canvas');
+
+    const minLoadTime = 2500;
+
     setTimeout(() => {
+        // Fade out loading screen
         if (loadingScreen) {
             loadingScreen.style.opacity = '0';
             loadingScreen.addEventListener('transitionend', () => {
@@ -923,43 +1192,43 @@ window.addEventListener('load', () => {
             }, { once: true });
         }
 
+        // Show page content
         if (pageContent) {
             pageContent.classList.remove('hidden');
-            requestAnimationFrame(() => {
-                 pageContent.style.opacity = '1';
-            });
+            requestAnimationFrame(() => { pageContent.style.opacity = '1'; });
         }
 
-        initializePageApplication();
+        // Initialize app
+        initializePageApp();
         document.body.classList.remove('loading');
 
-        if (accessModal && modalContentArea) {
+        // Show access modal
+        if (accessModal && modalContent) {
             setTimeout(() => {
                 accessModal.classList.remove('hidden');
                 requestAnimationFrame(() => {
                     accessModal.style.opacity = '1';
-                    modalContentArea.style.opacity = '1';
-                    modalContentArea.style.transform = 'scale(1)';
+                    modalContent.style.opacity = '1';
+                    modalContent.style.transform = 'scale(1) translateY(0)';
                 });
-            }, 500);
+            }, 600);
         }
 
-    }, minLoadingTime);
+    }, minLoadTime);
 
-    if (acceptButton && accessModal && modalContentArea) {
-        acceptButton.addEventListener('click', () => {
-            modalContentArea.style.opacity = '0';
-            modalContentArea.style.transform = 'scale(0.95)';
+    // Accept button handler
+    if (acceptBtn && accessModal && modalContent) {
+        acceptBtn.addEventListener('click', () => {
+            modalContent.style.opacity = '0';
+            modalContent.style.transform = 'scale(0.9) translateY(20px)';
             accessModal.style.opacity = '0';
-            
-            accessModal.addEventListener('transitionend', function handleTransitionEnd(e) {
+
+            accessModal.addEventListener('transitionend', function handler(e) {
                 if (e.target === accessModal && e.propertyName === 'opacity') {
                     accessModal.classList.add('hidden');
-                    accessModal.removeEventListener('transitionend', handleTransitionEnd);
+                    accessModal.removeEventListener('transitionend', handler);
                 }
             });
         });
     }
 });
-
-// --- END: Logic Tải Trang Mới ---
