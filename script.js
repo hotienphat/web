@@ -1275,6 +1275,55 @@ window.addEventListener('load', () => {
 
     }, minLoadTime);
 
+    // Contact Form AJAX Submission
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const submitBtn = contactForm.querySelector('.submit-btn');
+            const originalBtnHtml = submitBtn.innerHTML;
+            
+            // Loading state
+            submitBtn.innerHTML = 'Đang gửi... <i class="fas fa-spinner fa-spin"></i>';
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.7';
+
+            const formData = new FormData(contactForm);
+
+            fetch(contactForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Success state
+                    submitBtn.innerHTML = 'Đã gửi thành công <i class="fas fa-check"></i>';
+                    submitBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                    submitBtn.style.opacity = '1';
+                    contactForm.reset();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            })
+            .catch(error => {
+                // Error state
+                submitBtn.innerHTML = 'Gửi lỗi! Thử lại <i class="fas fa-times"></i>';
+                submitBtn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalBtnHtml;
+                    submitBtn.disabled = false;
+                    submitBtn.style.background = '';
+                    submitBtn.style.opacity = '1';
+                }, 4000);
+            });
+        });
+    }
+
     // Accept button handler
     if (acceptBtn && accessModal && modalContent) {
         acceptBtn.addEventListener('click', () => {
