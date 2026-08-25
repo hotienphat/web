@@ -1,107 +1,6 @@
 // ============================================
-// DATA CONFIGURATION
+// DATA CONFIGURATION MOVED TO data.js
 // ============================================
-
-const shortcutSections = [
-    {
-        title: "MẠNG XÃ HỘI",
-        iconPrefix: "fab",
-        shortcuts: [
-            { name: "Facebook", url: "https://www.facebook.com/KaedeharaKazuha0805", icon: "facebook" },
-            { name: "Messenger", url: "https://messenger.com", icon: "facebook-messenger" },
-            { name: "Instagram", url: "https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Fhotien_boyneh%2F&is_from_rle", icon: "instagram" },
-            { name: "Threads", url: "https://www.threads.net/@hotien_boyneh", icon: "threads" },
-        ]
-    },
-    {
-        title: "GOOGLE",
-        iconPrefix: "fab",
-        shortcuts: [
-            { name: "Youtube", url: "https://youtube.com", icon: "youtube" },
-            { name: "Gmail", url: "https://mail.google.com", icon: "google" },
-            { name: "Drive", url: "https://drive.google.com", icon: "google-drive" },
-            { name: "Tìm kiếm", url: "https://google.com", icon: "google" }
-        ]
-    },
-    {
-        title: "GÓC HỌC TẬP",
-        iconPrefix: "fas",
-        shortcuts: [
-            { name: "Trung Tâm GDTX", url: "https://txdaknong.daknong.edu.vn/", icon: "school" },
-            { name: "Random của FOT", url: "https://hotienphat.github.io/GDTX/", icon: "shuffle" },
-            { name: "Tạo khung", url: "https://hotienphat.github.io/frame/", icon: "image" },
-            { name: "Giám thị", url: "https://hotienphat.github.io/filter", icon: "book" },
-        ]
-    },
-    {
-        title: "GIẢI TRÍ",
-        iconPrefix: "fas",
-        shortcuts: [
-            { name: "Genshin Impact", url: "https://genshin.hoyoverse.com/", icon: "gamepad" },
-            { name: "Valorant", url: "https://playvalorant.com/", icon: "gamepad" },
-            { name: "Honkai: Star Rail", url: "https://hsr.hoyoverse.com/", icon: "rocket" },
-            { name: "Spotify", url: "https://spotify.com", icon: "spotify", iconPrefixOverride: "fab" },
-        ]
-    },
-];
-
-const audioPlaylist = [
-    {
-        title: "Phép Màu (Đàn Cá Gỗ OST)",
-        artist: "Mounter x MAYDAYs, Minh Tốc",
-        src: "./assets/phepmau.mp3",
-        albumArt: "./assets/Phepmaulogo.jpg"
-    },
-    {
-        title: "Còn Gì Đẹp Hơn (Mưa Đỏ Original Soundtrack)",
-        artist: "Nguyễn Hùng",
-        src: "./assets/congidephon.mp3",
-        albumArt: "./assets/CGDH.jpg"
-    }
-];
-
-const phepMauLyrics = [
-    { time: 0,   text: "Bài hát: Phép Màu - Mounter x MAYDAYs, Minh Tốc" },
-    { time: 3,   text: "Ngày thay đêm, vội trôi giấc mơ êm đềm" },
-    { time: 10,  text: "Tôi lênh đênh trên biển vắng, hoàng hôn chờ em chưa buông nắng" },
-    { time: 16,  text: "Đừng tìm nhau, vào hôm gió mưa tơi bời" },
-    { time: 23,  text: "Sợ lời sắp nói vỡ tan thương đau, hẹn kiếp sau có nhau trọn đời" },
-    { time: 30,  text: "..." },
-    { time: 44,  text: "Liệu người có còn ở đây với tôi thật lâu?" },
-    { time: 50,  text: "Ngày rộng tháng dài, sợ mai không còn thấy nhau" },
-    { time: 57,  text: "Ngày em đến, áng mây xanh thêm, ngày em đi nắng vương cuối thềm" },
-    { time: 64,  text: "Thiếu em tôi sợ bơ vơ, vắng em như tàn cơn mơ" },
-    { time: 70,  text: "Chẳng phải phép màu vậy sao chúng ta gặp nhau?" },
-    { time: 77,  text: "Một người khẽ cười, người kia cũng dịu nỗi đau" },
-    { time: 84,  text: "Gọi tôi thức giấc cơn ngủ mê, dìu tôi đi lúc quên lối về" },
-    { time: 90,  text: "Quãng đời mai sau luôn cạnh nhau" },
-    { time: 98,  text: "..." },
-    { time: 105, text: "Rồi ngày mai, còn ai với ai ở lại?" },
-    { time: 111, text: "Vẫn căng buồm ra khơi theo làn gió mới" },
-    { time: 114, text: "Vì biết đâu mọi thứ chưa bắt đầu" },
-    { time: 118, text: "Hah-hah-ah-ah-ah-ah" },
-    { time: 129, text: "Liệu người có còn ở đây với tôi thật lâu?" },
-    { time: 137, text: "Ngày rộng tháng dài, sợ mai không còn thấy nhau" },
-    { time: 144, text: "Ngày em đến, áng mây xanh thêm, ngày em đi, nắng vương cuối thềm" },
-    { time: 150, text: "Thiếu em tôi sợ bơ vơ, vắng em như tàn cơn mơ" },
-    { time: 156, text: "Chẳng phải phép màu vậy sao chúng ta gặp nhau?" },
-    { time: 164, text: "Một người khẽ cười, người kia cũng dịu nỗi đau" },
-    { time: 171, text: "Gọi tôi thức giấc cơn ngủ mê, dìu tôi đi lúc quên lối về" },
-    { time: 178, text: "Quãng đời thanh xuân sao em cho tôi giữ lấy, giữ lấy" },
-    { time: 190, text: "(Qua bao khổ đau, ta bên cạnh nhau)" },
-    { time: 217, text: "Chẳng phải phép màu vậy sao chúng ta gặp nhau?" },
-    { time: 224, text: "Một người khẽ cười, người kia cũng dịu nỗi đau" },
-    { time: 231, text: "Gọi tôi thức giấc cơn ngủ mê, dìu tôi đi lúc quên lối về" },
-    { time: 239, text: "Quãng đời mai sau luôn cạnh nhau" },
-    { time: 244, text: "Quãng đời mai sau luôn cạnh nhau" },
-    { time: 255, text: "HẾT" },
-];
-
-const heroTaglines = [
-    "Lập trình viên • Gamer • Người yêu nhạc 🎵",
-    "Đến từ Lâm Đồng, Việt Nam 🇻🇳",
-    "Chào mừng đến không gian số của mình ✨"
-];
 
 // ============================================
 // GLOBAL STATE
@@ -131,13 +30,13 @@ class ParticleSystem {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
         if (!this.canvas) return;
-        
+
         // Disable if user prefers reduced motion
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             this.canvas.style.display = 'none';
             return;
         }
-        
+
         this.ctx = this.canvas.getContext('2d');
         this.particles = [];
         this.mouseX = 0;
@@ -245,9 +144,9 @@ class CursorTrail {
         this.canvas = document.getElementById(canvasId);
         if (!this.canvas) return;
         // Disable on touch devices or if prefers reduced motion
-        if ('ontouchstart' in window || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { 
-            this.canvas.style.display = 'none'; 
-            return; 
+        if ('ontouchstart' in window || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            this.canvas.style.display = 'none';
+            return;
         }
 
         this.ctx = this.canvas.getContext('2d');
@@ -606,7 +505,7 @@ function initMusicPlayer() {
     lyricsOverlay = document.getElementById('lyricsOverlay');
     currentLyricEl = document.getElementById('currentLyric');
     nextLyricEl = document.getElementById('nextLyric');
-    
+
     // Bubble UI Logic
     const playerContainer = document.getElementById('musicPlayerContainer');
     const playerBubble = document.getElementById('playerBubble');
@@ -614,7 +513,7 @@ function initMusicPlayer() {
     const playerPanel = document.getElementById('playerPanel');
     const toggleLyricsBtn = document.getElementById('toggleLyricsBtn');
     const closeLyricsBtn = document.getElementById('closeLyricsBtn');
-    
+
     if (playerBubble && playerContainer) {
         playerBubble.addEventListener('click', () => {
             playerContainer.classList.remove('collapsed');
@@ -687,7 +586,7 @@ function initMusicPlayer() {
             if (audioPlayer) updateLyrics(audioPlayer.currentTime);
         });
     }
-    
+
     // Close Lyrics Button
     if (closeLyricsBtn) {
         closeLyricsBtn.addEventListener('click', () => {
@@ -950,14 +849,14 @@ function updateLyrics(time) {
 // ============================================
 function setupAudioGraph() {
     if (isVisualizerInitialized || !audioPlayer) return;
-    
+
     if (window.location.protocol === 'file:') {
         console.warn("Visualizer is running in FAKE mode for local files to prevent audio silencing.");
-        isVisualizerInitialized = "fake"; 
+        isVisualizerInitialized = "fake";
         dataArray = new Uint8Array(64);
         return;
     }
-    
+
     try {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         analyser = audioContext.createAnalyser();
@@ -1011,17 +910,17 @@ function drawCircularVisualizer() {
     }
 
     circularRafId = requestAnimationFrame(drawCircularVisualizer);
-    
+
     if (isVisualizerInitialized === "fake") {
         const time = Date.now() / 150;
         const isPlaying = audioPlayer && !audioPlayer.paused && !audioPlayer.ended && audioPlayer.currentTime > 0;
-        
+
         for (let i = 0; i < dataArray.length; i++) {
             if (isPlaying) {
                 const noise = Math.sin(time * 0.5 + i * 0.2) * Math.cos(time * 0.3 - i * 0.1) * Math.sin(time * 0.1);
                 let val = (0.2 + 0.8 * Math.abs(noise)) * 180;
                 const beat = Math.pow(Math.sin(time * 0.25), 6);
-                if (i % 2 === 0) val += beat * 75; 
+                if (i % 2 === 0) val += beat * 75;
                 dataArray[i] = Math.min(255, Math.max(0, val));
             } else {
                 dataArray[i] = Math.max(0, dataArray[i] - 10);
@@ -1048,7 +947,7 @@ function drawCircularVisualizer() {
     const h = circularVisualizerCanvas.height;
     const cx = w / 2;
     const cy = h / 2;
-    
+
     // Dynamically calculate radius based on container size
     // Desktop: avatar is 180px -> radius 90px. Mobile: avatar is 140px -> radius 70px.
     const isMobile = w < 220 * dpr;
@@ -1278,11 +1177,11 @@ window.addEventListener('load', () => {
     // Contact Form AJAX Submission
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
+        contactForm.addEventListener('submit', function (e) {
             e.preventDefault();
             const submitBtn = contactForm.querySelector('.submit-btn');
             const originalBtnHtml = submitBtn.innerHTML;
-            
+
             // Loading state
             submitBtn.innerHTML = 'Đang gửi... <i class="fas fa-spinner fa-spin"></i>';
             submitBtn.disabled = true;
@@ -1297,30 +1196,30 @@ window.addEventListener('load', () => {
                     'Accept': 'application/json'
                 }
             })
-            .then(response => {
-                if (response.ok) {
-                    // Success state
-                    submitBtn.innerHTML = 'Đã gửi thành công <i class="fas fa-check"></i>';
-                    submitBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-                    submitBtn.style.opacity = '1';
-                    contactForm.reset();
-                } else {
-                    throw new Error('Network response was not ok');
-                }
-            })
-            .catch(error => {
-                // Error state
-                submitBtn.innerHTML = 'Gửi lỗi! Thử lại <i class="fas fa-times"></i>';
-                submitBtn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
-            })
-            .finally(() => {
-                setTimeout(() => {
-                    submitBtn.innerHTML = originalBtnHtml;
-                    submitBtn.disabled = false;
-                    submitBtn.style.background = '';
-                    submitBtn.style.opacity = '1';
-                }, 4000);
-            });
+                .then(response => {
+                    if (response.ok) {
+                        // Success state
+                        submitBtn.innerHTML = 'Đã gửi thành công <i class="fas fa-check"></i>';
+                        submitBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                        submitBtn.style.opacity = '1';
+                        contactForm.reset();
+                    } else {
+                        throw new Error('Network response was not ok');
+                    }
+                })
+                .catch(error => {
+                    // Error state
+                    submitBtn.innerHTML = 'Gửi lỗi! Thử lại <i class="fas fa-times"></i>';
+                    submitBtn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                })
+                .finally(() => {
+                    setTimeout(() => {
+                        submitBtn.innerHTML = originalBtnHtml;
+                        submitBtn.disabled = false;
+                        submitBtn.style.background = '';
+                        submitBtn.style.opacity = '1';
+                    }, 4000);
+                });
         });
     }
 
