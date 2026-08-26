@@ -170,42 +170,17 @@
             <!-- PROJECTS SECTION -->
             <section id="projects-section" class="content-section">
                 <div class="section-header reveal-element">
-                    <h2 class="section-title gradient-text">Dự Án Nổi Bật</h2>
-                    <p class="section-subtitle">Một số sản phẩm cá nhân mình đã phát triển</p>
+                    <h2 class="section-title gradient-text">Cây 3D Tương Tác</h2>
+                    <p class="section-subtitle">Mô hình cây 3D được vẽ trực tiếp bằng mã nguồn (Three.js), xoay để tương tác</p>
                     <div class="section-divider"></div>
                 </div>
-                <div class="projects-grid reveal-element">
-                    <!-- Project 1 -->
-                    <div class="project-card">
-                        <div class="project-img-wrapper">
-                            <div class="placeholder-img"
-                                style="background: linear-gradient(135deg, var(--bg-surface), #1a1a3a); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: rgba(255,255,255,0.1);">
-                                <i class="fas fa-laptop-code"></i></div>
-                        </div>
-                        <div class="project-content">
-                            <h3>Portfolio 3D Interactive</h3>
-                            <p>Trang web cá nhân mang phong cách Glassmorphism với hiệu ứng hạt phân tử, trình phát nhạc
-                                bong bóng và sóng âm hình tròn.</p>
-                            <div class="project-tags">
-                                <span>HTML5</span><span>CSS3</span><span>Vanilla JS</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Project 2 -->
-                    <div class="project-card">
-                        <div class="project-img-wrapper">
-                            <div class="placeholder-img"
-                                style="background: linear-gradient(135deg, var(--bg-surface), #1a1a3a); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: rgba(255,255,255,0.1);">
-                                <i class="fas fa-music"></i></div>
-                        </div>
-                        <div class="project-content">
-                            <h3>Web Audio Visualizer</h3>
-                            <p>Ứng dụng chơi nhạc tích hợp AudioContext API, phân tích và vẽ sóng âm thanh thời gian
-                                thực ngay trên thẻ Canvas.</p>
-                            <div class="project-tags">
-                                <span>Web Audio API</span><span>Canvas</span>
-                            </div>
-                        </div>
+                
+                <div class="tree-3d-wrapper reveal-element">
+                    <div id="tree-canvas-container" class="glass-panel"></div>
+                    <div class="tree-controls glass-panel">
+                        <button class="season-btn active" data-season="spring"><i class="fas fa-seedling" style="color: #ffb7c5;"></i> Xuân</button>
+                        <button class="season-btn" data-season="summer"><i class="fas fa-sun" style="color: #22d3ee;"></i> Hạ</button>
+                        <button class="season-btn" data-season="autumn"><i class="fab fa-canadian-maple-leaf" style="color: #fb923c;"></i> Thu</button>
                     </div>
                 </div>
             </section>
@@ -405,7 +380,10 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="data.js" defer></script>
+    <script src="tree.js" defer></script>
     <script src="script.js" defer></script>
 </body>
 
