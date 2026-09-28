@@ -30,7 +30,7 @@ const shortcutSections = [
             { name: "Trung Tâm GDTX", url: "https://txdaknong.daknong.edu.vn/", icon: "school" },
             { name: "Random của FOT", url: "https://hotienphat.github.io/GDTX/", icon: "shuffle" },
             { name: "Tạo khung", url: "https://hotienphat.github.io/frame/", icon: "image" },
-            { name: "Giám thị", url: "https://hotienphat.github.io/filter", icon: "book" },
+            { name: "Giám thị", url: "https://giamthi.vercel.app", icon: "book" },
         ]
     },
     {
