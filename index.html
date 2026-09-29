@@ -234,20 +234,44 @@
                 </div>
             </section>
 
-            <!-- PROJECTS SECTION -->
-            <section id="projects-section" class="content-section">
+            <!-- 3D INTERACTIVE TREE SECTION -->
+            <section id="tree-3d-section" class="content-section">
                 <div class="section-header reveal-element">
                     <h2 class="section-title gradient-text">Cây 3D Tương Tác</h2>
-                    <p class="section-subtitle">Mô hình cây 3D được vẽ trực tiếp bằng mã nguồn (Three.js), xoay để tương tác</p>
+                    <p class="section-subtitle">Mô hình cây 3D được vẽ trực tiếp bằng Three.js & WebGL &bull; Xoay, thu phóng và chuyển đổi 4 mùa</p>
                     <div class="section-divider"></div>
                 </div>
                 
                 <div class="tree-3d-wrapper reveal-element">
-                    <div id="tree-canvas-container" class="glass-panel"></div>
+                    <!-- Interaction Hint -->
+                    <div class="tree-hint-badge">
+                        <i class="fas fa-hand-pointer"></i> <span>Kéo để xoay &bull; Cuộn để phóng to</span>
+                    </div>
+
+                    <!-- Top Utility Toolbar -->
+                    <div class="tree-top-toolbar">
+                        <button id="treeRotateToggleBtn" class="tree-tool-btn active" title="Bật / Tắt tự động xoay" aria-label="Tự xoay">
+                            <i class="fas fa-sync-alt fa-spin"></i> <span>Tự xoay</span>
+                        </button>
+                        <button id="treeResetBtn" class="tree-tool-btn" title="Đặt lại góc nhìn mặc định" aria-label="Đặt lại góc nhìn">
+                            <i class="fas fa-undo-alt"></i> <span>Đặt lại</span>
+                        </button>
+                    </div>
+
+                    <!-- WebGL Canvas Container -->
+                    <div id="tree-canvas-container">
+                        <div class="tree-loader" id="treeLoader">
+                            <div class="tree-loader-spinner"></div>
+                            <span>Đang dựng không gian 3D...</span>
+                        </div>
+                    </div>
+
+                    <!-- Season Controls -->
                     <div class="tree-controls glass-panel">
-                        <button class="season-btn active" data-season="spring"><i class="fas fa-seedling" style="color: #ffb7c5;"></i> Xuân</button>
-                        <button class="season-btn" data-season="summer"><i class="fas fa-sun" style="color: #22d3ee;"></i> Hạ</button>
-                        <button class="season-btn" data-season="autumn"><i class="fab fa-canadian-maple-leaf" style="color: #fb923c;"></i> Thu</button>
+                        <button class="season-btn active" data-season="spring" title="Mùa Xuân"><i class="fas fa-seedling" style="color: #ffb7c5;"></i> <span>Xuân</span></button>
+                        <button class="season-btn" data-season="summer" title="Mùa Hạ"><i class="fas fa-sun" style="color: #34d399;"></i> <span>Hạ</span></button>
+                        <button class="season-btn" data-season="autumn" title="Mùa Thu"><i class="fab fa-canadian-maple-leaf" style="color: #fb923c;"></i> <span>Thu</span></button>
+                        <button class="season-btn" data-season="winter" title="Mùa Đông"><i class="fas fa-snowflake" style="color: #93c5fd;"></i> <span>Đông</span></button>
                     </div>
                 </div>
             </section>
