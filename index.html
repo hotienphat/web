@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
         content="Trang cá nhân của Hồ Tiến Phát (Fot) - Lập trình, Nghe nhạc, Chơi game. Khám phá không gian số của mình!">
+    <meta property="og:title" content="Hồ Tiến Phát — Portfolio">
+    <meta property="og:description" content="Trang cá nhân của Hồ Tiến Phát (Fot) - Lập trình, Nghe nhạc, Chơi game. Khám phá không gian số của mình!">
+    <meta property="og:image" content="https://fot-portfolio.vercel.app/assets/avt.png">
+    <meta property="og:type" content="website">
     <link rel="icon" type="image/x-icon" href="./assets/avt.png">
     <title>Hồ Tiến Phát — Portfolio</title>
 
@@ -60,6 +64,12 @@
                 </div>
                 <h1 class="hero-title" id="hero-title">Hồ Tiến Phát</h1>
                 <p class="hero-tagline" id="hero-tagline"><span class="typewriter-cursor"></span></p>
+
+                <div class="hero-actions reveal-element" style="margin-top: 1.5rem; margin-bottom: 2.5rem; display: flex; justify-content: center;">
+                    <a href="#" class="download-cv-btn" target="_blank" title="Vui lòng cập nhật link CV">
+                        <i class="fas fa-file-pdf" style="color: var(--accent-pink);"></i> Tải CV (PDF)
+                    </a>
+                </div>
 
                 <div class="hero-social-links">
                     <a href="https://www.facebook.com/KaedeharaKazuha0805" target="_blank" rel="noopener noreferrer"
@@ -119,6 +129,7 @@
                             <div>
                                 <div class="info-card-label">Học tập tại</div>
                                 <div class="info-card-text">ĐẠI HỌC CÔNG NGHỆ TP.HCM - HUTECH | CNTT</div>
+                                <div style="font-size: 0.8rem; color: var(--accent-cyan); margin-top: 4px;">Sinh viên</div>
                             </div>
                         </div>
                         <div class="info-card">
@@ -139,21 +150,24 @@
                     <p class="section-subtitle">Những công nghệ và công cụ mình thường sử dụng</p>
                     <div class="section-divider"></div>
                 </div>
-                <div class="skills-grid reveal-element">
-                    <div class="skill-card" title="HTML5"><i class="fab fa-html5"
-                            style="color: #E34F26;"></i><span>HTML5</span></div>
-                    <div class="skill-card" title="CSS3"><i class="fab fa-css3-alt"
-                            style="color: #1572B6;"></i><span>CSS3</span></div>
-                    <div class="skill-card" title="JavaScript"><i class="fab fa-js"
-                            style="color: #F7DF1E;"></i><span>JavaScript</span></div>
-                    <div class="skill-card" title="React"><i class="fab fa-react"
-                            style="color: #61DAFB;"></i><span>React</span></div>
-                    <div class="skill-card" title="Python"><i class="fab fa-python"
-                            style="color: #3776AB;"></i><span>Python</span></div>
-                    <div class="skill-card" title="Node.js"><i class="fab fa-node-js"
-                            style="color: #339933;"></i><span>Node.js</span></div>
-                    <div class="skill-card" title="GitHub"><i class="fab fa-github"
-                            style="color: #ffffff;"></i><span>GitHub</span></div>
+                <div class="skills-container reveal-element" style="display: flex; flex-direction: column; gap: 3rem;">
+                    <div class="skill-group">
+                        <h3 style="font-family: var(--font-heading); font-size: 1.2rem; color: var(--accent-purple-light); margin-bottom: 1.5rem; text-align: center;">Frontend</h3>
+                        <div class="skills-grid">
+                            <div class="skill-card" title="HTML5"><i class="fab fa-html5" style="color: #E34F26;"></i><span>HTML5</span></div>
+                            <div class="skill-card" title="CSS3"><i class="fab fa-css3-alt" style="color: #1572B6;"></i><span>CSS3</span></div>
+                            <div class="skill-card" title="JavaScript"><i class="fab fa-js" style="color: #F7DF1E;"></i><span>JavaScript</span></div>
+                            <div class="skill-card" title="React"><i class="fab fa-react" style="color: #61DAFB;"></i><span>React</span></div>
+                        </div>
+                    </div>
+                    <div class="skill-group">
+                        <h3 style="font-family: var(--font-heading); font-size: 1.2rem; color: var(--accent-cyan); margin-bottom: 1.5rem; text-align: center;">Backend & Tools</h3>
+                        <div class="skills-grid">
+                            <div class="skill-card" title="Python"><i class="fab fa-python" style="color: #3776AB;"></i><span>Python</span></div>
+                            <div class="skill-card" title="Node.js"><i class="fab fa-node-js" style="color: #339933;"></i><span>Node.js</span></div>
+                            <div class="skill-card" title="GitHub"><i class="fab fa-github" style="color: #ffffff;"></i><span>GitHub</span></div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -165,6 +179,59 @@
                     <div class="section-divider"></div>
                 </div>
                 <div id="shortcutsContainer"></div>
+            </section>
+
+            <!-- REAL PROJECTS SECTION -->
+            <section id="real-projects-section" class="content-section">
+                <div class="section-header reveal-element">
+                    <h2 class="section-title gradient-text">Dự Án Nổi Bật</h2>
+                    <p class="section-subtitle">Một số sản phẩm thực tế mình đã tham gia phát triển</p>
+                    <div class="section-divider"></div>
+                </div>
+                
+                <div class="projects-grid reveal-element">
+                    <!-- Project 1 Placeholder -->
+                    <div class="project-card">
+                        <div class="project-img-wrapper">
+                            <div class="placeholder-img" style="background: linear-gradient(135deg, rgba(34, 211, 238, 0.2), rgba(168, 85, 247, 0.1)); display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-laptop-code fa-4x" style="color: var(--accent-cyan);"></i>
+                            </div>
+                        </div>
+                        <div class="project-content">
+                            <h3>Tên Dự Án 1</h3>
+                            <p>Mô tả ngắn gọn về dự án. Ứng dụng giúp giải quyết vấn đề gì, có tính năng gì nổi bật.</p>
+                            <div class="project-tags">
+                                <span>React</span>
+                                <span>Node.js</span>
+                            </div>
+                            <div style="display: flex; gap: 1rem;">
+                                <a href="#" target="_blank" class="project-btn"><i class="fas fa-external-link-alt"></i> Demo</a>
+                                <a href="#" target="_blank" class="project-btn"><i class="fab fa-github"></i> Source</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Project 2 Placeholder -->
+                    <div class="project-card">
+                        <div class="project-img-wrapper">
+                            <div class="placeholder-img" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.1)); display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-mobile-alt fa-4x" style="color: var(--accent-purple-light);"></i>
+                            </div>
+                        </div>
+                        <div class="project-content">
+                            <h3>Tên Dự Án 2</h3>
+                            <p>Mô tả ngắn gọn về dự án. Bạn giữ vai trò gì trong dự án này và kết quả đạt được.</p>
+                            <div class="project-tags">
+                                <span>HTML/CSS</span>
+                                <span>JavaScript</span>
+                            </div>
+                            <div style="display: flex; gap: 1rem;">
+                                <a href="#" target="_blank" class="project-btn"><i class="fas fa-external-link-alt"></i> Demo</a>
+                                <a href="#" target="_blank" class="project-btn"><i class="fab fa-github"></i> Source</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <!-- PROJECTS SECTION -->
@@ -280,6 +347,13 @@
                         <button type="submit" class="submit-btn">Gửi Tin Nhắn <i
                                 class="fas fa-paper-plane"></i></button>
                     </form>
+
+                    <div class="contact-fallback" style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border-subtle);">
+                        <p style="color: var(--text-secondary); margin-bottom: 0.5rem; font-size: 0.95rem;">Hoặc gửi email trực tiếp cho mình qua:</p>
+                        <a href="mailto:tienfot208@gmail.com" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--accent-cyan); font-weight: 500; font-size: 1.1rem; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='var(--accent-purple-light)'" onmouseout="this.style.color='var(--accent-cyan)'">
+                            <i class="fas fa-envelope"></i> tienfot208@gmail.com
+                        </a>
+                    </div>
                 </div>
             </section>
 
