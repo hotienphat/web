@@ -1372,65 +1372,124 @@ function splitTextAnimation() {
 // ============================================
 // ============================================
 // ============================================
-// THEME TOGGLE (ROCK-SOLID VIEW TRANSITION & ZERO BLANK SCREEN)
+// ============================================
+// THEME TOGGLE (EXPAND & COLLAPSE / THU LẠI VỀ TÂM NÚT)
 // ============================================
 function initThemeToggle() {
     const themeBtn = document.getElementById('themeToggleBtn');
     if (!themeBtn) return;
 
-    // Restore saved theme
+    // Restore saved theme on both html and body
     if (localStorage.getItem('fot_theme') === 'light') {
+        document.documentElement.classList.add('light-theme');
         document.body.classList.add('light-theme');
     }
 
     themeBtn.addEventListener('click', (e) => {
-        const willBeLight = !document.body.classList.contains('light-theme');
+        const willBeLight = !document.documentElement.classList.contains('light-theme');
 
         // Spin the theme button icon gracefully
         if (window.gsap) {
-            gsap.to(themeBtn, { rotate: '+=180', duration: 0.45, ease: 'power2.out' });
+            gsap.to(themeBtn, { rotate: willBeLight ? '+=180' : '-=180', duration: 0.45, ease: 'power2.out' });
         }
 
-        // Use Native View Transition API if supported (Chrome, Edge, Safari 18+)
-        // Provides 144Hz GPU-accelerated circular reveal without injecting any blocking DOM overlays!
-        if (document.startViewTransition) {
-            const x = e.clientX || window.innerWidth / 2;
-            const y = e.clientY || 40;
-            const endRadius = Math.hypot(
-                Math.max(x, window.innerWidth - x),
-                Math.max(y, window.innerHeight - y)
-            );
+        // Get exact center of the theme button as the origin of ripple
+        const rect = themeBtn.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+        const endRadius = Math.hypot(
+            Math.max(x, window.innerWidth - x),
+            Math.max(y, window.innerHeight - y)
+        );
 
+        // Native View Transition API (Chrome, Edge, Safari 18+)
+        if (document.startViewTransition) {
             const transition = document.startViewTransition(() => {
+                document.documentElement.classList.toggle('light-theme', willBeLight);
                 document.body.classList.toggle('light-theme', willBeLight);
                 localStorage.setItem('fot_theme', willBeLight ? 'light' : 'dark');
             });
 
             transition.ready.then(() => {
-                const clipPath = [
-                    `circle(0px at ${x}px ${y}px)`,
-                    `circle(${endRadius}px at ${x}px ${y}px)`
-                ];
-                document.documentElement.animate(
-                    {
-                        clipPath: willBeLight ? clipPath : [...clipPath].reverse()
-                    },
-                    {
-                        duration: 520,
-                        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-                        pseudoElement: willBeLight ? '::view-transition-new(root)' : '::view-transition-old(root)'
-                    }
-                );
+                if (willBeLight) {
+                    // TỐI -> SÁNG: Vòng tròn sáng lan tỏa từ tâm nút ra toàn màn hình (Expand)
+                    document.documentElement.animate(
+                        {
+                            clipPath: [
+                                `circle(0px at ${x}px ${y}px)`,
+                                `circle(${endRadius}px at ${x}px ${y}px)`
+                            ]
+                        },
+                        {
+                            duration: 520,
+                            easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                            pseudoElement: '::view-transition-new(root)'
+                        }
+                    );
+                } else {
+                    // SÁNG -> TỐI: Vòng tròn sáng thu nhỏ lại (THU LẠI) về tâm nút!
+                    document.documentElement.animate(
+                        {
+                            clipPath: [
+                                `circle(${endRadius}px at ${x}px ${y}px)`,
+                                `circle(0px at ${x}px ${y}px)`
+                            ]
+                        },
+                        {
+                            duration: 520,
+                            easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                            pseudoElement: '::view-transition-old(root)'
+                        }
+                    );
+                }
             }).catch(() => {
+                document.documentElement.classList.toggle('light-theme', willBeLight);
                 document.body.classList.toggle('light-theme', willBeLight);
                 localStorage.setItem('fot_theme', willBeLight ? 'light' : 'dark');
             });
         } else {
-            // Instant, 100% bug-free CSS color transition fallback
-            document.body.classList.toggle('light-theme', willBeLight);
-            localStorage.setItem('fot_theme', willBeLight ? 'light' : 'dark');
+            // Fallback for browsers without View Transitions
+            fallbackCircularThemeToggle(willBeLight, x, y, endRadius);
         }
     });
+}
+
+function fallbackCircularThemeToggle(willBeLight, x, y, endRadius) {
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.inset = '0';
+    overlay.style.zIndex = '999999';
+    overlay.style.pointerEvents = 'none';
+
+    if (willBeLight) {
+        // Tối -> Sáng: Lan tỏa ra
+        overlay.style.backgroundColor = '#dfe6df';
+        overlay.style.clipPath = `circle(0px at ${x}px ${y}px)`;
+        document.body.appendChild(overlay);
+        void overlay.offsetHeight;
+        overlay.style.transition = 'clip-path 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+        overlay.style.clipPath = `circle(${endRadius}px at ${x}px ${y}px)`;
+        setTimeout(() => {
+            document.documentElement.classList.add('light-theme');
+            document.body.classList.add('light-theme');
+            localStorage.setItem('fot_theme', 'light');
+            overlay.remove();
+        }, 500);
+    } else {
+        // Sáng -> Tối: Thu lại về tâm nút
+        overlay.style.backgroundColor = '#dfe6df';
+        overlay.style.clipPath = `circle(${endRadius}px at ${x}px ${y}px)`;
+        document.body.appendChild(overlay);
+        document.documentElement.classList.remove('light-theme');
+        document.body.classList.remove('light-theme');
+        localStorage.setItem('fot_theme', 'dark');
+        void overlay.offsetHeight;
+        overlay.style.transition = 'clip-path 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+        overlay.style.clipPath = `circle(0px at ${x}px ${y}px)`;
+        setTimeout(() => {
+            overlay.remove();
+        }, 500);
+    }
 }
 
 // ============================================
