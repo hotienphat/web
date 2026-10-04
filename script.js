@@ -655,7 +655,7 @@ function performSearch() {
     // Internal section mappings
     const sectionMap = [
         { keys: ["về bản thân", "about", "hồ tiến phát", "fot", "thông tin cá nhân"], target: "#about-section" },
-        { keys: ["dự án", "project", "projects", "random", "tạo khung", "giám thị"], target: "#real-projects-section" },
+        { keys: ["dự án", "project", "projects", "random", "tạo khung", "giám thị"], target: "#projects-section" },
         { keys: ["cây 3d", "3d", "tree", "threejs", "bonsai", "mùa"], target: "#tree-3d-section" },
         { keys: ["liên kết", "link", "shortcuts", "bento", "mạng xã hội", "giải trí"], target: "#shortcuts-section" },
         { keys: ["ủng hộ", "donate", "momo", "ngân hàng", "viettinbank", "stk"], target: "#donate-section" },
@@ -1371,7 +1371,8 @@ function splitTextAnimation() {
 // PAGE INITIALIZATION
 // ============================================
 // ============================================
-// THEME TOGGLE (FULLSCREEN CIRCULAR RIPPLE EFFECT)
+// ============================================
+// THEME TOGGLE (ROCK-SOLID VIEW TRANSITION & ZERO BLANK SCREEN)
 // ============================================
 function initThemeToggle() {
     const themeBtn = document.getElementById('themeToggleBtn');
@@ -1383,34 +1384,52 @@ function initThemeToggle() {
     }
 
     themeBtn.addEventListener('click', (e) => {
-        const x = e.clientX;
-        const y = e.clientY;
-        const maxRadius = Math.hypot(
-            Math.max(x, window.innerWidth - x),
-            Math.max(y, window.innerHeight - y)
-        );
-
         const willBeLight = !document.body.classList.contains('light-theme');
-        const targetBg = willBeLight ? '#dfe6df' : '#070c08';
 
-        const ripple = document.createElement('div');
-        ripple.className = 'theme-ripple-overlay';
-        ripple.style.backgroundColor = targetBg;
-        ripple.style.clipPath = `circle(0px at ${x}px ${y}px)`;
-        document.body.appendChild(ripple);
+        // Spin the theme button icon gracefully
+        if (window.gsap) {
+            gsap.to(themeBtn, { rotate: '+=180', duration: 0.45, ease: 'power2.out' });
+        }
 
-        // Force reflow
-        void ripple.offsetHeight;
+        // Use Native View Transition API if supported (Chrome, Edge, Safari 18+)
+        // Provides 144Hz GPU-accelerated circular reveal without injecting any blocking DOM overlays!
+        if (document.startViewTransition) {
+            const x = e.clientX || window.innerWidth / 2;
+            const y = e.clientY || 40;
+            const endRadius = Math.hypot(
+                Math.max(x, window.innerWidth - x),
+                Math.max(y, window.innerHeight - y)
+            );
 
-        ripple.style.clipPath = `circle(${maxRadius * 1.15}px at ${x}px ${y}px)`;
+            const transition = document.startViewTransition(() => {
+                document.body.classList.toggle('light-theme', willBeLight);
+                localStorage.setItem('fot_theme', willBeLight ? 'light' : 'dark');
+            });
 
-        setTimeout(() => {
-            document.body.classList.toggle('light-theme');
-            localStorage.setItem('fot_theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
-            setTimeout(() => {
-                ripple.remove();
-            }, 120);
-        }, 650);
+            transition.ready.then(() => {
+                const clipPath = [
+                    `circle(0px at ${x}px ${y}px)`,
+                    `circle(${endRadius}px at ${x}px ${y}px)`
+                ];
+                document.documentElement.animate(
+                    {
+                        clipPath: willBeLight ? clipPath : [...clipPath].reverse()
+                    },
+                    {
+                        duration: 520,
+                        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                        pseudoElement: willBeLight ? '::view-transition-new(root)' : '::view-transition-old(root)'
+                    }
+                );
+            }).catch(() => {
+                document.body.classList.toggle('light-theme', willBeLight);
+                localStorage.setItem('fot_theme', willBeLight ? 'light' : 'dark');
+            });
+        } else {
+            // Instant, 100% bug-free CSS color transition fallback
+            document.body.classList.toggle('light-theme', willBeLight);
+            localStorage.setItem('fot_theme', willBeLight ? 'light' : 'dark');
+        }
     });
 }
 
@@ -1460,13 +1479,10 @@ function initializePageApp() {
     // Music player
     initMusicPlayer();
 
-    // Circular visualizer
-    initCircularVisualizer();
-
     // Search
     initSearchSuggestions();
 
-    // Theme toggle with ripple
+    // Theme toggle with native GPU View Transition
     initThemeToggle();
 
     // Horizontal Accordion
@@ -1478,6 +1494,16 @@ function initializePageApp() {
 
     // 144Hz Buttery Smooth Snap Controller
     initSmoothSnapScroll();
+
+    // Header nav links smooth section navigation
+    document.querySelectorAll('.header-nav .nav-link').forEach((link, idx) => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (typeof window.goToSection === 'function') {
+                window.goToSection(idx);
+            }
+        });
+    });
 
     // Scroll reveal (after DOM is populated)
     requestAnimationFrame(() => {
