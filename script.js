@@ -460,8 +460,44 @@ function updateActiveSuggestion(items) {
 
 function performSearch() {
     if (!searchInput) return;
-    const query = searchInput.value.trim();
-    if (query) window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+    const raw = searchInput.value.trim();
+    if (!raw) return;
+    const query = raw.toLowerCase();
+
+    // Internal section mappings
+    const sectionMap = [
+        { keys: ["về bản thân", "about", "hồ tiến phát", "fot", "thông tin cá nhân"], target: "#about-section" },
+        { keys: ["dự án", "project", "projects", "random", "tạo khung", "giám thị"], target: "#real-projects-section" },
+        { keys: ["cây 3d", "3d", "tree", "threejs", "bonsai", "mùa"], target: "#tree-3d-section" },
+        { keys: ["liên kết", "link", "shortcuts", "bento", "mạng xã hội", "giải trí"], target: "#shortcuts-section" },
+        { keys: ["ủng hộ", "donate", "momo", "ngân hàng", "viettinbank", "stk"], target: "#donate-section" },
+        { keys: ["liên hệ", "contact", "email", "tin nhắn"], target: "#contact-section" }
+    ];
+
+    const match = sectionMap.find(m => m.keys.some(k => query.includes(k)));
+    if (match) {
+        const el = document.querySelector(match.target);
+        if (el) {
+            el.scrollIntoView({ behavior: "smooth" });
+            if (suggestionsDropdown) suggestionsDropdown.classList.add('hidden');
+            return;
+        }
+    }
+
+    // Shortcut URLs matching
+    if (typeof shortcutSections !== 'undefined') {
+        for (const sec of shortcutSections) {
+            const found = sec.shortcuts.find(s => s.name.toLowerCase() === query);
+            if (found) {
+                window.open(found.url, '_blank');
+                if (suggestionsDropdown) suggestionsDropdown.classList.add('hidden');
+                return;
+            }
+        }
+    }
+
+    // Default to Google search
+    window.open(`https://www.google.com/search?q=${encodeURIComponent(raw)}`, '_blank');
     if (suggestionsDropdown) suggestionsDropdown.classList.add('hidden');
 }
 
@@ -642,6 +678,10 @@ function loadTrack(idx) {
     updatePlayPauseIcon();
     updateTrackButtonsState();
     updateVolumeIcon();
+
+    if (track.dominantColor) {
+        document.documentElement.style.setProperty('--dynamic-glow-1', track.dominantColor);
+    }
 }
 
 function togglePlayPause() {
@@ -1071,6 +1111,83 @@ function splitTextAnimation() {
 // ============================================
 // PAGE INITIALIZATION
 // ============================================
+// ============================================
+// THEME TOGGLE (FULLSCREEN CIRCULAR RIPPLE EFFECT)
+// ============================================
+function initThemeToggle() {
+    const themeBtn = document.getElementById('themeToggleBtn');
+    if (!themeBtn) return;
+
+    // Restore saved theme
+    if (localStorage.getItem('fot_theme') === 'light') {
+        document.body.classList.add('light-theme');
+    }
+
+    themeBtn.addEventListener('click', (e) => {
+        const x = e.clientX;
+        const y = e.clientY;
+        const maxRadius = Math.hypot(
+            Math.max(x, window.innerWidth - x),
+            Math.max(y, window.innerHeight - y)
+        );
+
+        const willBeLight = !document.body.classList.contains('light-theme');
+        const targetBg = willBeLight ? '#f8fafc' : '#06060e';
+
+        const ripple = document.createElement('div');
+        ripple.className = 'theme-ripple-overlay';
+        ripple.style.backgroundColor = targetBg;
+        ripple.style.clipPath = `circle(0px at ${x}px ${y}px)`;
+        document.body.appendChild(ripple);
+
+        // Force reflow
+        void ripple.offsetHeight;
+
+        ripple.style.clipPath = `circle(${maxRadius * 1.15}px at ${x}px ${y}px)`;
+
+        setTimeout(() => {
+            document.body.classList.toggle('light-theme');
+            localStorage.setItem('fot_theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+            setTimeout(() => {
+                ripple.remove();
+            }, 120);
+        }, 650);
+    });
+}
+
+// ============================================
+// HORIZONTAL ACCORDION (PROJECTS SECTION)
+// ============================================
+function initHorizontalAccordion() {
+    const panels = document.querySelectorAll('.accordion-panel');
+    if (!panels.length) return;
+
+    panels.forEach(panel => {
+        panel.addEventListener('mouseenter', () => {
+            panels.forEach(p => p.classList.remove('active'));
+            panel.classList.add('active');
+        });
+    });
+}
+
+// ============================================
+// INTRO ANIMATION (REPLACES STATIC POPUP)
+// ============================================
+function initIntroAnimation() {
+    const introOverlay = document.getElementById('intro-overlay');
+    if (!introOverlay) return;
+
+    setTimeout(() => {
+        introOverlay.classList.add('fade-out');
+        setTimeout(() => {
+            introOverlay.remove();
+        }, 600);
+    }, 1500);
+}
+
+// ============================================
+// PAGE INITIALIZATION
+// ============================================
 function initializePageApp() {
     // Split text animation for hero title
     splitTextAnimation();
@@ -1078,7 +1195,7 @@ function initializePageApp() {
     // Typewriter for tagline
     typewriterEffect('hero-tagline', heroTaglines, 50, 2500);
 
-    // Render shortcuts
+    // Render shortcuts (if old container exists)
     renderShortcuts();
 
     // Music player
@@ -1089,6 +1206,12 @@ function initializePageApp() {
 
     // Search
     initSearchSuggestions();
+
+    // Theme toggle with ripple
+    initThemeToggle();
+
+    // Horizontal Accordion
+    initHorizontalAccordion();
 
     // Donate
     initDonateSection();
@@ -1129,9 +1252,6 @@ function initializePageApp() {
 window.addEventListener('load', () => {
     const loadingScreen = document.getElementById('loading-screen');
     const pageContent = document.getElementById('page-content');
-    const accessModal = document.getElementById('access-modal');
-    const acceptBtn = document.getElementById('acceptAccessBtn');
-    const modalContent = document.getElementById('modal-content-area');
 
     document.body.classList.add('loading');
 
@@ -1139,7 +1259,7 @@ window.addEventListener('load', () => {
     new ParticleSystem('particles-canvas');
     new CursorTrail('cursor-trail-canvas');
 
-    const minLoadTime = 400; // Reduced from 2500ms to avoid artificial delay
+    const minLoadTime = 300;
 
     setTimeout(() => {
         // Fade out loading screen
@@ -1160,17 +1280,8 @@ window.addEventListener('load', () => {
         initializePageApp();
         document.body.classList.remove('loading');
 
-        // Show access modal
-        if (accessModal && modalContent) {
-            setTimeout(() => {
-                accessModal.classList.remove('hidden');
-                requestAnimationFrame(() => {
-                    accessModal.style.opacity = '1';
-                    modalContent.style.opacity = '1';
-                    modalContent.style.transform = 'scale(1) translateY(0)';
-                });
-            }, 600);
-        }
+        // Trigger dynamic Intro Animation
+        initIntroAnimation();
 
     }, minLoadTime);
 
@@ -1220,22 +1331,6 @@ window.addEventListener('load', () => {
                         submitBtn.style.opacity = '1';
                     }, 4000);
                 });
-        });
-    }
-
-    // Accept button handler
-    if (acceptBtn && accessModal && modalContent) {
-        acceptBtn.addEventListener('click', () => {
-            modalContent.style.opacity = '0';
-            modalContent.style.transform = 'scale(0.9) translateY(20px)';
-            accessModal.style.opacity = '0';
-
-            accessModal.addEventListener('transitionend', function handler(e) {
-                if (e.target === accessModal && e.propertyName === 'opacity') {
-                    accessModal.classList.add('hidden');
-                    accessModal.removeEventListener('transitionend', handler);
-                }
-            });
         });
     }
 });
