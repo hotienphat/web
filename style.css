@@ -416,66 +416,99 @@ textarea {
   gap: 0.75rem;
 }
 
+/* Header Actions (All items unified with identical 38px height) */
 .header-actions .search-container {
-  width: 140px;
-  transition: width 0.3s ease;
-  position: relative;
+  height: 38px;
+  width: 175px;
+  border-radius: 9999px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   display: flex;
   align-items: center;
+  padding: 0 0.35rem 0 0.85rem;
+  gap: 0.45rem;
+  position: relative;
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .header-actions .search-container:focus-within {
-  width: 200px;
+  width: 225px;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 15px var(--glow-primary);
+}
+
+.header-actions .search-lead-icon {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  pointer-events: none;
+  flex-shrink: 0;
 }
 
 .header-actions .search-input {
-  width: 100%;
-  padding: 0.45rem 0.85rem;
-  font-size: 0.8rem;
-  border-radius: 9999px 0 0 9999px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid var(--border-subtle);
-  border-right: none;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: none;
+  background: transparent;
   color: var(--text-primary);
+  font-size: 0.82rem;
   outline: none;
+  padding: 0;
 }
 
+.header-actions .search-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.8;
+}
+
+.header-actions .search-submit-btn,
 .header-actions #searchButton {
-  padding: 0.45rem 0.85rem;
-  font-size: 0.8rem;
-  border-radius: 0 9999px 9999px 0;
-  background: linear-gradient(135deg, var(--accent-purple), #7c3aed);
-  border: 1px solid var(--accent-purple);
-  border-left: none;
-  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent-primary);
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 0.72rem;
   cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.header-actions .search-submit-btn:hover,
+.header-actions #searchButton:hover {
+  transform: scale(1.12);
+  box-shadow: 0 0 12px var(--glow-primary);
 }
 
 .hire-me-btn {
+  height: 38px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.45rem 1.15rem;
+  padding: 0 1.25rem;
   border-radius: 9999px;
-  border: 1.5px solid var(--accent-purple-light);
-  background: rgba(168, 85, 247, 0.12);
-  color: #ffffff;
+  border: 1.5px solid var(--accent-primary);
+  background: var(--accent-subtle);
+  color: var(--text-primary);
   font-family: var(--font-heading);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   text-decoration: none;
-  transition: all 0.3s var(--ease-out-back);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   white-space: nowrap;
 }
 
 .hire-me-btn:hover {
-  background: var(--accent-purple);
+  background: var(--accent-primary);
   color: #ffffff;
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+  box-shadow: 0 0 20px var(--glow-primary);
   transform: translateY(-1px);
 }
 
@@ -3151,440 +3184,139 @@ html, body {
   box-sizing: border-box;
 }
 
-/* 2. Light Theme Styling (Architectural Sage Mist & Deep Forest Lines) */
+/* ============================================================================
+   2. UNIFIED TONE SYSTEM: ARCHITECTURAL SAGE MOSS (LIGHT THEME)
+   ============================================================================ */
 body.light-theme {
+  /* Architectural Sage Moss - Soft, Elegant, Eye-friendly, NEVER blinding */
   --bg-primary: #dfe6df;
   --bg-secondary: #d3ddd3;
-  --bg-surface: #e9f0e9;
-  --bg-surface-hover: #e0e9e0;
-  --bg-glass: rgba(238, 244, 238, 0.92);
+  --bg-surface: rgba(240, 246, 240, 0.88);
+  --bg-surface-hover: rgba(248, 252, 248, 0.96);
+  --bg-glass: rgba(228, 237, 228, 0.92);
 
   --text-primary: #0a160d;
   --text-secondary: #223827;
   --text-muted: #496350;
 
-  --accent-purple: #15803d;        /* Deep Royal Forest Moss */
+  --accent-purple: #15803d;        /* Deep Moss Green */
   --accent-purple-light: #166534;
   --accent-cyan: #15803d;
-  --accent-pink: #4d7c0f;          /* Rich Olive Accent */
+  --accent-pink: #4d7c0f;          /* Rich Olive */
   --accent-blue: #047857;
-  --accent-moss: #15803d;
-  --accent-moss-light: #16a34a;
-  --accent-olive: #4d7c0f;
+  --accent-primary: #15803d;
+  --accent-secondary: #16a34a;
+  --accent-subtle: rgba(21, 128, 61, 0.12);
 
-  --glow-purple: rgba(21, 128, 61, 0.25);
-  --glow-cyan: rgba(22, 101, 52, 0.2);
-  --glow-pink: rgba(77, 124, 15, 0.2);
-  --glow-moss: rgba(21, 128, 61, 0.25);
+  --glow-purple: rgba(21, 128, 61, 0.2);
+  --glow-cyan: rgba(22, 101, 52, 0.15);
+  --glow-pink: rgba(77, 124, 15, 0.15);
+  --glow-primary: rgba(21, 128, 61, 0.2);
 
-  --border-subtle: #18291c;
-  --border-hover: #15803d;
+  --border-subtle: rgba(24, 45, 28, 0.2);
+  --border-strong: rgba(24, 45, 28, 0.45);
+  --border-hover: rgba(21, 128, 61, 0.55);
 
-  background-color: #dfe6df !important;
+  --hero-marquee-stroke: rgba(24, 45, 28, 0.28);
+
+  background-color: #dfe6df;
   background-image: 
-    linear-gradient(to right, rgba(24, 45, 28, 0.07) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(24, 45, 28, 0.07) 1px, transparent 1px),
-    radial-gradient(circle at 50% 50%, rgba(21, 128, 61, 0.06), transparent 75%) !important;
-  background-size: 36px 36px, 36px 36px, 100% 100% !important;
-  color: #0a160d !important;
-  animation: none !important;
+    linear-gradient(to right, rgba(24, 45, 28, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(24, 45, 28, 0.05) 1px, transparent 1px);
+  background-size: 36px 36px;
+  color: #0a160d;
+  animation: none;
 }
 
-/* Kill all blinding neon flares and fluorescent glowing halos in light mode */
+/* Disable harsh dark-mode glowing halos in light mode */
 body.light-theme::before,
 body.light-theme::after {
-  display: none !important;
+  display: none;
+}
+
+/* Smooth color transitions when toggling theme */
+body,
+.floating-header,
+.snap-section,
+.bento-card,
+.info-card,
+.about-text-block,
+.accordion-panel,
+.player-drawer,
+.player-dock-btn,
+.search-container,
+.theme-toggle-btn,
+.hire-me-btn,
+.tree-controls,
+.donate-card {
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
 /* Mute background particle canvas in light mode */
 body.light-theme #particles-canvas {
-  opacity: 0.1 !important;
-  filter: grayscale(1) contrast(2) invert(1) !important;
+  opacity: 0.12;
+  filter: grayscale(1) contrast(2) invert(1);
 }
 body.light-theme #cursor-trail-canvas {
-  opacity: 0.15 !important;
+  opacity: 0.15;
 }
 
-/* Floating Header in Light Mode - High-End Architectural Capsule */
-body.light-theme .floating-header {
-  background: rgba(238, 244, 238, 0.9) !important;
-  border: 1.5px solid #18291c !important;
-  box-shadow: 0 10px 30px rgba(24, 45, 28, 0.08) !important;
-}
-body.light-theme .brand-badge {
-  background: #142517 !important;
-  color: #84cc16 !important;
-  border-color: #15803d !important;
-}
-body.light-theme .brand-name {
-  color: #0a160d !important;
-}
-body.light-theme .header-nav .nav-link {
-  color: #2b4230 !important;
-}
-body.light-theme .header-nav .nav-link:hover,
-body.light-theme .header-nav .nav-link.active {
-  color: #0a160d !important;
-}
-body.light-theme .header-nav .nav-link::after {
-  background: #15803d !important;
-}
-body.light-theme .header-actions .search-input {
-  background: #d5ded5 !important;
-  color: #0a160d !important;
-  border: 1px solid #18291c !important;
-}
-body.light-theme .header-actions #searchButton {
-  background: linear-gradient(135deg, #15803d, #166534) !important;
-  border-color: #18291c !important;
-}
-body.light-theme .hire-me-btn {
-  background: #18291c !important;
-  border-color: #18291c !important;
-  color: #ffffff !important;
-}
-body.light-theme .hire-me-btn:hover {
-  background: #15803d !important;
-  border-color: #15803d !important;
-  color: #ffffff !important;
-  box-shadow: 0 4px 15px rgba(21, 128, 61, 0.35) !important;
-}
-body.light-theme .theme-toggle-btn {
-  background: #d5ded5 !important;
-  border: 1.5px solid #18291c !important;
-  color: #15803d !important;
-}
-
-/* Hero Section in Light Mode - Luxury Moss Green Editorial */
-body.light-theme #hero-section.hero-page {
-  background-color: #dfe6df !important;
-}
-body.light-theme .hero-marquee-track {
-  -webkit-text-stroke: 1.5px rgba(24, 45, 28, 0.35) !important;
-  color: transparent !important;
-}
-body.light-theme .hero-spotlight {
-  background: radial-gradient(circle, rgba(21, 128, 61, 0.15) 0%, rgba(20, 42, 24, 0.05) 55%, transparent 75%) !important;
-}
-body.light-theme .hero-status-pill {
-  background: #d3ddd3 !important;
-  border: 1.5px solid #18291c !important;
-  color: #0a160d !important;
-}
-body.light-theme .hero-bottom-left .hero-title {
-  color: #0a160d !important;
-  text-shadow: none !important;
-}
-body.light-theme .hero-bottom-left .hero-tagline {
-  color: #15803d !important;
-}
-body.light-theme .hero-bottom-left .social-icon {
-  background: #d5ded5 !important;
-  border: 1.5px solid #18291c !important;
-  color: #0a160d !important;
-}
-body.light-theme .hero-bottom-left .social-icon:hover {
-  background: #18291c !important;
-  color: #84cc16 !important;
-  border-color: #15803d !important;
-}
-body.light-theme .vertical-accent-text {
-  color: #0a160d !important;
-  opacity: 0.8 !important;
-  font-weight: 800 !important;
-}
-body.light-theme .vertical-accent-line {
-  background: #15803d !important;
-  width: 2.5px !important;
-}
-body.light-theme .scroll-vertical-label {
-  color: #496350 !important;
-}
-body.light-theme .scroll-vertical-track {
-  background: rgba(24, 45, 28, 0.2) !important;
-}
-body.light-theme .scroll-vertical-bar {
-  background: #15803d !important;
-}
-
-/* Titles and Headers in Light Mode */
-body.light-theme .section-title {
-  color: #0a160d !important;
-}
+/* Light Theme Refinements (Both themes share 100% same structure & card sizing) */
 body.light-theme .gradient-text {
-  background: linear-gradient(135deg, #0a160d 20%, #15803d 70%, #2e5b38 100%) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
+  background: linear-gradient(135deg, #0a160d 20%, #15803d 75%, #2e5b38 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
-body.light-theme .section-subtitle {
-  color: #243b29 !important;
-  font-weight: 500 !important;
+
+body.light-theme .hero-marquee-track span {
+  -webkit-text-stroke: 1.5px var(--hero-marquee-stroke);
+  color: transparent;
 }
+
+body.light-theme .hero-spotlight {
+  background: radial-gradient(circle, rgba(21, 128, 61, 0.16) 0%, rgba(20, 42, 24, 0.04) 55%, transparent 75%);
+}
+
+body.light-theme .vertical-accent-text {
+  color: #0a160d;
+  opacity: 0.85;
+}
+
+body.light-theme .vertical-accent-line {
+  background: #15803d;
+}
+
+body.light-theme .scroll-vertical-label {
+  color: #496350;
+}
+
+body.light-theme .scroll-vertical-bar {
+  background: #15803d;
+}
+
 body.light-theme .section-divider {
-  background: linear-gradient(90deg, #18291c, #15803d, #18291c) !important;
-  height: 3.5px !important;
-  border-radius: 2px !important;
+  background: linear-gradient(90deg, transparent, #15803d, transparent);
 }
 
-/* About Section Cards in Light Mode */
-body.light-theme .about-text-block {
-  background: #e6eee6 !important;
-  border: 2px solid #18291c !important;
-  border-top: 4px solid #15803d !important;
-  box-shadow: 0 10px 25px rgba(24, 45, 28, 0.08) !important;
-}
-body.light-theme .about-text-block p {
-  color: #223827 !important;
-  font-weight: 500 !important;
-}
-body.light-theme .about-lead {
-  color: #0a160d !important;
-  font-weight: 700 !important;
-}
-body.light-theme .info-card {
-  background: #e6eee6 !important;
-  border: 1.5px solid #18291c !important;
-  box-shadow: 0 4px 15px rgba(24, 45, 28, 0.06) !important;
-}
-body.light-theme .info-card-icon {
-  background: #d5ded5 !important;
-  border: 1px solid #18291c !important;
-  color: #15803d !important;
-}
-body.light-theme .info-card-text {
-  color: #0a160d !important;
-  font-weight: 600 !important;
-}
-body.light-theme .info-card-label {
-  color: #496350 !important;
-}
-
-/* Octagon & Rotating Text in Light Mode */
-body.light-theme .octagon-glow {
-  background: radial-gradient(circle, rgba(21, 128, 61, 0.22) 0%, transparent 70%) !important;
-  filter: blur(25px) !important;
-}
-body.light-theme .octagon-curved-text {
-  fill: #15803d !important;
-  font-weight: 800 !important;
-}
-body.light-theme .octagon-frame {
-  background: linear-gradient(135deg, #18291c 30%, #15803d 70%, #4d7c0f 100%) !important;
-  box-shadow: 0 12px 35px rgba(24, 45, 28, 0.2) !important;
-}
-body.light-theme .octagon-inner {
-  background: #d5ded5 !important;
-  border: 2px solid #18291c !important;
-}
-
-/* Tech Marquee Bar in Light Mode with Deep Forest Lines */
-body.light-theme .tech-marquee-bar {
-  background: #d3ddd3 !important;
-  border-top: 2.5px solid #18291c !important;
-  border-bottom: 2.5px solid #15803d !important;
-  box-shadow: 0 4px 15px rgba(24, 45, 28, 0.08) !important;
-}
-body.light-theme .marquee-item {
-  color: #0a160d !important;
-  font-weight: 700 !important;
-}
-body.light-theme .marquee-sep {
-  color: #15803d !important;
-  font-weight: 900 !important;
-}
-
-/* Bento Grid Cards in Light Mode */
-body.light-theme .bento-card {
-  background: #e6eee6 !important;
-  border: 2px solid #18291c !important;
-  border-top: 4px solid #15803d !important;
-  box-shadow: 0 8px 25px rgba(24, 45, 28, 0.07) !important;
-}
 body.light-theme .bento-card:hover {
-  background: #edf4ed !important;
-  border-color: #15803d !important;
-  box-shadow: 0 15px 35px rgba(21, 128, 61, 0.25) !important;
-}
-body.light-theme .bento-card-title {
-  color: #0a160d !important;
-  font-weight: 800 !important;
-}
-body.light-theme .bento-card-sub {
-  color: #496350 !important;
-  font-weight: 500 !important;
-}
-body.light-theme .bento-card-icon {
-  background: #d5ded5 !important;
-  border: 1px solid #18291c !important;
-  color: #15803d !important;
-}
-body.light-theme .bento-pill-link {
-  background: #d5ded5 !important;
-  border: 1.5px solid #18291c !important;
-  color: #0a160d !important;
-  font-weight: 600 !important;
-}
-body.light-theme .bento-pill-link:hover {
-  background: #18291c !important;
-  color: #84cc16 !important;
-  border-color: #15803d !important;
-  box-shadow: 0 4px 12px rgba(21, 128, 61, 0.3) !important;
+  border-color: #15803d;
+  box-shadow: 0 15px 35px rgba(21, 128, 61, 0.18);
 }
 
-/* Horizontal Accordion in Light Mode with Moss Lines */
-body.light-theme .accordion-panel {
-  background: #dbe4db !important;
-  border: 2px solid #18291c !important;
-  border-top: 4px solid #2b4230 !important;
-  box-shadow: 0 8px 20px rgba(24, 45, 28, 0.08) !important;
-}
-body.light-theme .accordion-panel:hover,
 body.light-theme .accordion-panel.active {
-  background: #e5ede5 !important;
-  border-color: #18291c !important;
-  border-top: 4px solid #15803d !important;
-  box-shadow: 0 16px 40px rgba(21, 128, 61, 0.25), 0 0 0 1px #15803d !important;
+  border-color: #15803d;
+  box-shadow: 0 16px 40px rgba(21, 128, 61, 0.18);
 }
-body.light-theme .panel-inner {
-  background: #e5ede5 !important;
-}
-body.light-theme .panel-num {
-  color: #15803d !important;
-  font-weight: 900 !important;
-  font-size: 1.8rem !important;
-}
+
 body.light-theme .panel-badge {
-  background: rgba(21, 128, 61, 0.15) !important;
-  border: 1.5px solid #15803d !important;
-  color: #15803d !important;
-  font-weight: 700 !important;
+  background: rgba(21, 128, 61, 0.12);
+  border: 1px solid #15803d;
+  color: #15803d;
 }
-body.light-theme .panel-vertical-title {
-  color: #0a160d !important;
-  font-weight: 800 !important;
-}
-body.light-theme .panel-title {
-  color: #0a160d !important;
-  font-weight: 900 !important;
-}
-body.light-theme .panel-desc {
-  color: #223827 !important;
-  font-weight: 500 !important;
-}
-body.light-theme .panel-tech-tags span {
-  background: #d5ded5 !important;
-  color: #0a160d !important;
-  border: 1px solid #18291c !important;
-  font-weight: 600 !important;
-}
+
 body.light-theme .panel-action-btn.primary {
-  background: linear-gradient(135deg, #15803d, #22c55e) !important;
-  color: #ffffff !important;
-  font-weight: 800 !important;
-  border: 1.5px solid #18291c !important;
-  box-shadow: 0 4px 15px rgba(21, 128, 61, 0.35) !important;
-}
-body.light-theme .panel-action-btn.primary:hover {
-  background: #18291c !important;
-  color: #84cc16 !important;
-  border-color: #15803d !important;
-}
-body.light-theme .panel-action-btn.secondary {
-  background: #d5ded5 !important;
-  color: #0a160d !important;
-  border: 1.5px solid #18291c !important;
-  font-weight: 700 !important;
-}
-body.light-theme .panel-action-btn.secondary:hover {
-  background: #18291c !important;
-  color: #ffffff !important;
-}
-
-/* Donate Cards in Light Mode */
-body.light-theme .donate-card {
-  background: #e6eee6 !important;
-  border: 2px solid #18291c !important;
-  border-top: 4px solid #15803d !important;
-  box-shadow: 0 10px 25px rgba(24, 45, 28, 0.08) !important;
-}
-body.light-theme .donate-info-value {
-  color: #0a160d !important;
-  font-weight: 800 !important;
-}
-body.light-theme .donate-info-label {
-  color: #496350 !important;
-  font-weight: 600 !important;
-}
-body.light-theme .copy-btn {
-  background: #d5ded5 !important;
-  color: #0a160d !important;
-  border: 1.5px solid #18291c !important;
-  font-weight: 700 !important;
-}
-body.light-theme .copy-btn:hover {
-  background: #18291c !important;
-  color: #84cc16 !important;
-  border-color: #15803d !important;
-}
-body.light-theme .toggle-qr-btn {
-  background: #d5ded5 !important;
-  color: #0a160d !important;
-  border: 1.5px solid #18291c !important;
-  font-weight: 700 !important;
-}
-
-/* Music Player in Light Mode */
-body.light-theme .player-panel {
-  background: #e6eee6 !important;
-  border: 2px solid #18291c !important;
-  box-shadow: 0 15px 45px rgba(24, 45, 28, 0.15) !important;
-}
-body.light-theme .song-title {
-  color: #0a160d !important;
-  font-weight: 700 !important;
-}
-body.light-theme .song-artist {
-  color: #496350 !important;
-}
-body.light-theme .music-control-button {
-  color: #0a160d !important;
-}
-body.light-theme .music-control-button:hover {
-  color: #15803d !important;
-}
-body.light-theme #currentTime,
-body.light-theme #durationTime {
-  color: #496350 !important;
-}
-body.light-theme .close-player-btn {
-  color: #496350 !important;
-}
-body.light-theme .player-bubble {
-  border: 2px solid #18291c !important;
-  box-shadow: 0 6px 20px rgba(24, 45, 28, 0.2) !important;
-}
-
-/* 3D Tree Controls in Light Mode */
-body.light-theme .tree-controls {
-  background: #e6eee6 !important;
-  border: 2px solid #18291c !important;
-  box-shadow: 0 6px 25px rgba(24, 45, 28, 0.12) !important;
-}
-body.light-theme .season-btn {
-  color: #0a160d !important;
-  font-weight: 600 !important;
-}
-body.light-theme .tree-tool-btn {
-  background: #e6eee6 !important;
-  color: #0a160d !important;
-  border: 1.5px solid #18291c !important;
-  font-weight: 600 !important;
-}
-body.light-theme .tree-hint-badge {
-  background: #e6eee6 !important;
-  color: #0a160d !important;
-  border: 1.5px solid #18291c !important;
-  font-weight: 600 !important;
+  background: linear-gradient(135deg, #15803d, #16a34a);
+  color: #ffffff;
 }
 
 
@@ -3607,42 +3339,56 @@ body.light-theme .tree-hint-badge {
   font-size: 0.85rem;
   margin-right: 0.5rem;
 }
+/* ============================================
+   THEME TOGGLE BUTTON (MATCHES 38px HEADER ROW)
+   ============================================ */
 .theme-toggle-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
   border: 1px solid var(--border-subtle);
   background: var(--bg-surface);
-  color: #fbbf24;
+  color: var(--accent-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 1.15rem;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  flex-shrink: 0;
 }
 .theme-toggle-btn:hover {
   transform: scale(1.08);
-  border-color: var(--accent-purple);
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.35);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 15px var(--glow-primary);
 }
 .theme-icon-sun { display: none; }
 .theme-icon-moon { display: block; }
 body.light-theme .theme-toggle-btn {
-  color: var(--accent-purple);
+  color: var(--accent-primary);
 }
 body.light-theme .theme-icon-sun { display: block; }
 body.light-theme .theme-icon-moon { display: none; }
 
-/* 4. Theme Ripple Overlay */
-.theme-ripple-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 99999;
-  pointer-events: none;
-  clip-path: circle(0px at 0 0);
-  transition: clip-path 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+/* Native View Transitions API (Zero blank screen, buttery-smooth GPU circular clip-path) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 999999;
+}
+.light-theme::view-transition-old(root) {
+  z-index: 999999;
+}
+.light-theme::view-transition-new(root) {
+  z-index: 1;
 }
 
 /* 5. Intro Animation Overlay (Replaces static welcome popup) */
