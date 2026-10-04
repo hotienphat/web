@@ -2542,40 +2542,327 @@ html, body {
   align-items: center;
 }
 
-/* 2. Light Theme Styling (Inspired by Editorial Reference) */
+/* 2. Light Theme Styling (Warm Editorial Studio Aesthetic - No Glare) */
 body.light-theme {
-  --bg-primary: #f8fafc;
-  --bg-secondary: #f1f5f9;
-  --bg-surface: rgba(255, 255, 255, 0.85);
-  --bg-surface-hover: rgba(255, 255, 255, 0.95);
-  --bg-glass: rgba(255, 255, 255, 0.7);
+  /* Soothing matte studio gray background - NOT blinding hospital white */
+  --bg-primary: #e6e8ee;
+  --bg-secondary: #dde1e7;
+  --bg-surface: #ffffff;
+  --bg-surface-hover: #f8fafc;
+  --bg-glass: rgba(255, 255, 255, 0.92);
 
+  /* Deep high-contrast, comfortable typography */
   --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
 
-  --border-subtle: rgba(15, 23, 42, 0.1);
-  --border-hover: rgba(168, 85, 247, 0.4);
+  --accent-purple: #7c3aed;
+  --accent-purple-light: #6d28d9;
+  --accent-cyan: #0284c7; /* Deep ocean blue instead of blinding cyan */
+  --accent-pink: #db2777;
 
-  background: #f8fafc;
-  color: #0f172a;
+  --border-subtle: rgba(15, 23, 42, 0.09);
+  --border-hover: rgba(124, 58, 237, 0.35);
+
+  background: #e6e8ee !important;
+  background-image: radial-gradient(at 0% 0%, #edf0f5 0px, transparent 55%),
+                    radial-gradient(at 100% 100%, #dbe0e8 0px, transparent 55%) !important;
+  color: #0f172a !important;
+  animation: none !important;
 }
+
+/* Kill all blinding neon flares and fluorescent glowing halos in light mode */
 body.light-theme::before,
 body.light-theme::after {
-  opacity: 0.18;
+  display: none !important;
 }
+
+/* Mute background particle canvas in light mode to prevent spiderweb noise */
+body.light-theme #particles-canvas {
+  opacity: 0.1 !important;
+  filter: grayscale(1) contrast(2) invert(1) !important;
+}
+body.light-theme #cursor-trail-canvas {
+  opacity: 0.15 !important;
+}
+
+/* Header in light mode */
 body.light-theme #main-header {
-  background: rgba(255, 255, 255, 0.75);
-  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.88) !important;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
+}
+body.light-theme .logo-text {
+  color: #0f172a !important;
 }
 body.light-theme .search-input {
-  background: rgba(15, 23, 42, 0.05);
-  color: #0f172a;
-  border-color: rgba(15, 23, 42, 0.1);
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+}
+body.light-theme .search-input::placeholder {
+  color: #94a3b8 !important;
+}
+body.light-theme .theme-toggle-btn {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+  color: #7c3aed !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Hero Section in Light Mode */
+body.light-theme .hero-marquee-track {
+  -webkit-text-stroke: 1.5px rgba(15, 23, 42, 0.16) !important;
+  color: transparent !important;
+}
+body.light-theme .hero-avatar-wrapper .avatar-glow-ring {
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.25) 0%, transparent 70%) !important;
+  filter: blur(25px) !important;
+}
+body.light-theme .hero-avatar {
+  border-color: #ffffff !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12) !important;
+}
+body.light-theme .hero-title {
+  color: #0f172a !important;
+}
+body.light-theme .hero-tagline {
+  color: #475569 !important;
+}
+body.light-theme .social-icon {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.1) !important;
+  color: #334155 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+}
+body.light-theme .social-icon:hover {
+  background: #7c3aed !important;
+  color: #ffffff !important;
+  border-color: #7c3aed !important;
+}
+body.light-theme .vertical-accent-text {
+  color: #0f172a !important;
+  opacity: 0.45 !important;
+}
+body.light-theme .vertical-accent-line {
+  background: #0f172a !important;
+}
+
+/* Titles and Headers in Light Mode (Deep rich jewel tones) */
+body.light-theme .gradient-text {
+  background: linear-gradient(135deg, #6d28d9, #0369a1) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+body.light-theme .section-subtitle {
+  color: #64748b !important;
+}
+body.light-theme .section-divider {
+  background: linear-gradient(90deg, #7c3aed, #0284c7) !important;
+}
+
+/* About Section Cards in Light Mode */
+body.light-theme .about-text-block {
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.07) !important;
+}
+body.light-theme .about-text-block p {
+  color: #334155 !important;
+}
+body.light-theme .about-lead {
+  color: #0f172a !important;
 }
 body.light-theme .info-card {
-  background: rgba(255, 255, 255, 0.8);
-  border-color: rgba(15, 23, 42, 0.08);
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 6px 18px -2px rgba(0, 0, 0, 0.05) !important;
+}
+body.light-theme .info-card-label {
+  color: #64748b !important;
+}
+body.light-theme .info-card-text {
+  color: #0f172a !important;
+}
+body.light-theme .info-card-icon {
+  background: #f1f5f9 !important;
+  color: #7c3aed !important;
+}
+
+/* Octagon in Light Mode */
+body.light-theme .octagon-glow {
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.2) 0%, transparent 70%) !important;
+  filter: blur(20px) !important;
+}
+body.light-theme .octagon-curved-text {
+  fill: #6d28d9 !important;
+}
+body.light-theme .octagon-frame {
+  background: linear-gradient(135deg, #7c3aed, #0284c7) !important;
+  box-shadow: 0 10px 30px rgba(124, 58, 237, 0.2) !important;
+}
+body.light-theme .octagon-inner {
+  background: #ffffff !important;
+}
+
+/* Tech Marquee Bar in Light Mode */
+body.light-theme .tech-marquee-bar {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.09) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03) !important;
+}
+body.light-theme .marquee-item {
+  color: #334155 !important;
+}
+body.light-theme .marquee-sep {
+  color: #94a3b8 !important;
+}
+
+/* Bento Grid Cards in Light Mode */
+body.light-theme .bento-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.06), 0 4px 10px -2px rgba(0, 0, 0, 0.03) !important;
+}
+body.light-theme .bento-card:hover {
+  border-color: #7c3aed !important;
+  box-shadow: 0 16px 40px -5px rgba(124, 58, 237, 0.15) !important;
+}
+body.light-theme .bento-card-title {
+  color: #0f172a !important;
+}
+body.light-theme .bento-card-sub {
+  color: #64748b !important;
+}
+body.light-theme .bento-card-icon {
+  background: #f1f5f9 !important;
+  color: #7c3aed !important;
+}
+body.light-theme .bento-pill-link {
+  background: #f8fafc !important;
+  border: 1px solid rgba(15, 23, 42, 0.1) !important;
+  color: #334155 !important;
+}
+body.light-theme .bento-pill-link:hover {
+  background: #7c3aed !important;
+  color: #ffffff !important;
+  border-color: #7c3aed !important;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25) !important;
+}
+
+/* Horizontal Accordion in Light Mode */
+body.light-theme .accordion-panel {
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.06) !important;
+}
+body.light-theme .accordion-panel:hover,
+body.light-theme .accordion-panel.active {
+  border-color: #7c3aed !important;
+  box-shadow: 0 16px 45px -5px rgba(124, 58, 237, 0.18) !important;
+}
+body.light-theme .panel-inner {
+  background: #ffffff !important;
+}
+body.light-theme .panel-num {
+  color: #7c3aed !important;
+}
+body.light-theme .panel-badge {
+  background: #f1f5f9 !important;
+  border-color: rgba(15, 23, 42, 0.1) !important;
+  color: #475569 !important;
+}
+body.light-theme .panel-vertical-title {
+  color: #334155 !important;
+}
+body.light-theme .panel-title {
+  color: #0f172a !important;
+}
+body.light-theme .panel-desc {
+  color: #475569 !important;
+}
+body.light-theme .panel-tech-tags span {
+  background: #f1f5f9 !important;
+  color: #0369a1 !important;
+  border-color: rgba(3, 105, 161, 0.2) !important;
+}
+body.light-theme .panel-action-btn.secondary {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+}
+
+/* Donate Cards in Light Mode */
+body.light-theme .donate-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.06) !important;
+}
+body.light-theme .donate-info-value {
+  color: #0f172a !important;
+}
+body.light-theme .donate-info-label {
+  color: #64748b !important;
+}
+body.light-theme .copy-btn {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(15, 23, 42, 0.1) !important;
+}
+body.light-theme .toggle-qr-btn {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(15, 23, 42, 0.1) !important;
+}
+
+/* Music Player in Light Mode */
+body.light-theme .player-panel {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: rgba(15, 23, 42, 0.1) !important;
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.12) !important;
+}
+body.light-theme .song-title {
+  color: #0f172a !important;
+}
+body.light-theme .song-artist {
+  color: #64748b !important;
+}
+body.light-theme .music-control-button {
+  color: #334155 !important;
+}
+body.light-theme .music-control-button:hover {
+  color: #7c3aed !important;
+}
+body.light-theme #currentTime,
+body.light-theme #durationTime {
+  color: #64748b !important;
+}
+body.light-theme .close-player-btn {
+  color: #64748b !important;
+}
+body.light-theme .player-bubble {
+  border-color: #ffffff !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 3D Tree Controls in Light Mode */
+body.light-theme .tree-controls {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(15, 23, 42, 0.1) !important;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08) !important;
+}
+body.light-theme .season-btn {
+  color: #334155 !important;
+}
+body.light-theme .tree-tool-btn {
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #334155 !important;
+  border-color: rgba(15, 23, 42, 0.1) !important;
+}
+body.light-theme .tree-hint-badge {
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #334155 !important;
+  border-color: rgba(15, 23, 42, 0.1) !important;
 }
 
 /* 3. Header & Theme Toggle Button */
