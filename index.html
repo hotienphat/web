@@ -154,7 +154,7 @@
         </section>
 
         <!-- =========================================================
-             TRANG 2: ABOUT SECTION (MORPHING SANG KHUNG BÁT GIÁC)
+             TRANG 2: ABOUT SECTION (MORPHING SANG HÌNH TRÒN & MARQUEE BAR)
              ========================================================= -->
         <section id="about-section" class="snap-section content-section">
             <div class="container about-container">
@@ -164,42 +164,42 @@
                 </div>
 
                 <div class="about-grid">
-                    <!-- Left: Octagon Frame + Rotating Circular Text -->
+                    <!-- Left: Large Circular Frame + Rotating Curved Text SVG -->
                     <div class="about-visual-col reveal-left">
-                        <div class="octagon-wrapper">
-                            <!-- Rotating Curved Text SVG -->
-                            <div class="octagon-text-ring">
-                                <svg viewBox="0 0 300 300" class="rotating-text-svg">
+                        <div class="avatar-circle-wrapper" id="avatarCircleWrapper">
+                            <!-- Rotating Curved Text SVG around Circle -->
+                            <div class="avatar-text-ring">
+                                <svg viewBox="0 0 380 380" class="rotating-text-svg">
                                     <defs>
-                                        <path id="octagonCircle" d="M 150, 150 m -115, 0 a 115,115 0 1,1 230,0 a 115,115 0 1,1 -230,0" />
+                                        <path id="avatarCirclePath" d="M 190, 190 m -155, 0 a 155,155 0 1,1 310,0 a 155,155 0 1,1 -310,0" />
                                     </defs>
-                                    <text class="octagon-curved-text">
-                                        <textPath href="#octagonCircle">
+                                    <text class="avatar-curved-text">
+                                        <textPath href="#avatarCirclePath">
                                             • LAKE FOT • HO TIEN PHAT • DEVELOPER • HUTECH •
                                         </textPath>
                                     </text>
                                 </svg>
                             </div>
-                            <div class="octagon-glow"></div>
-                            <!-- Octagon Frame with Uncropped/Original Portrait -->
-                            <div class="octagon-frame">
-                                <div class="octagon-inner">
-                                    <img src="./assets/avt.png" alt="Hồ Tiến Phát - Original" class="octagon-img">
+                            <div class="avatar-circle-glow"></div>
+                            <!-- Circular Frame with Uncropped/Original Portrait (Bigger & Circular) -->
+                            <div class="avatar-circle-frame">
+                                <div class="avatar-circle-inner">
+                                    <img src="./assets/avt.png" alt="Hồ Tiến Phát - Original" class="avatar-circle-img">
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Right: Bio Content -->
+                    <!-- Right: Roomy Bio Content with Spacious Cards -->
                     <div class="about-info-col reveal-right">
                         <div class="about-text-block">
                             <p class="about-lead">Xin chào! Mình là <strong>Hồ Tiến Phát (Lake Fot)</strong>.</p>
-                            <p>Đam mê sáng tạo những trang web không đơn thuần chỉ để xem, mà là một không gian sống động với âm thanh, chuyển động 60fps mượt mà và đồ họa tương tác cao.</p>
+                            <p>Đam mê sáng tạo những trang web không đơn thuần chỉ để xem, mà là một không gian sống động với âm thanh, chuyển động 144fps mượt mà và đồ họa tương tác cao.</p>
                         </div>
                         <div class="about-info-cards">
                             <div class="info-card">
                                 <div class="info-card-icon"><i class="fas fa-map-marker-alt"></i></div>
-                                <div>
+                                <div class="info-card-body">
                                     <div class="info-card-label">Đến từ</div>
                                     <div class="info-card-text">Lâm Đồng, Việt Nam 🇻🇳</div>
                                 </div>
@@ -209,15 +209,15 @@
                                     <img src="./assets/hutech.png" alt="HUTECH Logo"
                                         style="width: 32px; height: 32px; object-fit: contain;">
                                 </div>
-                                <div>
+                                <div class="info-card-body">
                                     <div class="info-card-label">Học tập tại</div>
                                     <div class="info-card-text">ĐH CÔNG NGHỆ TP.HCM - HUTECH</div>
-                                    <div style="font-size: 0.8rem; color: var(--accent-cyan); margin-top: 4px;">Khoa Công nghệ Thông tin</div>
+                                    <div class="info-card-sub">Khoa Công nghệ Thông tin</div>
                                 </div>
                             </div>
                             <div class="info-card">
                                 <div class="info-card-icon"><i class="fas fa-heart"></i></div>
-                                <div>
+                                <div class="info-card-body">
                                     <div class="info-card-label">Sở thích</div>
                                     <div class="info-card-text">Lập trình • Nghe nhạc • Chơi game</div>
                                 </div>
@@ -226,52 +226,50 @@
                     </div>
                 </div>
             </div>
-        </section>
 
-        <!-- =========================================================
-             PHÂN ĐOẠN: INFINITE MARQUEE ICON BAR (100VW CHẠY VÔ TẬN)
-             ========================================================= -->
-        <div class="tech-marquee-bar" aria-label="Kỹ năng và công nghệ">
-            <div class="tech-marquee-track">
-                <span class="marquee-item"><i class="fab fa-react" style="color: #61DAFB;"></i> React</span>
-                <span class="marquee-sep">•</span>
-                <span class="marquee-item"><i class="fab fa-js" style="color: #F7DF1E;"></i> JavaScript</span>
-                <span class="marquee-sep">•</span>
-                <span class="marquee-item"><i class="fab fa-html5" style="color: #E34F26;"></i> HTML5</span>
-                <span class="marquee-sep">•</span>
-                <span class="marquee-item"><i class="fab fa-css3-alt" style="color: #1572B6;"></i> CSS3</span>
-                <span class="marquee-sep">•</span>
-                <span class="marquee-item"><i class="fab fa-python" style="color: #3776AB;"></i> Python</span>
-                <span class="marquee-sep">•</span>
-                <span class="marquee-item"><i class="fab fa-node-js" style="color: #339933;"></i> Node.js</span>
-                <span class="marquee-sep">•</span>
-                <span class="marquee-item"><i class="fab fa-github"></i> GitHub</span>
-                <span class="marquee-sep">•</span>
-                <span class="marquee-item"><i class="fas fa-cube" style="color: #a855f7;"></i> Three.js / WebGL</span>
-                <span class="marquee-sep">•</span>
-                <span class="marquee-item"><i class="fas fa-wind" style="color: #38bdf8;"></i> Tailwind CSS</span>
-                <span class="marquee-sep">•</span>
-                <!-- Duplicate for seamless continuous loop -->
-                <span class="marquee-item"><i class="fab fa-react" style="color: #61DAFB;"></i> React</span>
-                <span class="marquee-sep">•</span>
-                <span class="marquee-item"><i class="fab fa-js" style="color: #F7DF1E;"></i> JavaScript</span>
-                <span class="marquee-sep">•</span>
-                <span class="marquee-item"><i class="fab fa-html5" style="color: #E34F26;"></i> HTML5</span>
-                <span class="marquee-sep">•</span>
-                <span class="marquee-item"><i class="fab fa-css3-alt" style="color: #1572B6;"></i> CSS3</span>
-                <span class="marquee-sep">•</span>
-                <span class="marquee-item"><i class="fab fa-python" style="color: #3776AB;"></i> Python</span>
-                <span class="marquee-sep">•</span>
-                <span class="marquee-item"><i class="fab fa-node-js" style="color: #339933;"></i> Node.js</span>
-                <span class="marquee-sep">•</span>
-                <span class="marquee-item"><i class="fab fa-github"></i> GitHub</span>
-                <span class="marquee-sep">•</span>
-                <span class="marquee-item"><i class="fas fa-cube" style="color: #a855f7;"></i> Three.js / WebGL</span>
-                <span class="marquee-sep">•</span>
-                <span class="marquee-item"><i class="fas fa-wind" style="color: #38bdf8;"></i> Tailwind CSS</span>
-                <span class="marquee-sep">•</span>
+            <!-- PHÂN ĐOẠN: INFINITE TECH MARQUEE BAR (ALWAYS VISIBLE AT BOTTOM OF ABOUT) -->
+            <div class="tech-marquee-bar" aria-label="Kỹ năng và công nghệ">
+                <div class="tech-marquee-track">
+                    <span class="marquee-item"><i class="fab fa-react" style="color: #61DAFB;"></i> React</span>
+                    <span class="marquee-sep">•</span>
+                    <span class="marquee-item"><i class="fab fa-js" style="color: #F7DF1E;"></i> JavaScript</span>
+                    <span class="marquee-sep">•</span>
+                    <span class="marquee-item"><i class="fab fa-html5" style="color: #E34F26;"></i> HTML5</span>
+                    <span class="marquee-sep">•</span>
+                    <span class="marquee-item"><i class="fab fa-css3-alt" style="color: #1572B6;"></i> CSS3</span>
+                    <span class="marquee-sep">•</span>
+                    <span class="marquee-item"><i class="fab fa-python" style="color: #3776AB;"></i> Python</span>
+                    <span class="marquee-sep">•</span>
+                    <span class="marquee-item"><i class="fab fa-node-js" style="color: #339933;"></i> Node.js</span>
+                    <span class="marquee-sep">•</span>
+                    <span class="marquee-item"><i class="fab fa-github"></i> GitHub</span>
+                    <span class="marquee-sep">•</span>
+                    <span class="marquee-item"><i class="fas fa-cube" style="color: #22c55e;"></i> Three.js / WebGL</span>
+                    <span class="marquee-sep">•</span>
+                    <span class="marquee-item"><i class="fas fa-wind" style="color: #38bdf8;"></i> Tailwind CSS</span>
+                    <span class="marquee-sep">•</span>
+                    <!-- Duplicate for continuous 100vw loop -->
+                    <span class="marquee-item"><i class="fab fa-react" style="color: #61DAFB;"></i> React</span>
+                    <span class="marquee-sep">•</span>
+                    <span class="marquee-item"><i class="fab fa-js" style="color: #F7DF1E;"></i> JavaScript</span>
+                    <span class="marquee-sep">•</span>
+                    <span class="marquee-item"><i class="fab fa-html5" style="color: #E34F26;"></i> HTML5</span>
+                    <span class="marquee-sep">•</span>
+                    <span class="marquee-item"><i class="fab fa-css3-alt" style="color: #1572B6;"></i> CSS3</span>
+                    <span class="marquee-sep">•</span>
+                    <span class="marquee-item"><i class="fab fa-python" style="color: #3776AB;"></i> Python</span>
+                    <span class="marquee-sep">•</span>
+                    <span class="marquee-item"><i class="fab fa-node-js" style="color: #339933;"></i> Node.js</span>
+                    <span class="marquee-sep">•</span>
+                    <span class="marquee-item"><i class="fab fa-github"></i> GitHub</span>
+                    <span class="marquee-sep">•</span>
+                    <span class="marquee-item"><i class="fas fa-cube" style="color: #22c55e;"></i> Three.js / WebGL</span>
+                    <span class="marquee-sep">•</span>
+                    <span class="marquee-item"><i class="fas fa-wind" style="color: #38bdf8;"></i> Tailwind CSS</span>
+                    <span class="marquee-sep">•</span>
+                </div>
             </div>
-        </div>
+        </section>
 
         <!-- =========================================================
              TRANG 3: LIÊN KẾT NHANH (BENTO GRID HIỆN ĐẠI)
@@ -645,68 +643,80 @@
         <p id="nextLyric"></p>
     </div>
 
-    <!-- ===== MUSIC PLAYER ===== -->
-    <div id="musicPlayerContainer" class="collapsed">
-        <!-- Chat Head Bubble -->
-        <div id="playerBubble" class="player-bubble" title="Mở Trình Phát Nhạc">
-            <img id="bubbleAlbumArt" src="./assets/Phepmaulogo.jpg" alt="Player Bubble" class="bubble-art">
-            <div class="bubble-glow"></div>
+    <!-- ===== LEFT-DOCKED VERTICAL MUSIC TAB (NO CLUTTER) ===== -->
+    <button id="playerDockBtn" class="player-dock-btn" title="Mở Danh Sách Nhạc" aria-label="Mở danh sách nhạc">
+        <div class="dock-equalizer">
+            <span></span><span></span><span></span><span></span>
+        </div>
+        <span class="dock-text">SOUNDTRACK</span>
+    </button>
+
+    <!-- ===== SLIDE-OUT CYBER MOSS MUSIC DRAWER ===== -->
+    <div id="playerDrawerBackdrop" class="player-drawer-backdrop"></div>
+    <div id="playerPanel" class="player-drawer">
+        <div class="drawer-header">
+            <div class="drawer-title-wrap">
+                <i class="fas fa-compact-disc fa-spin-pulse"></i>
+                <span>SOUNDTRACK • PLAYLIST</span>
+            </div>
+            <button id="closePlayerBtn" class="close-drawer-btn" title="Đóng danh sách">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
 
-        <!-- Expanded Panel -->
-        <div id="playerPanel" class="player-panel">
-            <button id="closePlayerBtn" class="close-player-btn" title="Thu nhỏ">
-                <i class="fas fa-chevron-down"></i>
-            </button>
-            <div class="player-layout">
-                <!-- Info -->
-                <div class="player-info">
-                    <img id="albumArt" src="./assets/Phepmaulogo.jpg" alt="Album Art" class="album-art">
-                    <div class="now-playing-indicator" id="nowPlayingIndicator">
-                        <span></span><span></span><span></span>
-                    </div>
-                    <div class="song-meta">
-                        <p class="song-title" id="songTitle">Phép Màu (Đàn Cá Gỗ OST)</p>
-                        <p class="song-artist" id="songArtist">Mounter x MAYDAYs, Minh Tốc</p>
-                    </div>
+        <!-- Currently Playing Card -->
+        <div class="drawer-now-playing">
+            <div class="now-playing-art-wrap">
+                <img id="albumArt" src="./assets/Phepmaulogo.jpg" alt="Album Art" class="drawer-album-art">
+                <div class="now-playing-indicator" id="nowPlayingIndicator">
+                    <span></span><span></span><span></span>
                 </div>
+            </div>
+            <div class="drawer-song-meta">
+                <h4 class="song-title" id="songTitle">Phép Màu (Đàn Cá Gỗ OST)</h4>
+                <p class="song-artist" id="songArtist">Mounter x MAYDAYs, Minh Tốc</p>
+            </div>
 
-                <!-- Controls -->
-                <div class="player-controls">
-                    <div class="control-buttons">
-                        <button id="prevTrackBtn" title="Bài trước" aria-label="Bài trước" class="music-control-button">
-                            <i class="fas fa-backward-step fa-lg" aria-hidden="true"></i>
-                        </button>
-                        <button id="playPauseMusicBtn" title="Phát/Tạm dừng" aria-label="Phát/Tạm dừng"
-                            class="music-control-button">
-                            <i class="fas fa-play fa-lg" aria-hidden="true"></i>
-                        </button>
-                        <button id="stopMusicBtn" title="Dừng" aria-label="Dừng" class="music-control-button">
-                            <i class="fas fa-stop fa-lg" aria-hidden="true"></i>
-                        </button>
-                        <button id="nextTrackBtn" title="Bài kế tiếp" aria-label="Bài kế tiếp"
-                            class="music-control-button">
-                            <i class="fas fa-forward-step fa-lg" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <div class="progress-wrapper">
-                        <span id="currentTime">0:00</span>
-                        <input type="range" id="musicProgressBar" value="0" step="1">
-                        <span id="durationTime">0:00</span>
-                    </div>
-                </div>
+            <!-- Progress Bar -->
+            <div class="drawer-progress-box">
+                <span id="currentTime">0:00</span>
+                <input type="range" id="musicProgressBar" value="0" step="1">
+                <span id="durationTime">0:00</span>
+            </div>
 
-                <!-- Volume -->
-                <div class="volume-controls">
-                    <button id="toggleLyricsBtn" title="Bật/Tắt Lời Bài Hát" aria-label="Bật/Tắt Lời Bài Hát"
-                        class="music-control-button" style="color: var(--accent-cyan);">
-                        <i class="fas fa-closed-captioning" aria-hidden="true"></i>
-                    </button>
-                    <button id="volumeBtn" title="Tắt/Mở tiếng" aria-label="Tắt/Mở tiếng" class="music-control-button">
-                        <i class="fas fa-volume-high" aria-hidden="true"></i>
-                    </button>
-                    <input type="range" id="volumeSlider" aria-label="Âm lượng" min="0" max="1" step="0.01" value="1">
-                </div>
+            <!-- Controls -->
+            <div class="drawer-controls">
+                <button id="prevTrackBtn" title="Bài trước" aria-label="Bài trước" class="music-control-button">
+                    <i class="fas fa-backward-step fa-lg"></i>
+                </button>
+                <button id="playPauseMusicBtn" title="Phát/Tạm dừng" aria-label="Phát/Tạm dừng" class="play-pause-btn-main">
+                    <i class="fas fa-play fa-lg"></i>
+                </button>
+                <button id="stopMusicBtn" title="Dừng" aria-label="Dừng" class="music-control-button">
+                    <i class="fas fa-stop fa-lg"></i>
+                </button>
+                <button id="nextTrackBtn" title="Bài kế tiếp" aria-label="Bài kế tiếp" class="music-control-button">
+                    <i class="fas fa-forward-step fa-lg"></i>
+                </button>
+                <button id="toggleLyricsBtn" title="Lời bài hát" aria-label="Lời bài hát" class="music-control-button" style="color: var(--accent-cyan);">
+                    <i class="fas fa-closed-captioning"></i>
+                </button>
+            </div>
+
+            <!-- Volume -->
+            <div class="drawer-volume-box">
+                <button id="volumeBtn" title="Tắt/Mở tiếng" aria-label="Tắt/Mở tiếng" class="music-control-button">
+                    <i class="fas fa-volume-high"></i>
+                </button>
+                <input type="range" id="volumeSlider" aria-label="Âm lượng" min="0" max="1" step="0.01" value="1">
+            </div>
+        </div>
+
+        <!-- Playlist Track List -->
+        <div class="drawer-playlist-section">
+            <h5 class="playlist-section-title">DANH SÁCH BÀI HÁT</h5>
+            <div id="playlistList" class="playlist-track-list">
+                <!-- Dynamically generated from audioPlaylist -->
             </div>
         </div>
     </div>
