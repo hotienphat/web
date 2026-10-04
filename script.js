@@ -71,7 +71,7 @@ class ParticleSystem {
                 vy: (Math.random() - 0.5) * 1.0,
                 radius: Math.random() * 2 + 1, // Kích thước hạt to hơn chút
                 opacity: Math.random() * 0.7 + 0.3,
-                color: Math.random() > 0.5 ? '168, 85, 247' : '34, 211, 238'
+                color: Math.random() > 0.6 ? '34, 197, 94' : (Math.random() > 0.3 ? '74, 222, 128' : '132, 204, 22')
             });
         }
     }
@@ -185,7 +185,7 @@ class CursorTrail {
             const opacity = p.life * 0.5;
             this.ctx.beginPath();
             this.ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
-            this.ctx.fillStyle = `rgba(168, 85, 247, ${opacity})`;
+            this.ctx.fillStyle = `rgba(52, 211, 153, ${opacity})`;
             this.ctx.fill();
         }
 
@@ -318,22 +318,209 @@ function addRipple(e) {
 }
 
 // ============================================
-// HEADER SCROLL EFFECT
+// 144Hz BUTTERY SMOOTH GSAP SNAP CONTROLLER
 // ============================================
-function initHeaderScroll() {
-    const header = document.getElementById('main-header');
-    if (!header) return;
+function initSmoothSnapScroll() {
+    const pageContent = document.getElementById('page-content');
+    if (!pageContent) return;
 
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-        if (!ticking) {
-            requestAnimationFrame(() => {
-                header.classList.toggle('scrolled', window.scrollY > 50);
-                ticking = false;
+    const sections = Array.from(document.querySelectorAll('.snap-section'));
+    if (sections.length === 0) return;
+
+    let isAnimating = false;
+    let currentSectionIndex = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+
+    // Detect section based on current scroll position
+    function getNearestSectionIndex() {
+        const scrollY = pageContent.scrollTop;
+        const vh = window.innerHeight;
+        return Math.min(Math.max(Math.round(scrollY / vh), 0), sections.length - 1);
+    }
+
+    currentSectionIndex = getNearestSectionIndex();
+
+    // Smooth navigation with GSAP (144fps interpolation)
+    function goToSection(index, duration = 0.85) {
+        if (index < 0 || index >= sections.length) return;
+        if (isAnimating) return;
+
+        isAnimating = true;
+        currentSectionIndex = index;
+        const targetY = sections[index].offsetTop;
+
+        if (window.gsap) {
+            gsap.to(pageContent, {
+                scrollTop: targetY,
+                duration: duration,
+                ease: "power2.out",
+                overwrite: "auto",
+                onUpdate: () => {
+                    handleScrollMorph(pageContent.scrollTop);
+                },
+                onComplete: () => {
+                    setTimeout(() => {
+                        isAnimating = false;
+                    }, 120);
+                    updateActiveNav(currentSectionIndex);
+                }
             });
-            ticking = true;
+        } else {
+            pageContent.scrollTo({
+                top: targetY,
+                behavior: 'smooth'
+            });
+            setTimeout(() => {
+                isAnimating = false;
+                updateActiveNav(currentSectionIndex);
+            }, 600);
+        }
+    }
+
+    // Intercept wheel events completely to eliminate 144Hz browser snap stutter
+    window.addEventListener('wheel', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+        e.preventDefault();
+        if (isAnimating) return;
+
+        if (Math.abs(e.deltaY) < 25) return;
+
+        if (e.deltaY > 0) {
+            if (currentSectionIndex < sections.length - 1) {
+                goToSection(currentSectionIndex + 1);
+            }
+        } else {
+            if (currentSectionIndex > 0) {
+                goToSection(currentSectionIndex - 1);
+            }
+        }
+    }, { passive: false });
+
+    // Touch support (Mobile & Tablet)
+    window.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+        touchStartTime = Date.now();
+    }, { passive: true });
+
+    window.addEventListener('touchend', (e) => {
+        if (isAnimating) return;
+        const touchEndY = e.changedTouches[0].clientY;
+        const diffY = touchStartY - touchEndY;
+        const duration = Date.now() - touchStartTime;
+
+        if (Math.abs(diffY) > 40 && duration < 600) {
+            if (diffY > 0) {
+                if (currentSectionIndex < sections.length - 1) {
+                    goToSection(currentSectionIndex + 1);
+                }
+            } else {
+                if (currentSectionIndex > 0) {
+                    goToSection(currentSectionIndex - 1);
+                }
+            }
+        }
+    }, { passive: true });
+
+    // Keyboard navigation (Arrow keys, Space, PageUp/Down)
+    window.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+        if (e.key === 'ArrowDown' || e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey)) {
+            e.preventDefault();
+            goToSection(currentSectionIndex + 1);
+        } else if (e.key === 'ArrowUp' || e.key === 'PageUp' || (e.key === ' ' && e.shiftKey)) {
+            e.preventDefault();
+            goToSection(currentSectionIndex - 1);
+        } else if (e.key === 'Home') {
+            e.preventDefault();
+            goToSection(0);
+        } else if (e.key === 'End') {
+            e.preventDefault();
+            goToSection(sections.length - 1);
         }
     });
+
+    // Wire up Floating Nav Links
+    const navLinks = document.querySelectorAll('.header-nav .nav-link, .header-brand');
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            const targetHref = link.getAttribute('href');
+            if (targetHref && targetHref.startsWith('#')) {
+                e.preventDefault();
+                const targetSec = document.querySelector(targetHref);
+                if (targetSec) {
+                    const idx = sections.indexOf(targetSec);
+                    if (idx !== -1) {
+                        goToSection(idx);
+                    }
+                }
+            }
+        });
+    });
+
+    // Wire up Scroll Down indicators
+    const scrollDownBtn = document.querySelector('.hero-bottom-right, .scroll-vertical-indicator, .scroll-indicator');
+    if (scrollDownBtn) {
+        scrollDownBtn.style.cursor = 'pointer';
+        scrollDownBtn.addEventListener('click', () => {
+            goToSection(1);
+        });
+    }
+
+    // Update active nav styling
+    function updateActiveNav(idx) {
+        if (sections[idx]) {
+            const secId = sections[idx].getAttribute('id');
+            document.querySelectorAll('.header-nav .nav-link').forEach(link => {
+                const href = link.getAttribute('href');
+                link.classList.toggle('active', href === `#${secId}`);
+            });
+        }
+    }
+
+    // Scroll Morphing (linked continuously to 144fps scroll)
+    function handleScrollMorph(scrollY) {
+        const heroCutout = document.getElementById('heroCutoutImg');
+        const octagon = document.querySelector('.octagon-wrapper');
+        const header = document.getElementById('main-header');
+        const vh = window.innerHeight;
+
+        if (header) {
+            header.classList.toggle('scrolled', scrollY > 50);
+        }
+
+        if (scrollY < vh * 1.5) {
+            const progress = Math.min(Math.max(scrollY / vh, 0), 1);
+            if (heroCutout) {
+                const scale = 1 - progress * 0.45;
+                const translateY = progress * 60;
+                const opacity = Math.max(1 - progress * 1.3, 0);
+                heroCutout.style.transform = `scale(${scale}) translateY(${translateY}px)`;
+                heroCutout.style.opacity = opacity;
+            }
+            if (octagon) {
+                const octScale = 0.75 + progress * 0.25;
+                const octOpacity = Math.min(progress * 1.8, 1);
+                octagon.style.transform = `scale(${octScale})`;
+                octagon.style.opacity = octOpacity;
+            }
+        }
+    }
+
+    handleScrollMorph(pageContent.scrollTop);
+    updateActiveNav(currentSectionIndex);
+
+    pageContent.addEventListener('scroll', () => {
+        handleScrollMorph(pageContent.scrollTop);
+        if (!isAnimating) {
+            currentSectionIndex = getNearestSectionIndex();
+            updateActiveNav(currentSectionIndex);
+        }
+    }, { passive: true });
+
+    window.goToSection = goToSection;
 }
 
 // ============================================
@@ -1132,7 +1319,7 @@ function initThemeToggle() {
         );
 
         const willBeLight = !document.body.classList.contains('light-theme');
-        const targetBg = willBeLight ? '#f8fafc' : '#06060e';
+        const targetBg = willBeLight ? '#dfe6df' : '#070c08';
 
         const ripple = document.createElement('div');
         ripple.className = 'theme-ripple-overlay';
@@ -1217,8 +1404,8 @@ function initializePageApp() {
     initDonateSection();
     initCopyButtons();
 
-    // Header scroll effect
-    initHeaderScroll();
+    // 144Hz Buttery Smooth Snap Controller
+    initSmoothSnapScroll();
 
     // Scroll reveal (after DOM is populated)
     requestAnimationFrame(() => {
