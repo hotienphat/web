@@ -5,13 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Trang cá nhân của Hồ Tiến Phát (Fot) - Lập trình, Nghe nhạc, Chơi game. Khám phá không gian số của mình!">
-    <meta property="og:title" content="Hồ Tiến Phát — Portfolio">
-    <meta property="og:description" content="Trang cá nhân của Hồ Tiến Phát (Fot) - Lập trình, Nghe nhạc, Chơi game. Khám phá không gian số của mình!">
+        content="Trang cá nhân của Hồ Tiến Phát (Lake Fot) - Lập trình, Nghe nhạc, Chơi game. Khám phá không gian số của mình!">
+    <meta property="og:title" content="Hồ Tiến Phát (Lake Fot) — Portfolio">
+    <meta property="og:description" content="Trang cá nhân của Hồ Tiến Phát (Lake Fot) - Lập trình, Nghe nhạc, Chơi game. Khám phá không gian số của mình!">
     <meta property="og:image" content="https://fot-portfolio.vercel.app/assets/avt.png">
     <meta property="og:type" content="website">
     <link rel="icon" type="image/x-icon" href="./assets/avt.png">
-    <title>Hồ Tiến Phát — Portfolio</title>
+    <title>Hồ Tiến Phát (Lake Fot) — Portfolio</title>
 
     <link rel="stylesheet" href="output.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -20,13 +20,19 @@
 
 <body>
 
-    <!-- ===== LOADING SCREEN ===== -->
-    <div id="loading-screen">
-        <div class="loader-logo">FOT</div>
-        <div class="loader-bar">
-            <div class="loader-bar-fill"></div>
+    <!-- ===== INTRO ANIMATION OVERLAY (THAY THẾ MODAL TĨNH) ===== -->
+    <div id="intro-overlay" class="intro-overlay">
+        <div class="intro-flash"></div>
+        <div class="intro-avatar-popup">
+            <div class="intro-avatar-ring">
+                <img src="./assets/avt.png" alt="Lake Fot - Intro">
+            </div>
+            <div class="intro-title-wrap">
+                <span class="intro-name">LAKE FOT</span>
+                <span class="intro-sub">INITIALIZING EXPERIENCE...</span>
+            </div>
         </div>
-        <p class="loader-text">Đang tải trang...</p>
+        <div class="intro-shockwave"></div>
     </div>
 
     <!-- ===== BACKGROUND CANVASES ===== -->
@@ -34,42 +40,59 @@
     <canvas id="cursor-trail-canvas" aria-hidden="true"></canvas>
     <div class="noise-overlay" aria-hidden="true"></div>
 
-    <!-- ===== PAGE CONTENT ===== -->
-    <div id="page-content" class="hidden">
+    <!-- ===== MAIN SNAP CONTAINER ===== -->
+    <div id="page-content" class="snap-container">
 
         <!-- HEADER -->
         <header id="main-header">
             <div class="container header-inner">
-                <a href="#" class="logo-text">Hồ Tiến Phát</a>
-                <div class="search-container">
-                    <input type="text" id="searchInput" aria-label="Tìm kiếm" placeholder="Tìm kiếm..."
-                        class="search-input" autocomplete="off">
-                    <button id="searchButton" title="Tìm kiếm" aria-label="Tìm kiếm">
-                        <i class="fas fa-search"></i>
+                <a href="#hero-section" class="logo-text">
+                    <span class="logo-box">FOT</span>
+                    <span>Hồ Tiến Phát</span>
+                </a>
+
+                <div class="header-right">
+                    <div class="search-container">
+                        <input type="text" id="searchInput" aria-label="Tìm kiếm" placeholder="Tìm kiếm nhanh..."
+                            class="search-input" autocomplete="off">
+                        <button id="searchButton" title="Tìm kiếm" aria-label="Tìm kiếm">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <div id="suggestionsDropdown" class="suggestions-dropdown hidden"></div>
+                    </div>
+
+                    <!-- Theme Toggle Button (Ripple Effect) -->
+                    <button id="themeToggleBtn" class="theme-toggle-btn" title="Chuyển chế độ Sáng / Tối" aria-label="Đổi giao diện">
+                        <i class="fas fa-sun theme-icon-sun"></i>
+                        <i class="fas fa-moon theme-icon-moon"></i>
                     </button>
-                    <div id="suggestionsDropdown" class="suggestions-dropdown hidden"></div>
                 </div>
             </div>
         </header>
 
-        <!-- HERO SECTION -->
-        <section id="hero-section">
+        <!-- =========================================================
+             TRANG 1: HERO SECTION (MÀN HÌNH CHÍNH)
+             ========================================================= -->
+        <section id="hero-section" class="snap-section hero-page">
+            <!-- Background Gigantic Typography Marquee (Behind Portrait) -->
+            <div class="hero-marquee-wrapper" aria-hidden="true">
+                <div class="hero-marquee-track">
+                    <span>LAKE FOT • HO TIEN PHAT • LAKE FOT • HO TIEN PHAT • </span>
+                    <span>LAKE FOT • HO TIEN PHAT • LAKE FOT • HO TIEN PHAT • </span>
+                </div>
+            </div>
+
+            <!-- Center Cutout Portrait -->
             <div class="hero-content">
                 <div class="hero-avatar-wrapper">
                     <div class="avatar-glow-ring"></div>
                     <div class="hero-avatar">
-                        <img src="./assets/avt.png" alt="Hồ Tiến Phát - Avatar">
+                        <img src="./assets/avt.png" alt="Hồ Tiến Phát - Lake Fot">
                     </div>
                     <canvas id="circular-visualizer" width="240" height="240"></canvas>
                 </div>
                 <h1 class="hero-title" id="hero-title">Hồ Tiến Phát</h1>
                 <p class="hero-tagline" id="hero-tagline"><span class="typewriter-cursor"></span></p>
-
-                <div class="hero-actions reveal-element" style="margin-top: 1.5rem; margin-bottom: 2.5rem; display: flex; justify-content: center;">
-                    <a href="#" class="download-cv-btn" target="_blank" title="Vui lòng cập nhật link CV">
-                        <i class="fas fa-file-pdf" style="color: var(--accent-pink);"></i> Tải CV (PDF)
-                    </a>
-                </div>
 
                 <div class="hero-social-links">
                     <a href="https://www.facebook.com/KaedeharaKazuha0805" target="_blank" rel="noopener noreferrer"
@@ -91,164 +114,392 @@
                     </a>
                 </div>
             </div>
+
+            <!-- Vertical Accent Typography "HOPHAT" (Bottom Corner) -->
+            <div class="vertical-accent-text" aria-hidden="true">
+                <span>HOPHAT</span>
+                <div class="vertical-accent-line"></div>
+            </div>
+
+            <!-- Scroll Indicator -->
             <div class="scroll-indicator">
                 <span>Cuộn xuống</span>
                 <i class="fas fa-chevron-down"></i>
             </div>
         </section>
 
-        <!-- MAIN CONTENT -->
-        <main class="container">
-
-            <!-- ABOUT ME -->
-            <section id="about-section" class="content-section">
+        <!-- =========================================================
+             TRANG 2: ABOUT SECTION (MORPHING SANG KHUNG BÁT GIÁC)
+             ========================================================= -->
+        <section id="about-section" class="snap-section content-section">
+            <div class="container about-container">
                 <div class="section-header reveal-element">
                     <h2 class="section-title gradient-text">Về Bản Thân</h2>
                     <div class="section-divider"></div>
                 </div>
+
                 <div class="about-grid">
-                    <div class="about-text-block reveal-left">
-                        <p>Xin chào! Tôi là <strong>Hồ Tiến Phát</strong>. Chào mừng bạn đến với không gian cá nhân của
-                            tôi.</p>
-                        <p>Đây là nơi tôi chia sẻ những dự án, liên kết yêu thích và một chút về cuộc sống thường ngày.
-                            Hy vọng bạn sẽ tìm thấy điều gì đó thú vị ở đây!</p>
-                    </div>
-                    <div class="about-info-cards reveal-right">
-                        <div class="info-card">
-                            <div class="info-card-icon"><i class="fas fa-map-marker-alt"></i></div>
-                            <div>
-                                <div class="info-card-label">Đến từ</div>
-                                <div class="info-card-text">Lâm Đồng, Việt Nam</div>
+                    <!-- Left: Octagon Frame + Rotating Circular Text -->
+                    <div class="about-visual-col reveal-left">
+                        <div class="octagon-wrapper">
+                            <!-- Rotating Curved Text SVG -->
+                            <div class="octagon-text-ring">
+                                <svg viewBox="0 0 300 300" class="rotating-text-svg">
+                                    <defs>
+                                        <path id="octagonCircle" d="M 150, 150 m -115, 0 a 115,115 0 1,1 230,0 a 115,115 0 1,1 -230,0" />
+                                    </defs>
+                                    <text class="octagon-curved-text">
+                                        <textPath href="#octagonCircle">
+                                            • LAKE FOT • HO TIEN PHAT • DEVELOPER • HUTECH •
+                                        </textPath>
+                                    </text>
+                                </svg>
                             </div>
-                        </div>
-                        <div class="info-card">
-                            <div class="info-card-icon">
-                                <img src="./assets/hutech.png" alt="HUTECH Logo"
-                                    style="width: 32px; height: 32px; object-fit: contain;">
-                            </div>
-                            <div>
-                                <div class="info-card-label">Học tập tại</div>
-                                <div class="info-card-text">ĐẠI HỌC CÔNG NGHỆ TP.HCM - HUTECH | CNTT</div>
-                                <div style="font-size: 0.8rem; color: var(--accent-cyan); margin-top: 4px;">Sinh viên</div>
-                            </div>
-                        </div>
-                        <div class="info-card">
-                            <div class="info-card-icon"><i class="fas fa-heart"></i></div>
-                            <div>
-                                <div class="info-card-label">Sở thích</div>
-                                <div class="info-card-text">Lập trình, Nghe nhạc, Chơi game</div>
+                            <div class="octagon-glow"></div>
+                            <!-- Octagon Frame with Uncropped/Original Portrait -->
+                            <div class="octagon-frame">
+                                <div class="octagon-inner">
+                                    <img src="./assets/avt.png" alt="Hồ Tiến Phát - Original" class="octagon-img">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
 
-            <!-- SKILLS SECTION -->
-            <section id="skills-section" class="content-section">
-                <div class="section-header reveal-element">
-                    <h2 class="section-title gradient-text">Kỹ Năng & Công Cụ</h2>
-                    <p class="section-subtitle">Những công nghệ và công cụ mình thường sử dụng</p>
-                    <div class="section-divider"></div>
-                </div>
-                <div class="skills-container reveal-element" style="display: flex; flex-direction: column; gap: 3rem;">
-                    <div class="skill-group">
-                        <h3 style="font-family: var(--font-heading); font-size: 1.2rem; color: var(--accent-purple-light); margin-bottom: 1.5rem; text-align: center;">Frontend</h3>
-                        <div class="skills-grid">
-                            <div class="skill-card" title="HTML5"><i class="fab fa-html5" style="color: #E34F26;"></i><span>HTML5</span></div>
-                            <div class="skill-card" title="CSS3"><i class="fab fa-css3-alt" style="color: #1572B6;"></i><span>CSS3</span></div>
-                            <div class="skill-card" title="JavaScript"><i class="fab fa-js" style="color: #F7DF1E;"></i><span>JavaScript</span></div>
-                            <div class="skill-card" title="React"><i class="fab fa-react" style="color: #61DAFB;"></i><span>React</span></div>
+                    <!-- Right: Bio Content -->
+                    <div class="about-info-col reveal-right">
+                        <div class="about-text-block">
+                            <p class="about-lead">Xin chào! Mình là <strong>Hồ Tiến Phát (Lake Fot)</strong>.</p>
+                            <p>Đam mê sáng tạo những trang web không đơn thuần chỉ để xem, mà là một không gian sống động với âm thanh, chuyển động 60fps mượt mà và đồ họa tương tác cao.</p>
+                        </div>
+                        <div class="about-info-cards">
+                            <div class="info-card">
+                                <div class="info-card-icon"><i class="fas fa-map-marker-alt"></i></div>
+                                <div>
+                                    <div class="info-card-label">Đến từ</div>
+                                    <div class="info-card-text">Lâm Đồng, Việt Nam 🇻🇳</div>
+                                </div>
+                            </div>
+                            <div class="info-card">
+                                <div class="info-card-icon">
+                                    <img src="./assets/hutech.png" alt="HUTECH Logo"
+                                        style="width: 32px; height: 32px; object-fit: contain;">
+                                </div>
+                                <div>
+                                    <div class="info-card-label">Học tập tại</div>
+                                    <div class="info-card-text">ĐH CÔNG NGHỆ TP.HCM - HUTECH</div>
+                                    <div style="font-size: 0.8rem; color: var(--accent-cyan); margin-top: 4px;">Khoa Công nghệ Thông tin</div>
+                                </div>
+                            </div>
+                            <div class="info-card">
+                                <div class="info-card-icon"><i class="fas fa-heart"></i></div>
+                                <div>
+                                    <div class="info-card-label">Sở thích</div>
+                                    <div class="info-card-text">Lập trình • Nghe nhạc • Chơi game</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="skill-group">
-                        <h3 style="font-family: var(--font-heading); font-size: 1.2rem; color: var(--accent-cyan); margin-bottom: 1.5rem; text-align: center;">Backend & Tools</h3>
-                        <div class="skills-grid">
-                            <div class="skill-card" title="Python"><i class="fab fa-python" style="color: #3776AB;"></i><span>Python</span></div>
-                            <div class="skill-card" title="Node.js"><i class="fab fa-node-js" style="color: #339933;"></i><span>Node.js</span></div>
-                            <div class="skill-card" title="GitHub"><i class="fab fa-github" style="color: #ffffff;"></i><span>GitHub</span></div>
-                        </div>
-                    </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- SHORTCUTS -->
-            <section id="shortcuts-section" class="content-section">
+        <!-- =========================================================
+             PHÂN ĐOẠN: INFINITE MARQUEE ICON BAR (100VW CHẠY VÔ TẬN)
+             ========================================================= -->
+        <div class="tech-marquee-bar" aria-label="Kỹ năng và công nghệ">
+            <div class="tech-marquee-track">
+                <span class="marquee-item"><i class="fab fa-react" style="color: #61DAFB;"></i> React</span>
+                <span class="marquee-sep">•</span>
+                <span class="marquee-item"><i class="fab fa-js" style="color: #F7DF1E;"></i> JavaScript</span>
+                <span class="marquee-sep">•</span>
+                <span class="marquee-item"><i class="fab fa-html5" style="color: #E34F26;"></i> HTML5</span>
+                <span class="marquee-sep">•</span>
+                <span class="marquee-item"><i class="fab fa-css3-alt" style="color: #1572B6;"></i> CSS3</span>
+                <span class="marquee-sep">•</span>
+                <span class="marquee-item"><i class="fab fa-python" style="color: #3776AB;"></i> Python</span>
+                <span class="marquee-sep">•</span>
+                <span class="marquee-item"><i class="fab fa-node-js" style="color: #339933;"></i> Node.js</span>
+                <span class="marquee-sep">•</span>
+                <span class="marquee-item"><i class="fab fa-github"></i> GitHub</span>
+                <span class="marquee-sep">•</span>
+                <span class="marquee-item"><i class="fas fa-cube" style="color: #a855f7;"></i> Three.js / WebGL</span>
+                <span class="marquee-sep">•</span>
+                <span class="marquee-item"><i class="fas fa-wind" style="color: #38bdf8;"></i> Tailwind CSS</span>
+                <span class="marquee-sep">•</span>
+                <!-- Duplicate for seamless continuous loop -->
+                <span class="marquee-item"><i class="fab fa-react" style="color: #61DAFB;"></i> React</span>
+                <span class="marquee-sep">•</span>
+                <span class="marquee-item"><i class="fab fa-js" style="color: #F7DF1E;"></i> JavaScript</span>
+                <span class="marquee-sep">•</span>
+                <span class="marquee-item"><i class="fab fa-html5" style="color: #E34F26;"></i> HTML5</span>
+                <span class="marquee-sep">•</span>
+                <span class="marquee-item"><i class="fab fa-css3-alt" style="color: #1572B6;"></i> CSS3</span>
+                <span class="marquee-sep">•</span>
+                <span class="marquee-item"><i class="fab fa-python" style="color: #3776AB;"></i> Python</span>
+                <span class="marquee-sep">•</span>
+                <span class="marquee-item"><i class="fab fa-node-js" style="color: #339933;"></i> Node.js</span>
+                <span class="marquee-sep">•</span>
+                <span class="marquee-item"><i class="fab fa-github"></i> GitHub</span>
+                <span class="marquee-sep">•</span>
+                <span class="marquee-item"><i class="fas fa-cube" style="color: #a855f7;"></i> Three.js / WebGL</span>
+                <span class="marquee-sep">•</span>
+                <span class="marquee-item"><i class="fas fa-wind" style="color: #38bdf8;"></i> Tailwind CSS</span>
+                <span class="marquee-sep">•</span>
+            </div>
+        </div>
+
+        <!-- =========================================================
+             TRANG 3: LIÊN KẾT NHANH (BENTO GRID HIỆN ĐẠI)
+             ========================================================= -->
+        <section id="shortcuts-section" class="snap-section content-section">
+            <div class="container shortcuts-container">
                 <div class="section-header reveal-element">
                     <h2 class="section-title gradient-text">Liên Kết Nhanh</h2>
-                    <p class="section-subtitle">Các trang web và công cụ yêu thích của mình</p>
+                    <p class="section-subtitle">Không gian số, tiện ích học tập và mạng xã hội của FOT</p>
                     <div class="section-divider"></div>
                 </div>
-                <div id="shortcutsContainer"></div>
-            </section>
 
-            <!-- REAL PROJECTS SECTION -->
-            <section id="real-projects-section" class="content-section">
+                <div class="bento-grid reveal-element">
+                    <!-- Bento 1: Mạng Xã Hội -->
+                    <div class="bento-card bento-social">
+                        <div class="bento-card-header">
+                            <div class="bento-card-icon"><i class="fas fa-share-nodes"></i></div>
+                            <div>
+                                <h3 class="bento-card-title">Mạng Xã Hội</h3>
+                                <p class="bento-card-sub">Kết nối thường ngày</p>
+                            </div>
+                        </div>
+                        <div class="bento-links-wrap">
+                            <a href="https://www.facebook.com/KaedeharaKazuha0805" target="_blank" rel="noopener noreferrer" class="bento-pill-link">
+                                <i class="fab fa-facebook-f"></i> <span>Facebook</span>
+                            </a>
+                            <a href="https://messenger.com" target="_blank" rel="noopener noreferrer" class="bento-pill-link">
+                                <i class="fab fa-facebook-messenger"></i> <span>Messenger</span>
+                            </a>
+                            <a href="https://www.instagram.com/hotien_boyneh/" target="_blank" rel="noopener noreferrer" class="bento-pill-link">
+                                <i class="fab fa-instagram"></i> <span>Instagram</span>
+                            </a>
+                            <a href="https://www.threads.net/@hotien_boyneh" target="_blank" rel="noopener noreferrer" class="bento-pill-link">
+                                <i class="fab fa-threads"></i> <span>Threads</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Bento 2: Góc Học Tập -->
+                    <div class="bento-card bento-study">
+                        <div class="bento-card-header">
+                            <div class="bento-card-icon"><i class="fas fa-graduation-cap"></i></div>
+                            <div>
+                                <h3 class="bento-card-title">Góc Học Tập & Công Cụ</h3>
+                                <p class="bento-card-sub">Dự án tiện ích do FOT xây dựng</p>
+                            </div>
+                        </div>
+                        <div class="bento-links-wrap">
+                            <a href="https://hotienphat.github.io/GDTX/" target="_blank" rel="noopener noreferrer" class="bento-pill-link">
+                                <i class="fas fa-shuffle"></i> <span>Random FOT</span>
+                            </a>
+                            <a href="https://hotienphat.github.io/frame/" target="_blank" rel="noopener noreferrer" class="bento-pill-link">
+                                <i class="fas fa-image"></i> <span>Tạo khung Avatar</span>
+                            </a>
+                            <a href="https://giamthi.vercel.app" target="_blank" rel="noopener noreferrer" class="bento-pill-link">
+                                <i class="fas fa-user-shield"></i> <span>Hệ thống Giám thị</span>
+                            </a>
+                            <a href="https://txdaknong.daknong.edu.vn/" target="_blank" rel="noopener noreferrer" class="bento-pill-link">
+                                <i class="fas fa-school"></i> <span>Trung Tâm GDTX</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Bento 3: Giải Trí & Chill -->
+                    <div class="bento-card bento-chill">
+                        <div class="bento-card-header">
+                            <div class="bento-card-icon"><i class="fas fa-gamepad"></i></div>
+                            <div>
+                                <h3 class="bento-card-title">Giải Trí & Chill</h3>
+                                <p class="bento-card-sub">Gaming & Âm nhạc</p>
+                            </div>
+                        </div>
+                        <div class="bento-links-wrap">
+                            <a href="https://genshin.hoyoverse.com/" target="_blank" rel="noopener noreferrer" class="bento-pill-link">
+                                <i class="fas fa-dragon"></i> <span>Genshin Impact</span>
+                            </a>
+                            <a href="https://playvalorant.com/" target="_blank" rel="noopener noreferrer" class="bento-pill-link">
+                                <i class="fas fa-crosshairs"></i> <span>Valorant</span>
+                            </a>
+                            <a href="https://hsr.hoyoverse.com/" target="_blank" rel="noopener noreferrer" class="bento-pill-link">
+                                <i class="fas fa-rocket"></i> <span>Honkai: Star Rail</span>
+                            </a>
+                            <a href="https://spotify.com" target="_blank" rel="noopener noreferrer" class="bento-pill-link">
+                                <i class="fab fa-spotify"></i> <span>Spotify</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Bento 4: Google & Công Cụ -->
+                    <div class="bento-card bento-tools">
+                        <div class="bento-card-header">
+                            <div class="bento-card-icon"><i class="fab fa-google"></i></div>
+                            <div>
+                                <h3 class="bento-card-title">Google & Tiện Ích</h3>
+                                <p class="bento-card-sub">Làm việc trực tuyến</p>
+                            </div>
+                        </div>
+                        <div class="bento-links-wrap">
+                            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="bento-pill-link">
+                                <i class="fab fa-youtube"></i> <span>YouTube</span>
+                            </a>
+                            <a href="https://mail.google.com" target="_blank" rel="noopener noreferrer" class="bento-pill-link">
+                                <i class="fas fa-envelope"></i> <span>Gmail</span>
+                            </a>
+                            <a href="https://drive.google.com" target="_blank" rel="noopener noreferrer" class="bento-pill-link">
+                                <i class="fab fa-google-drive"></i> <span>Drive</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             TRANG 4: DỰ ÁN NỔI BẬT (HORIZONTAL HOVER ACCORDION)
+             ========================================================= -->
+        <section id="real-projects-section" class="snap-section content-section">
+            <div class="container projects-container">
                 <div class="section-header reveal-element">
                     <h2 class="section-title gradient-text">Dự Án Nổi Bật</h2>
-                    <p class="section-subtitle">Một số sản phẩm thực tế mình đã tham gia phát triển</p>
+                    <p class="section-subtitle">Rê chuột vào từng dải để mở rộng chi tiết dự án theo chiều ngang</p>
                     <div class="section-divider"></div>
                 </div>
-                
-                <div class="projects-grid reveal-element">
-                    <!-- Project 1 Placeholder -->
-                    <div class="project-card">
-                        <div class="project-img-wrapper">
-                            <div class="placeholder-img" style="background: linear-gradient(135deg, rgba(34, 211, 238, 0.2), rgba(168, 85, 247, 0.1)); display: flex; align-items: center; justify-content: center;">
-                                <i class="fas fa-laptop-code fa-4x" style="color: var(--accent-cyan);"></i>
+
+                <!-- Horizontal Hover Accordion -->
+                <div class="horizontal-accordion reveal-element">
+                    <!-- Project Panel 1 -->
+                    <div class="accordion-panel active" data-index="0">
+                        <div class="panel-glow" style="background: radial-gradient(circle at center, rgba(168,85,247,0.3), transparent 70%);"></div>
+                        <div class="panel-inner">
+                            <div class="panel-head">
+                                <span class="panel-num">01</span>
+                                <span class="panel-badge">Không gian 3D WebGL</span>
                             </div>
-                        </div>
-                        <div class="project-content">
-                            <h3>Tên Dự Án 1</h3>
-                            <p>Mô tả ngắn gọn về dự án. Ứng dụng giúp giải quyết vấn đề gì, có tính năng gì nổi bật.</p>
-                            <div class="project-tags">
-                                <span>React</span>
-                                <span>Node.js</span>
+                            <div class="panel-vertical-title">
+                                <span>3D SEASONS TREE</span>
                             </div>
-                            <div style="display: flex; gap: 1rem;">
-                                <a href="#" target="_blank" class="project-btn"><i class="fas fa-external-link-alt"></i> Demo</a>
-                                <a href="#" target="_blank" class="project-btn"><i class="fab fa-github"></i> Source</a>
+                            <div class="panel-expanded-content">
+                                <h3 class="panel-title">3D Seasons Interactive Tree</h3>
+                                <p class="panel-desc">Mô hình cây Bonsai nghệ thuật trên đảo bay viễn tưởng, chuyển động và biến đổi hiệu ứng 4 mùa Xuân, Hạ, Thu, Đông sống động bằng Three.js.</p>
+                                <div class="panel-tech-tags">
+                                    <span>Three.js</span>
+                                    <span>WebGL</span>
+                                    <span>GSAP</span>
+                                </div>
+                                <div class="panel-btn-group">
+                                    <a href="#tree-3d-section" class="panel-action-btn primary"><i class="fas fa-play"></i> Trải nghiệm</a>
+                                    <a href="https://github.com/hotienphat/web" target="_blank" rel="noopener noreferrer" class="panel-action-btn secondary"><i class="fab fa-github"></i> GitHub</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Project 2 Placeholder -->
-                    <div class="project-card">
-                        <div class="project-img-wrapper">
-                            <div class="placeholder-img" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.1)); display: flex; align-items: center; justify-content: center;">
-                                <i class="fas fa-mobile-alt fa-4x" style="color: var(--accent-purple-light);"></i>
+
+                    <!-- Project Panel 2 -->
+                    <div class="accordion-panel" data-index="1">
+                        <div class="panel-glow" style="background: radial-gradient(circle at center, rgba(34,211,238,0.3), transparent 70%);"></div>
+                        <div class="panel-inner">
+                            <div class="panel-head">
+                                <span class="panel-num">02</span>
+                                <span class="panel-badge">Học tập & Tiện ích</span>
+                            </div>
+                            <div class="panel-vertical-title">
+                                <span>RANDOM CỦA FOT</span>
+                            </div>
+                            <div class="panel-expanded-content">
+                                <h3 class="panel-title">Random của FOT</h3>
+                                <p class="panel-desc">Công cụ quay số và bốc thăm ngẫu nhiên thông minh phục vụ hoạt động lớp học, chọn người ngẫu nhiên với tốc độ tức thì.</p>
+                                <div class="panel-tech-tags">
+                                    <span>HTML5</span>
+                                    <span>CSS3</span>
+                                    <span>JavaScript</span>
+                                </div>
+                                <div class="panel-btn-group">
+                                    <a href="https://hotienphat.github.io/GDTX/" target="_blank" rel="noopener noreferrer" class="panel-action-btn primary"><i class="fas fa-external-link-alt"></i> Xem Demo</a>
+                                    <a href="https://github.com/hotienphat" target="_blank" rel="noopener noreferrer" class="panel-action-btn secondary"><i class="fab fa-github"></i> GitHub</a>
+                                </div>
                             </div>
                         </div>
-                        <div class="project-content">
-                            <h3>Tên Dự Án 2</h3>
-                            <p>Mô tả ngắn gọn về dự án. Bạn giữ vai trò gì trong dự án này và kết quả đạt được.</p>
-                            <div class="project-tags">
-                                <span>HTML/CSS</span>
-                                <span>JavaScript</span>
+                    </div>
+
+                    <!-- Project Panel 3 -->
+                    <div class="accordion-panel" data-index="2">
+                        <div class="panel-glow" style="background: radial-gradient(circle at center, rgba(236,72,153,0.3), transparent 70%);"></div>
+                        <div class="panel-inner">
+                            <div class="panel-head">
+                                <span class="panel-num">03</span>
+                                <span class="panel-badge">Công cụ Canvas</span>
                             </div>
-                            <div style="display: flex; gap: 1rem;">
-                                <a href="#" target="_blank" class="project-btn"><i class="fas fa-external-link-alt"></i> Demo</a>
-                                <a href="#" target="_blank" class="project-btn"><i class="fab fa-github"></i> Source</a>
+                            <div class="panel-vertical-title">
+                                <span>TẠO KHUNG AVATAR</span>
+                            </div>
+                            <div class="panel-expanded-content">
+                                <h3 class="panel-title">Tạo Khung Avatar</h3>
+                                <p class="panel-desc">Web app tạo khung ảnh đại diện cho chiến dịch sự kiện, hỗ trợ căn chỉnh hình ảnh trực quan và tải về với chất lượng cao.</p>
+                                <div class="panel-tech-tags">
+                                    <span>Canvas API</span>
+                                    <span>Responsive</span>
+                                    <span>JavaScript</span>
+                                </div>
+                                <div class="panel-btn-group">
+                                    <a href="https://hotienphat.github.io/frame/" target="_blank" rel="noopener noreferrer" class="panel-action-btn primary"><i class="fas fa-external-link-alt"></i> Xem Demo</a>
+                                    <a href="https://github.com/hotienphat" target="_blank" rel="noopener noreferrer" class="panel-action-btn secondary"><i class="fab fa-github"></i> GitHub</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project Panel 4 -->
+                    <div class="accordion-panel" data-index="3">
+                        <div class="panel-glow" style="background: radial-gradient(circle at center, rgba(16,185,129,0.3), transparent 70%);"></div>
+                        <div class="panel-inner">
+                            <div class="panel-head">
+                                <span class="panel-num">04</span>
+                                <span class="panel-badge">Quản lý thi cử</span>
+                            </div>
+                            <div class="panel-vertical-title">
+                                <span>GIÁM THỊ THI CỬ</span>
+                            </div>
+                            <div class="panel-expanded-content">
+                                <h3 class="panel-title">Hệ Thống Giám Thị</h3>
+                                <p class="panel-desc">Nền tảng hỗ trợ điều phối và quản lý giám thị thi trực tuyến, tối ưu hóa quá trình làm việc và ghi nhận báo cáo nhanh chóng.</p>
+                                <div class="panel-tech-tags">
+                                    <span>Web App</span>
+                                    <span>Next.js</span>
+                                    <span>Vercel</span>
+                                </div>
+                                <div class="panel-btn-group">
+                                    <a href="https://giamthi.vercel.app" target="_blank" rel="noopener noreferrer" class="panel-action-btn primary"><i class="fas fa-external-link-alt"></i> Xem Demo</a>
+                                    <a href="https://github.com/hotienphat" target="_blank" rel="noopener noreferrer" class="panel-action-btn secondary"><i class="fab fa-github"></i> GitHub</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- 3D INTERACTIVE TREE SECTION -->
-            <section id="tree-3d-section" class="content-section">
+        <!-- =========================================================
+             TRANG 5: CÂY 3D TƯƠNG TÁC (THREE.JS WEBGL)
+             ========================================================= -->
+        <section id="tree-3d-section" class="snap-section content-section">
+            <div class="container tree-section-container">
                 <div class="section-header reveal-element">
                     <h2 class="section-title gradient-text">Cây 3D Tương Tác</h2>
-                    <p class="section-subtitle">Mô hình cây 3D được vẽ trực tiếp bằng Three.js & WebGL &bull; Xoay, thu phóng và chuyển đổi 4 mùa</p>
+                    <p class="section-subtitle">Mô hình cây 3D được vẽ trực tiếp bằng Three.js &bull; Xoay, thu phóng và chuyển đổi 4 mùa</p>
                     <div class="section-divider"></div>
                 </div>
                 
                 <div class="tree-3d-wrapper reveal-element">
-                    <!-- Interaction Hint -->
                     <div class="tree-hint-badge">
                         <i class="fas fa-hand-pointer"></i> <span>Kéo để xoay &bull; Cuộn để phóng to</span>
                     </div>
 
-                    <!-- Top Utility Toolbar -->
                     <div class="tree-top-toolbar">
                         <button id="treeRotateToggleBtn" class="tree-tool-btn active" title="Bật / Tắt tự động xoay" aria-label="Tự xoay">
                             <i class="fas fa-sync-alt fa-spin"></i> <span>Tự xoay</span>
@@ -258,7 +509,6 @@
                         </button>
                     </div>
 
-                    <!-- WebGL Canvas Container -->
                     <div id="tree-canvas-container">
                         <div class="tree-loader" id="treeLoader">
                             <div class="tree-loader-spinner"></div>
@@ -266,7 +516,6 @@
                         </div>
                     </div>
 
-                    <!-- Season Controls -->
                     <div class="tree-controls glass-panel">
                         <button class="season-btn active" data-season="spring" title="Mùa Xuân"><i class="fas fa-seedling" style="color: #ffb7c5;"></i> <span>Xuân</span></button>
                         <button class="season-btn" data-season="summer" title="Mùa Hạ"><i class="fas fa-sun" style="color: #34d399;"></i> <span>Hạ</span></button>
@@ -274,14 +523,17 @@
                         <button class="season-btn" data-season="winter" title="Mùa Đông"><i class="fas fa-snowflake" style="color: #93c5fd;"></i> <span>Đông</span></button>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- DONATE -->
-            <section id="donate-section" class="content-section">
+        <!-- =========================================================
+             TRANG 6: ỦNG HỘ & LIÊN HỆ
+             ========================================================= -->
+        <section id="donate-section" class="snap-section content-section">
+            <div class="container">
                 <div class="section-header reveal-element">
-                    <h2 class="section-title gradient-text">Ủng Hộ Mình</h2>
-                    <p class="section-subtitle">Nếu bạn thấy những chia sẻ của mình hữu ích và muốn mời mình một ly cà
-                        phê ☕</p>
+                    <h2 class="section-title gradient-text">Ủng Hộ & Cà Phê ☕</h2>
+                    <p class="section-subtitle">Nếu bạn muốn mời mình một ly cà phê để tiếp thêm năng lượng sáng tạo</p>
                     <div class="section-divider"></div>
                 </div>
                 <div class="donate-grid">
@@ -345,62 +597,18 @@
                         </div>
                     </div>
                 </div>
-            </section>
 
-            <!-- CONTACT SECTION -->
-            <section id="contact-section" class="content-section">
-                <div class="section-header reveal-element">
-                    <h2 class="section-title gradient-text">Liên Hệ</h2>
-                    <p class="section-subtitle">Sẵn sàng hợp tác hoặc trao đổi? Hãy để lại lời nhắn cho mình!</p>
-                    <div class="section-divider"></div>
+                <!-- Footer note inside last snap page -->
+                <div class="contact-footer-wrap">
+                    <p style="color: var(--text-secondary); margin-bottom: 0.5rem; font-size: 0.95rem;">Gửi email liên hệ trực tiếp cho mình qua:</p>
+                    <a href="mailto:tienfot208@gmail.com" class="footer-email-link">
+                        <i class="fas fa-envelope"></i> tienfot208@gmail.com
+                    </a>
+                    <p class="copyright-text">© <span id="currentYear"></span> Hồ Tiến Phát (Lake Fot). All rights reserved.</p>
                 </div>
-                <div class="contact-container reveal-element">
-                    <form id="contactForm" class="contact-form" action="https://formsubmit.co/tienfot208@gmail.com"
-                        method="POST">
-                        <!-- Cấu hình ẩn của FormSubmit -->
-                        <input type="hidden" name="_subject" value="[Portfolio] Có tin nhắn liên hệ mới!">
-                        <input type="hidden" name="_captcha" value="false">
-
-                        <div class="form-group">
-                            <input type="text" name="Tên" placeholder="Tên của bạn" required class="form-input">
-                            <input type="email" name="Email" placeholder="Email của bạn" required class="form-input">
-                        </div>
-                        <input type="text" name="Chủ đề" placeholder="Chủ đề (Không bắt buộc)" class="form-input">
-                        <textarea name="Nội dung" placeholder="Nội dung tin nhắn..." required class="form-textarea"
-                            rows="4"></textarea>
-                        <button type="submit" class="submit-btn">Gửi Tin Nhắn <i
-                                class="fas fa-paper-plane"></i></button>
-                    </form>
-
-                    <div class="contact-fallback" style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border-subtle);">
-                        <p style="color: var(--text-secondary); margin-bottom: 0.5rem; font-size: 0.95rem;">Hoặc gửi email trực tiếp cho mình qua:</p>
-                        <a href="mailto:tienfot208@gmail.com" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--accent-cyan); font-weight: 500; font-size: 1.1rem; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='var(--accent-purple-light)'" onmouseout="this.style.color='var(--accent-cyan)'">
-                            <i class="fas fa-envelope"></i> tienfot208@gmail.com
-                        </a>
-                    </div>
-                </div>
-            </section>
-
-        </main>
-
-        <!-- FOOTER -->
-        <footer id="main-footer">
-            <div class="container">
-                <p>© <span id="currentYear"></span> Hồ Tiến Phát. All rights reserved.</p>
             </div>
-        </footer>
+        </section>
 
-    </div>
-
-    <!-- ===== ACCESS MODAL ===== -->
-    <div id="access-modal" class="hidden">
-        <div id="modal-content-area">
-            <h2 class="gradient-text">Chào mừng bạn! ✨</h2>
-            <p>Bạn có muốn truy cập vào trang cá nhân của Fot không?</p>
-            <button id="acceptAccessBtn">
-                <i class="fas fa-rocket" style="margin-right:0.5rem;"></i>Truy cập
-            </button>
-        </div>
     </div>
 
     <!-- ===== LYRICS OVERLAY ===== -->
@@ -478,8 +686,11 @@
         </div>
     </div>
 
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="data.js" defer></script>
     <script src="tree.js" defer></script>
     <script src="script.js" defer></script>
