@@ -25,7 +25,7 @@
         <div class="intro-flash"></div>
         <div class="intro-avatar-popup">
             <div class="intro-avatar-ring">
-                <img src="./assets/avt.png" alt="Lake Fot - Intro">
+                <img src="./assets/xoaphong.png" alt="Lake Fot - Intro">
             </div>
             <div class="intro-title-wrap">
                 <span class="intro-name">LAKE FOT</span>
@@ -40,38 +40,56 @@
     <canvas id="cursor-trail-canvas" aria-hidden="true"></canvas>
     <div class="noise-overlay" aria-hidden="true"></div>
 
+    <!-- ===== FLOATING CAPSULE HEADER (INSPIRED BY REFERENCE DESIGN) ===== -->
+    <header id="main-header" class="floating-header">
+        <div class="header-inner">
+            <!-- Brand / Logo -->
+            <a href="#hero-section" class="header-brand" aria-label="Lake Fot Home">
+                <span class="brand-badge">LF</span>
+                <span class="brand-name">LAKE FOT</span>
+            </a>
+
+            <!-- Navigation Links (Centered) -->
+            <nav class="header-nav" aria-label="Điều hướng">
+                <a href="#hero-section" class="nav-link active">HOME</a>
+                <a href="#about-section" class="nav-link">ABOUT</a>
+                <a href="#links-section" class="nav-link">CONNECT</a>
+                <a href="#projects-section" class="nav-link">WORK</a>
+                <a href="#tree-section" class="nav-link">3D TREE</a>
+                <a href="#donate-section" class="nav-link">DONATE</a>
+            </nav>
+
+            <!-- Actions (Right) -->
+            <div class="header-actions">
+                <!-- Search -->
+                <div class="search-container">
+                    <input type="text" id="searchInput" aria-label="Tìm kiếm" placeholder="Tìm nhanh..."
+                        class="search-input" autocomplete="off">
+                    <button id="searchButton" title="Tìm kiếm" aria-label="Tìm kiếm">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <div id="suggestionsDropdown" class="suggestions-dropdown hidden"></div>
+                </div>
+
+                <!-- Theme Toggle Button (Ripple Effect) -->
+                <button id="themeToggleBtn" class="theme-toggle-btn" title="Chuyển chế độ Sáng / Tối" aria-label="Đổi giao diện">
+                    <i class="fas fa-sun theme-icon-sun"></i>
+                    <i class="fas fa-moon theme-icon-moon"></i>
+                </button>
+
+                <!-- Hire Me / Contact CTA Button -->
+                <a href="https://www.facebook.com/KaedeharaKazuha0805" target="_blank" rel="noopener noreferrer" class="hire-me-btn">
+                    <span>Hire Me</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
     <!-- ===== MAIN SNAP CONTAINER ===== -->
     <div id="page-content" class="snap-container">
 
-        <!-- HEADER -->
-        <header id="main-header">
-            <div class="container header-inner">
-                <a href="#hero-section" class="logo-text">
-                    <span class="logo-box">FOT</span>
-                    <span>Hồ Tiến Phát</span>
-                </a>
-
-                <div class="header-right">
-                    <div class="search-container">
-                        <input type="text" id="searchInput" aria-label="Tìm kiếm" placeholder="Tìm kiếm nhanh..."
-                            class="search-input" autocomplete="off">
-                        <button id="searchButton" title="Tìm kiếm" aria-label="Tìm kiếm">
-                            <i class="fas fa-search"></i>
-                        </button>
-                        <div id="suggestionsDropdown" class="suggestions-dropdown hidden"></div>
-                    </div>
-
-                    <!-- Theme Toggle Button (Ripple Effect) -->
-                    <button id="themeToggleBtn" class="theme-toggle-btn" title="Chuyển chế độ Sáng / Tối" aria-label="Đổi giao diện">
-                        <i class="fas fa-sun theme-icon-sun"></i>
-                        <i class="fas fa-moon theme-icon-moon"></i>
-                    </button>
-                </div>
-            </div>
-        </header>
-
         <!-- =========================================================
-             TRANG 1: HERO SECTION (MÀN HÌNH CHÍNH)
+             TRANG 1: HERO SECTION (MÀN HÌNH CHÍNH - REFERENCE MATCH)
              ========================================================= -->
         <section id="hero-section" class="snap-section hero-page">
             <!-- Background Gigantic Typography Marquee (Behind Portrait) -->
@@ -82,49 +100,56 @@
                 </div>
             </div>
 
-            <!-- Center Cutout Portrait -->
-            <div class="hero-content">
-                <div class="hero-avatar-wrapper">
-                    <div class="avatar-glow-ring"></div>
-                    <div class="hero-avatar">
-                        <img src="./assets/avt.png" alt="Hồ Tiến Phát - Lake Fot">
+            <!-- Center Cutout Portrait (Anchored to Bottom Edge) -->
+            <div class="hero-portrait-stage" id="heroPortraitStage">
+                <div class="hero-spotlight" aria-hidden="true"></div>
+                <img src="./assets/xoaphong.png" alt="Hồ Tiến Phát - Lake Fot" id="heroCutoutImg" class="hero-cutout-img">
+                <canvas id="circular-visualizer" width="240" height="240" class="hero-canvas-vis"></canvas>
+            </div>
+
+            <!-- Left Corner: Vertical HOPHAT & Editorial Bio Badge -->
+            <div class="hero-bottom-left">
+                <div class="vertical-accent-text" aria-hidden="true">
+                    <span>HOPHAT</span>
+                    <div class="vertical-accent-line"></div>
+                </div>
+                <div class="hero-meta-box">
+                    <div class="hero-status-pill">
+                        <span class="status-pulse-dot"></span>
+                        <span>Available for hire</span>
                     </div>
-                    <canvas id="circular-visualizer" width="240" height="240"></canvas>
-                </div>
-                <h1 class="hero-title" id="hero-title">Hồ Tiến Phát</h1>
-                <p class="hero-tagline" id="hero-tagline"><span class="typewriter-cursor"></span></p>
-
-                <div class="hero-social-links">
-                    <a href="https://www.facebook.com/KaedeharaKazuha0805" target="_blank" rel="noopener noreferrer"
-                        class="social-icon" title="Facebook" aria-label="Facebook">
-                        <i class="fab fa-facebook-f" aria-hidden="true"></i>
-                    </a>
-                    <a href="https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Fhotien_boyneh%2F&is_from_rle"
-                        target="_blank" rel="noopener noreferrer" class="social-icon" title="Instagram"
-                        aria-label="Instagram">
-                        <i class="fab fa-instagram" aria-hidden="true"></i>
-                    </a>
-                    <a href="https://www.threads.net/@hotien_boyneh" target="_blank" rel="noopener noreferrer"
-                        class="social-icon" title="Threads" aria-label="Threads">
-                        <i class="fab fa-threads" aria-hidden="true"></i>
-                    </a>
-                    <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="social-icon"
-                        title="YouTube" aria-label="YouTube">
-                        <i class="fab fa-youtube" aria-hidden="true"></i>
-                    </a>
+                    <h1 class="hero-title" id="hero-title">Hồ Tiến Phát</h1>
+                    <p class="hero-tagline" id="hero-tagline"><span class="typewriter-cursor"></span></p>
+                    <div class="hero-social-links">
+                        <a href="https://www.facebook.com/KaedeharaKazuha0805" target="_blank" rel="noopener noreferrer"
+                            class="social-icon" title="Facebook" aria-label="Facebook">
+                            <i class="fab fa-facebook-f" aria-hidden="true"></i>
+                        </a>
+                        <a href="https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Fhotien_boyneh%2F&is_from_rle"
+                            target="_blank" rel="noopener noreferrer" class="social-icon" title="Instagram"
+                            aria-label="Instagram">
+                            <i class="fab fa-instagram" aria-hidden="true"></i>
+                        </a>
+                        <a href="https://www.threads.net/@hotien_boyneh" target="_blank" rel="noopener noreferrer"
+                            class="social-icon" title="Threads" aria-label="Threads">
+                            <i class="fab fa-threads" aria-hidden="true"></i>
+                        </a>
+                        <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="social-icon"
+                            title="YouTube" aria-label="YouTube">
+                            <i class="fab fa-youtube" aria-hidden="true"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <!-- Vertical Accent Typography "HOPHAT" (Bottom Corner) -->
-            <div class="vertical-accent-text" aria-hidden="true">
-                <span>HOPHAT</span>
-                <div class="vertical-accent-line"></div>
-            </div>
-
-            <!-- Scroll Indicator -->
-            <div class="scroll-indicator">
-                <span>Cuộn xuống</span>
-                <i class="fas fa-chevron-down"></i>
+            <!-- Right Corner: SCROLL DOWN Vertical Text & Indicator -->
+            <div class="hero-bottom-right">
+                <div class="scroll-vertical-indicator">
+                    <span class="scroll-vertical-label">SCROLL DOWN</span>
+                    <div class="scroll-vertical-track">
+                        <div class="scroll-vertical-bar"></div>
+                    </div>
+                </div>
             </div>
         </section>
 
