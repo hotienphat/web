@@ -53,25 +53,26 @@
             <nav class="header-nav" aria-label="Điều hướng">
                 <a href="#hero-section" class="nav-link active">HOME</a>
                 <a href="#about-section" class="nav-link">ABOUT</a>
-                <a href="#links-section" class="nav-link">CONNECT</a>
+                <a href="#shortcuts-section" class="nav-link">CONNECT</a>
                 <a href="#projects-section" class="nav-link">WORK</a>
-                <a href="#tree-section" class="nav-link">3D TREE</a>
+                <a href="#tree-3d-section" class="nav-link">3D TREE</a>
                 <a href="#donate-section" class="nav-link">DONATE</a>
             </nav>
 
             <!-- Actions (Right) -->
             <div class="header-actions">
-                <!-- Search -->
+                <!-- Search (Sleek unified pill with balanced 38px height) -->
                 <div class="search-container">
+                    <i class="fas fa-search search-lead-icon" aria-hidden="true"></i>
                     <input type="text" id="searchInput" aria-label="Tìm kiếm" placeholder="Tìm nhanh..."
                         class="search-input" autocomplete="off">
-                    <button id="searchButton" title="Tìm kiếm" aria-label="Tìm kiếm">
-                        <i class="fas fa-search"></i>
+                    <button id="searchButton" class="search-submit-btn" title="Tìm kiếm" aria-label="Tìm kiếm">
+                        <i class="fas fa-arrow-right"></i>
                     </button>
                     <div id="suggestionsDropdown" class="suggestions-dropdown hidden"></div>
                 </div>
 
-                <!-- Theme Toggle Button (Ripple Effect) -->
+                <!-- Theme Toggle Button -->
                 <button id="themeToggleBtn" class="theme-toggle-btn" title="Chuyển chế độ Sáng / Tối" aria-label="Đổi giao diện">
                     <i class="fas fa-sun theme-icon-sun"></i>
                     <i class="fas fa-moon theme-icon-moon"></i>
@@ -104,7 +105,6 @@
             <div class="hero-portrait-stage" id="heroPortraitStage">
                 <div class="hero-spotlight" aria-hidden="true"></div>
                 <img src="./assets/xoaphong.png" alt="Hồ Tiến Phát - Lake Fot" id="heroCutoutImg" class="hero-cutout-img">
-                <canvas id="circular-visualizer" width="240" height="240" class="hero-canvas-vis"></canvas>
             </div>
 
             <!-- Left Corner: Vertical HOPHAT & Editorial Bio Badge -->
@@ -386,7 +386,7 @@
         <!-- =========================================================
              TRANG 4: DỰ ÁN NỔI BẬT (HORIZONTAL HOVER ACCORDION)
              ========================================================= -->
-        <section id="real-projects-section" class="snap-section content-section">
+        <section id="projects-section" class="snap-section content-section">
             <div class="container projects-container">
                 <div class="section-header reveal-element">
                     <h2 class="section-title gradient-text">Dự Án Nổi Bật</h2>
