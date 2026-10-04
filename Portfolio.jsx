@@ -206,7 +206,7 @@ export default function Portfolio() {
     <div
       ref={containerRef}
       className={`relative w-full h-screen overflow-y-auto snap-y snap-mandatory scroll-smooth font-sans transition-colors duration-500 ${
-        isDark ? "bg-[#06060e] text-[#e8eaf0]" : "bg-[#f8fafc] text-[#0f172a]"
+        isDark ? "bg-[#06060e] text-[#e8eaf0]" : "bg-[#e6e8ee] text-[#0f172a]"
       }`}
       style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
     >
@@ -291,7 +291,7 @@ export default function Portfolio() {
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           onAnimationComplete={handleRippleComplete}
           className={`fixed inset-0 z-40 pointer-events-none ${
-            rippleData.nextDark ? "bg-[#06060e]" : "bg-[#f8fafc]"
+            rippleData.nextDark ? "bg-[#06060e]" : "bg-[#e6e8ee]"
           }`}
         />
       )}
