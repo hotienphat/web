@@ -65,6 +65,7 @@
 }
 
 html {
+  background-color: var(--bg-primary);
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
 }
@@ -3187,6 +3188,7 @@ html, body {
 /* ============================================================================
    2. UNIFIED TONE SYSTEM: ARCHITECTURAL SAGE MOSS (LIGHT THEME)
    ============================================================================ */
+html.light-theme,
 body.light-theme {
   /* Architectural Sage Moss - Soft, Elegant, Eye-friendly, NEVER blinding */
   --bg-primary: #dfe6df;
@@ -3373,10 +3375,19 @@ body.light-theme .theme-icon-sun { display: block; }
 body.light-theme .theme-icon-moon { display: none; }
 
 /* Native View Transitions API (Expand on Dark->Light & Collapse/Thu Lại on Light->Dark) */
+::view-transition {
+  background-color: var(--bg-primary);
+}
+
+::view-transition-group(root) {
+  animation: none;
+}
+
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
+  overflow: clip;
 }
 
 /* Default (When html is dark, i.e. transitioning TO dark):
@@ -3399,6 +3410,14 @@ html.light-theme::view-transition-old(root),
 html.light-theme::view-transition-new(root),
 .light-theme::view-transition-new(root) {
   z-index: 999999;
+}
+
+/* Silence CSS transitions during View Transitions snapshot capture to eliminate intermediate flashes */
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition: none !important;
 }
 
 /* 5. Intro Animation Overlay (Replaces static welcome popup) */
