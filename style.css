@@ -3372,23 +3372,33 @@ body.light-theme .theme-toggle-btn {
 body.light-theme .theme-icon-sun { display: block; }
 body.light-theme .theme-icon-moon { display: none; }
 
-/* Native View Transitions API (Zero blank screen, buttery-smooth GPU circular clip-path) */
+/* Native View Transitions API (Expand on Dark->Light & Collapse/Thu Lại on Light->Dark) */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
 }
+
+/* Default (When html is dark, i.e. transitioning TO dark):
+   Old view (Light) is on TOP (z-index 999999) and collapses into the button (THU LẠI!)
+   New view (Dark) is at BOTTOM (z-index 1) and is revealed as the light circle shrinks */
 ::view-transition-old(root) {
-  z-index: 1;
+  z-index: 999999;
 }
 ::view-transition-new(root) {
-  z-index: 999999;
-}
-.light-theme::view-transition-old(root) {
-  z-index: 999999;
-}
-.light-theme::view-transition-new(root) {
   z-index: 1;
+}
+
+/* When html has .light-theme (i.e. transitioning TO light):
+   New view (Light) is on TOP (z-index 999999) and expands from the button (LAN TỎA!)
+   Old view (Dark) is at BOTTOM (z-index 1) */
+html.light-theme::view-transition-old(root),
+.light-theme::view-transition-old(root) {
+  z-index: 1;
+}
+html.light-theme::view-transition-new(root),
+.light-theme::view-transition-new(root) {
+  z-index: 999999;
 }
 
 /* 5. Intro Animation Overlay (Replaces static welcome popup) */
