@@ -244,9 +244,9 @@ export default function Portfolio() {
               }}
               className="relative z-20 flex flex-col items-center"
             >
-              <div className="relative w-44 h-44 md:w-56 md:h-56 rounded-full p-1 bg-gradient-to-tr from-purple-500 via-cyan-400 to-pink-500 shadow-[0_0_60px_rgba(168,85,247,0.6)]">
+              <div className="relative w-44 h-44 md:w-56 md:h-56 rounded-full p-1 bg-gradient-to-tr from-emerald-500 via-green-400 to-lime-500 shadow-[0_0_60px_rgba(168,85,247,0.6)]">
                 <img
-                  src="./assets/avt.png"
+                  src="./assets/xoaphong.png"
                   alt="Hồ Tiến Phát - Intro"
                   className="w-full h-full object-cover rounded-full bg-black/60"
                 />
@@ -306,7 +306,7 @@ export default function Portfolio() {
           transition={{ duration: 0.8, delay: 1 }}
           className="flex items-center gap-3 cursor-pointer"
         >
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 to-cyan-400 p-[2px] shadow-lg shadow-purple-500/20">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 to-cyan-400 p-[2px] shadow-lg shadow-emerald-500/20">
             <div className="w-full h-full rounded-[10px] bg-slate-950 flex items-center justify-center font-black text-sm text-cyan-300">
               FOT
             </div>
@@ -324,8 +324,8 @@ export default function Portfolio() {
           onClick={handleThemeToggle}
           className={`relative p-3 rounded-2xl border transition-all duration-300 shadow-md ${
             isDark
-              ? "bg-slate-900/80 border-purple-500/30 text-yellow-300 hover:border-yellow-400/60 hover:shadow-yellow-400/20"
-              : "bg-white/80 border-slate-200 text-purple-600 hover:border-purple-500/60 hover:shadow-purple-500/20"
+              ? "bg-slate-900/80 border-emerald-500/30 text-yellow-300 hover:border-yellow-400/60 hover:shadow-yellow-400/20"
+              : "bg-white/80 border-slate-200 text-purple-600 hover:border-emerald-500/60 hover:shadow-emerald-500/20"
           }`}
           title="Chuyển chế độ Sáng / Tối (Ripple Effect)"
           aria-label="Toggle Theme"
@@ -366,10 +366,10 @@ export default function Portfolio() {
         {/* Background Gigantic Typography Marquee (Behind Portrait) */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden z-0">
           <div className="flex whitespace-nowrap animate-[marquee_24s_linear_infinite] opacity-15 dark:opacity-10 text-[18vw] font-black uppercase tracking-tighter leading-none">
-            <span className="mx-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-cyan-400 to-pink-500">
+            <span className="mx-6 text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-green-400 to-lime-500">
               LAKE FOT • HO TIEN PHAT • DEVELOPER •
             </span>
-            <span className="mx-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-cyan-400 to-pink-500">
+            <span className="mx-6 text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-green-400 to-lime-500">
               LAKE FOT • HO TIEN PHAT • DEVELOPER •
             </span>
           </div>
@@ -385,7 +385,7 @@ export default function Portfolio() {
             className="relative group cursor-pointer"
           >
             {/* Ambient Background Aura */}
-            <div className="absolute -inset-4 bg-gradient-to-r from-purple-600 via-cyan-400 to-pink-500 rounded-full blur-2xl opacity-40 group-hover:opacity-75 transition-opacity duration-700 animate-pulse" />
+            <div className="absolute -inset-4 bg-gradient-to-r from-emerald-600 via-green-400 to-lime-500 rounded-full blur-2xl opacity-40 group-hover:opacity-75 transition-opacity duration-700 animate-pulse" />
 
             <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 rounded-full overflow-hidden border-2 border-white/20 shadow-2xl backdrop-blur-md">
               <img
@@ -405,7 +405,7 @@ export default function Portfolio() {
           >
             <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight">
               Hồ Tiến Phát{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-green-400">
                 (Fot)
               </span>
             </h1>
@@ -420,7 +420,7 @@ export default function Portfolio() {
           <span className="text-xs font-mono tracking-[0.45em] uppercase opacity-40 hover:opacity-100 transition-opacity [writing-mode:vertical-rl]">
             HOPHAT
           </span>
-          <div className="w-[1px] h-8 bg-purple-500/40 mt-3" />
+          <div className="w-[1px] h-8 bg-emerald-500/40 mt-3" />
         </div>
 
         {/* Scroll Indicator Prompt */}
@@ -469,7 +469,7 @@ export default function Portfolio() {
               {/* The Octagon Frame with Original Uncropped Portrait */}
               <div
                 ref={aboutOctagonRef}
-                className="relative w-56 h-56 sm:w-64 sm:h-64 md:w-72 md:h-72 p-1 bg-gradient-to-br from-purple-500 via-cyan-400 to-pink-500 transition-transform duration-500 hover:scale-105"
+                className="relative w-56 h-56 sm:w-64 sm:h-64 md:w-72 md:h-72 p-1 bg-gradient-to-br from-emerald-500 via-green-400 to-lime-500 transition-transform duration-500 hover:scale-105"
                 style={{
                   clipPath:
                     "polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)"
@@ -494,7 +494,7 @@ export default function Portfolio() {
 
           {/* Right: Personal Bio & Narrative */}
           <div className="md:col-span-7 flex flex-col justify-center space-y-5">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-medium tracking-wide uppercase bg-purple-500/10 text-purple-400 border border-purple-500/20 w-max">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-medium tracking-wide uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 w-max">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Khám Phá Về Mình</span>
             </div>
@@ -536,7 +536,7 @@ export default function Portfolio() {
       {/* ====================================================================
           PHÂN ĐOẠN: INFINITE MARQUEE ICON BAR (DẢI BĂNG VÔ CỰC)
           ==================================================================== */}
-      <div className="relative w-full h-14 bg-gradient-to-r from-purple-900/40 via-cyan-900/30 to-purple-900/40 border-y border-purple-500/20 backdrop-blur-xl flex items-center overflow-hidden select-none z-20">
+      <div className="relative w-full h-14 bg-gradient-to-r from-purple-900/40 via-cyan-900/30 to-purple-900/40 border-y border-emerald-500/20 backdrop-blur-xl flex items-center overflow-hidden select-none z-20">
         <div className="flex whitespace-nowrap animate-[marquee_20s_linear_infinite]">
           {[...MARQUEE_ICONS, ...MARQUEE_ICONS].map((icon, idx) => (
             <div
@@ -545,7 +545,7 @@ export default function Portfolio() {
             >
               <Code2 className="w-4 h-4 text-cyan-400" />
               <span>{icon}</span>
-              <span className="text-purple-400/60 ml-4">•</span>
+              <span className="text-emerald-400/60 ml-4">•</span>
             </div>
           ))}
         </div>
@@ -562,7 +562,7 @@ export default function Portfolio() {
           <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">
               Liên Kết Nhanh &{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-green-400">
                 Không Gian Số
               </span>
             </h2>
@@ -593,7 +593,7 @@ export default function Portfolio() {
                   </div>
 
                   {bento.extra && (
-                    <div className="text-xs font-mono p-2.5 mb-3 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-300">
+                    <div className="text-xs font-mono p-2.5 mb-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-purple-300">
                       {bento.extra}
                     </div>
                   )}
@@ -632,7 +632,7 @@ export default function Portfolio() {
             <div>
               <h2 className="text-3xl md:text-4xl font-black tracking-tight">
                 Dự Án{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-green-400">
                   Nổi Bật
                 </span>
               </h2>
@@ -656,7 +656,7 @@ export default function Portfolio() {
                   onMouseEnter={() => setActiveProject(idx)}
                   className={`relative rounded-3xl overflow-hidden cursor-pointer transition-all duration-700 ease-out border border-white/10 ${
                     isActive
-                      ? "md:flex-[3.5] flex-[3] shadow-[0_0_35px_rgba(168,85,247,0.3)] border-purple-500/50"
+                      ? "md:flex-[3.5] flex-[3] shadow-[0_0_35px_rgba(168,85,247,0.3)] border-emerald-500/50"
                       : "md:flex-[1] flex-[1] opacity-75 hover:opacity-100"
                   }`}
                 >
