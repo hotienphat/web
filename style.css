@@ -677,6 +677,294 @@ textarea {
   transform: translateY(-1px);
 }
 
+/* Mobile Header Control Buttons (Hidden by default on Desktop) */
+.mobile-menu-btn,
+.mobile-music-btn {
+  display: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  flex-shrink: 0;
+}
+
+.mobile-menu-btn:hover,
+.mobile-music-btn:hover {
+  transform: scale(1.08);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  box-shadow: 0 0 15px var(--glow-primary);
+}
+
+body.light-theme .mobile-menu-btn,
+body.light-theme .mobile-music-btn {
+  background: rgba(241, 245, 249, 0.85);
+  border-color: rgba(15, 23, 42, 0.1);
+  color: #0f172a;
+}
+
+/* ============================================
+   MOBILE NAVIGATION SHEET (DRAWER)
+   ============================================ */
+.mobile-nav-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 10005;
+  pointer-events: none;
+  visibility: hidden;
+  transition: visibility 0.4s ease;
+}
+
+.mobile-nav-sheet.open {
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.mobile-sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.mobile-nav-sheet.open .mobile-sheet-backdrop {
+  opacity: 1;
+}
+
+.mobile-sheet-content {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 320px;
+  max-width: 86vw;
+  background: rgba(10, 10, 22, 0.96);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border-left: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  gap: 1.5rem;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: -15px 0 45px rgba(0, 0, 0, 0.6);
+  overflow-y: auto;
+}
+
+.mobile-nav-sheet.open .mobile-sheet-content {
+  transform: translateX(0);
+}
+
+body.light-theme .mobile-sheet-content {
+  background: rgba(255, 255, 255, 0.98);
+  border-left-color: rgba(15, 23, 42, 0.08);
+  box-shadow: -15px 0 45px rgba(15, 23, 42, 0.12);
+}
+
+.mobile-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.close-mobile-sheet-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.close-mobile-sheet-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--accent-primary);
+  transform: scale(1.08);
+}
+
+body.light-theme .close-mobile-sheet-btn {
+  background: rgba(241, 245, 249, 0.85);
+  color: #64748b;
+  border-color: rgba(15, 23, 42, 0.1);
+}
+
+/* Mobile Search */
+.mobile-search-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.mobile-search-box {
+  width: 100%;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  gap: 0.65rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mobile-search-box:focus-within {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 15px var(--glow-primary);
+}
+
+.mobile-search-icon {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.mobile-search-box input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 0.88rem;
+  font-family: var(--font-body);
+}
+
+.mobile-search-box input::placeholder {
+  color: var(--text-muted);
+}
+
+body.light-theme .mobile-search-box {
+  background: rgba(241, 245, 249, 0.85);
+  border-color: rgba(15, 23, 42, 0.09);
+}
+
+body.light-theme .mobile-search-box input {
+  color: #0f172a;
+}
+
+/* Mobile Nav Links */
+.mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.mobile-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1.15rem;
+  border-radius: 14px;
+  color: var(--text-secondary);
+  font-family: var(--font-heading);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid transparent;
+}
+
+.mobile-nav-link i {
+  font-size: 1.05rem;
+  width: 22px;
+  text-align: center;
+  color: var(--accent-cyan);
+  transition: transform 0.25s ease;
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link.active {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+  transform: translateX(4px);
+}
+
+.mobile-nav-link.active {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  box-shadow: 0 4px 20px var(--glow-primary);
+}
+
+.mobile-nav-link.active i {
+  color: var(--accent-primary);
+  transform: scale(1.15);
+}
+
+body.light-theme .mobile-nav-link {
+  color: #334155;
+}
+
+body.light-theme .mobile-nav-link:hover,
+body.light-theme .mobile-nav-link.active {
+  background: rgba(241, 245, 249, 0.9);
+  color: #059669;
+}
+
+body.light-theme .mobile-nav-link.active {
+  border-color: rgba(5, 150, 105, 0.35);
+  box-shadow: 0 4px 15px rgba(5, 150, 105, 0.15);
+}
+
+.mobile-sheet-footer {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.mobile-hire-btn {
+  width: 100%;
+  height: 46px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+  color: #06060e;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  box-shadow: 0 4px 20px var(--glow-primary);
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.mobile-hire-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px var(--glow-primary);
+}
+
+body.light-theme .mobile-hire-btn {
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
+}
+
 /* ============================================
    HERO SECTION (MÀN HÌNH CHÍNH - REFERENCE MATCH)
    ============================================ */
@@ -4877,62 +5165,381 @@ body.light-theme .panel-inner {
   color: var(--text-muted);
 }
 
-/* Responsive adjustments for mobile */
+/* ============================================================================
+   RESPONSIVE DESIGN SUITE: MOBILE-FIRST UX/UI RECONSTRUCTION (<= 900px)
+   ============================================================================ */
 @media (max-width: 900px) {
-  .bento-social, .bento-study, .bento-chill, .bento-tools {
-    grid-column: span 12;
+  /* 1. Restore Natural Momentum Touch Scrolling (Ban Snap Hijacking) */
+  html, body {
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
   }
+
+  .snap-container {
+    height: auto !important;
+    overflow-y: visible !important;
+    overflow-x: hidden !important;
+    scroll-snap-type: none !important;
+  }
+
+  .snap-section {
+    min-height: auto !important;
+    height: auto !important;
+    padding: 6.5rem 1.25rem 4rem 1.25rem !important;
+    scroll-snap-align: none !important;
+    scroll-margin-top: 5rem !important;
+    position: relative !important;
+    overflow: visible !important;
+    display: block !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 2. Top Navigation Dock: Sleek Mobile App Bar */
+  .top-nav-dock {
+    top: 0.65rem !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: calc(100vw - 1.5rem) !important;
+    max-width: 100% !important;
+    gap: 0.4rem !important;
+    box-sizing: border-box !important;
+    pointer-events: none !important;
+  }
+
+  .floating-header {
+    width: 100% !important;
+    padding: 0.45rem 0.85rem !important;
+    box-sizing: border-box !important;
+    pointer-events: auto !important;
+  }
+
+  .floating-header .header-inner {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 0.5rem !important;
+  }
+
+  .header-nav {
+    display: none !important;
+  }
+
+  .header-actions .search-container {
+    display: none !important;
+  }
+
+  .header-actions .hire-me-btn {
+    display: none !important;
+  }
+
+  .mobile-menu-btn,
+  .mobile-music-btn {
+    display: flex !important;
+  }
+
+  .brand-name {
+    font-size: 0.92rem !important;
+  }
+
+  .brand-badge {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 0.78rem !important;
+  }
+
+  /* Live Lyrics Capsule on Mobile */
+  .top-nav-dock.has-lyrics {
+    flex-direction: column !important;
+    gap: 0.35rem !important;
+  }
+
+  .top-nav-dock.has-lyrics .nav-lyrics-pill {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0.35rem 0.75rem !important;
+    box-sizing: border-box !important;
+    justify-content: space-between !important;
+  }
+
+  .top-nav-dock.has-lyrics .nav-lyric-current {
+    max-width: 210px !important;
+    font-size: 0.75rem !important;
+  }
+
+  .top-nav-dock.has-lyrics .nav-lyric-next {
+    display: none !important;
+  }
+
+  /* 3. Hero Section on Mobile: Spacious, Balanced & Free of Clutter */
+  #hero-section.hero-page {
+    min-height: 100vh !important;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    padding: 5.5rem 1.25rem 2.5rem 1.25rem !important;
+    position: relative !important;
+    overflow: hidden !important;
+  }
+
+  /* Hide huge hanging lanyard strap and badge on mobile */
+  .hero-lanyard-wrapper {
+    display: none !important;
+  }
+
+  .hero-portrait-stage {
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: none !important;
+    height: clamp(340px, 52vh, 480px) !important;
+    max-width: 95vw !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: center !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  .hero-cutout-img {
+    height: 100% !important;
+    max-height: 100% !important;
+    width: auto !important;
+    object-position: bottom center !important;
+  }
+
+  .hero-bottom-left {
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    z-index: 10 !important;
+  }
+
+  .hero-meta-box {
+    align-items: center !important;
+  }
+
+  .hero-title {
+    font-size: 2rem !important;
+  }
+
+  .hero-social-links {
+    justify-content: center !important;
+  }
+
+  .hero-marquee-track {
+    font-size: clamp(4.5rem, 15vw, 7.5rem) !important;
+  }
+
+  /* 4. Left-docked Soundtrack Button: Transformed into Floating FAB on Bottom-Right */
+  .player-dock-btn {
+    left: auto !important;
+    right: 1.15rem !important;
+    top: auto !important;
+    bottom: 1.5rem !important;
+    transform: none !important;
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    border: 1.5px solid var(--border-strong) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), 0 0 15px var(--glow-primary) !important;
+    justify-content: center !important;
+    z-index: 990 !important;
+  }
+
+  .player-dock-btn .dock-text {
+    display: none !important;
+  }
+
+  .player-dock-btn .dock-equalizer {
+    margin: 0 !important;
+    gap: 2.5px !important;
+    height: 18px !important;
+  }
+
+  /* 5. Music Player Drawer on Mobile: Full-Screen Native App Experience */
+  .player-drawer {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    border-right: none !important;
+    z-index: 10002 !important;
+  }
+
+  .player-drawer-backdrop {
+    z-index: 10001 !important;
+  }
+
+  /* 6. Section Headers & Global Spacing */
+  .section-header {
+    margin-bottom: 2rem !important;
+    text-align: center !important;
+  }
+
+  .section-title {
+    font-size: 1.85rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .section-subtitle {
+    font-size: 0.88rem !important;
+    padding: 0 0.5rem !important;
+    line-height: 1.6 !important;
+  }
+
+  .section-divider {
+    margin: 1rem auto 0 !important;
+  }
+
+  /* 7. About Section on Mobile */
+  .about-grid {
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+    align-items: center !important;
+  }
+
+  .avatar-circle-wrapper {
+    width: 260px !important;
+    height: 260px !important;
+    margin: 0 auto !important;
+  }
+
+  .avatar-circle-frame {
+    width: 200px !important;
+    height: 200px !important;
+  }
+
+  .avatar-circle-glow {
+    width: 200px !important;
+    height: 200px !important;
+  }
+
+  .avatar-curved-text {
+    font-size: 10px !important;
+  }
+
+  .about-text-block {
+    padding: 1.5rem !important;
+  }
+
+  .about-lead {
+    font-size: 1.05rem !important;
+  }
+
+  #about-section .about-container {
+    padding-bottom: 40px !important;
+  }
+
+  #about-section .tech-marquee-bar {
+    position: relative !important;
+    bottom: auto !important;
+    margin-top: 2rem !important;
+  }
+
+  /* 8. Connect / Shortcuts Bento Grid on Mobile */
+  .bento-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.25rem !important;
+  }
+
+  .bento-social,
+  .bento-study,
+  .bento-chill,
+  .bento-tools {
+    grid-column: span 12 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 1.5rem 1.25rem !important;
+  }
+
+  /* 9. Projects Horizontal Accordion on Mobile: Clean Vertical Cards */
   .horizontal-accordion {
-    flex-direction: column;
-    height: auto;
+    flex-direction: column !important;
+    height: auto !important;
+    gap: 1rem !important;
   }
+
   .accordion-panel {
     flex: none !important;
-    min-height: 120px;
+    min-height: auto !important;
+    height: auto !important;
   }
+
   .accordion-panel.active .panel-vertical-title,
   .accordion-panel .panel-vertical-title {
-    display: none;
+    display: none !important;
   }
+
   .panel-expanded-content {
     display: flex !important;
   }
-  .snap-section {
-    min-height: 100vh;
-    height: auto;
-    padding: 5rem 1rem 3rem 1rem;
+
+  .panel-inner {
+    padding: 1.35rem 1.15rem !important;
   }
-  .vertical-accent-text {
-    display: none;
+
+  .panel-title {
+    font-size: 1.35rem !important;
   }
-  .about-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+
+  /* 10. 3D Tree Section on Mobile: Full Breathing Room */
+  #tree-3d-section {
+    padding-top: 6.5rem !important;
+    padding-bottom: 4.5rem !important;
   }
-  .avatar-circle-wrapper {
-    width: 300px;
-    height: 300px;
+
+  .tree-3d-wrapper {
+    height: 400px !important;
+    margin-top: 1.25rem !important;
+    touch-action: pan-y !important;
   }
-  .avatar-circle-frame {
-    width: 230px;
-    height: 230px;
+
+  .tree-controls {
+    bottom: 12px !important;
+    max-width: 95% !important;
+    padding: 6px 8px !important;
+    gap: 4px !important;
   }
-  .avatar-circle-glow {
-    width: 230px;
-    height: 230px;
+
+  .season-btn {
+    padding: 6px 10px !important;
+    font-size: 0.75rem !important;
+    gap: 4px !important;
   }
-  .avatar-curved-text {
-    font-size: 11px;
+
+  /* 11. Donate Section on Mobile */
+  #donate-section {
+    padding-top: 6.5rem !important;
+    padding-bottom: 4.5rem !important;
   }
-  .about-text-block {
-    padding: 1.5rem;
+
+  .donate-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem !important;
   }
-  .player-drawer {
-    width: calc(100vw - 20px);
-    max-width: 380px;
+
+  .donate-card {
+    padding: 1.5rem 1.25rem !important;
   }
-  #about-section .about-container {
-    padding-bottom: 75px;
+
+  /* 12. Hide Obsolete Desktop Scroll Indicators */
+  .scroll-vertical-container,
+  .scroll-vertical-label,
+  .scroll-vertical-bar,
+  .vertical-accent-text,
+  .scroll-indicator {
+    display: none !important;
   }
 }
 
