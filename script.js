@@ -378,10 +378,11 @@ function initSmoothSnapScroll() {
         }
     }
 
-    // Intercept wheel events completely to eliminate 144Hz browser snap stutter
+    // Intercept wheel events completely to eliminate 144Hz browser snap stutter on desktop
     window.addEventListener('wheel', (e) => {
+        if (window.innerWidth <= 900) return; // Allow natural scrolling on mobile/tablet screens
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-        if (e.target.closest('#playerPanel')) return; // Allow smooth scrolling inside playlist drawer
+        if (e.target.closest('#playerPanel') || e.target.closest('#mobileNavSheet')) return; // Allow smooth scrolling inside drawers
 
         e.preventDefault();
         if (isAnimating) return;
@@ -399,19 +400,21 @@ function initSmoothSnapScroll() {
         }
     }, { passive: false });
 
-    // Touch support (Mobile & Tablet)
+    // Touch support (Active only on large desktop touchscreens, NEVER hijack mobile phone scrolling)
     window.addEventListener('touchstart', (e) => {
+        if (window.innerWidth <= 900) return; // Natural touch scrolling on mobile
         touchStartY = e.touches[0].clientY;
         touchStartTime = Date.now();
     }, { passive: true });
 
     window.addEventListener('touchend', (e) => {
+        if (window.innerWidth <= 900) return; // Natural touch scrolling on mobile
         if (isAnimating) return;
         const touchEndY = e.changedTouches[0].clientY;
         const diffY = touchStartY - touchEndY;
         const duration = Date.now() - touchStartTime;
 
-        if (Math.abs(diffY) > 40 && duration < 600) {
+        if (Math.abs(diffY) > 50 && duration < 500) {
             if (diffY > 0) {
                 if (currentSectionIndex < sections.length - 1) {
                     goToSection(currentSectionIndex + 1);
@@ -452,9 +455,13 @@ function initSmoothSnapScroll() {
                 e.preventDefault();
                 const targetSec = document.querySelector(targetHref);
                 if (targetSec) {
-                    const idx = sections.indexOf(targetSec);
-                    if (idx !== -1) {
-                        goToSection(idx);
+                    if (window.innerWidth <= 900) {
+                        targetSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else {
+                        const idx = sections.indexOf(targetSec);
+                        if (idx !== -1) {
+                            goToSection(idx);
+                        }
                     }
                 }
             }
@@ -466,7 +473,11 @@ function initSmoothSnapScroll() {
     if (scrollDownBtn) {
         scrollDownBtn.style.cursor = 'pointer';
         scrollDownBtn.addEventListener('click', () => {
-            goToSection(1);
+            if (window.innerWidth <= 900) {
+                if (sections[1]) sections[1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                goToSection(1);
+            }
         });
     }
 
@@ -474,7 +485,7 @@ function initSmoothSnapScroll() {
     function updateActiveNav(idx) {
         if (sections[idx]) {
             const secId = sections[idx].getAttribute('id');
-            document.querySelectorAll('.header-nav .nav-link').forEach(link => {
+            document.querySelectorAll('.header-nav .nav-link, .mobile-nav-links .mobile-nav-link').forEach(link => {
                 const href = link.getAttribute('href');
                 link.classList.toggle('active', href === `#${secId}`);
             });
@@ -705,6 +716,83 @@ function initSearchSuggestions() {
     searchInput.addEventListener('focus', () => {
         if (searchInput.value.length > 0) displaySuggestions();
     });
+}
+
+// ============================================
+// MOBILE NAVIGATION DRAWER
+// ============================================
+function initMobileNav() {
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const closeMobileMenuBtn = document.getElementById('closeMobileMenuBtn');
+    const mobileNavSheet = document.getElementById('mobileNavSheet');
+    const mobileSheetBackdrop = document.getElementById('mobileSheetBackdrop');
+    const mobileMusicBtn = document.getElementById('mobileMusicBtn');
+    const playerPanel = document.getElementById('playerPanel');
+    const playerDrawerBackdrop = document.getElementById('playerDrawerBackdrop');
+
+    function openMobileMenu() {
+        if (!mobileNavSheet) return;
+        mobileNavSheet.classList.add('open');
+        mobileNavSheet.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeMobileMenu() {
+        if (!mobileNavSheet) return;
+        mobileNavSheet.classList.remove('open');
+        mobileNavSheet.setAttribute('aria-hidden', 'true');
+    }
+
+    if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', openMobileMenu);
+    }
+    if (closeMobileMenuBtn) {
+        closeMobileMenuBtn.addEventListener('click', closeMobileMenu);
+    }
+    if (mobileSheetBackdrop) {
+        mobileSheetBackdrop.addEventListener('click', closeMobileMenu);
+    }
+
+    // Mobile nav links
+    document.querySelectorAll('.mobile-nav-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            closeMobileMenu();
+            const href = link.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                const target = document.querySelector(href);
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        });
+    });
+
+    // Mobile Music Toggle Button in Header
+    if (mobileMusicBtn && playerPanel) {
+        mobileMusicBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            playerPanel.classList.toggle('open');
+            if (playerDrawerBackdrop) {
+                playerDrawerBackdrop.classList.toggle('open', playerPanel.classList.contains('open'));
+            }
+        });
+    }
+
+    // Mobile Search Input
+    const mobileSearchInput = document.getElementById('mobileSearchInput');
+    if (mobileSearchInput) {
+        mobileSearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const q = mobileSearchInput.value.trim();
+                if (q) {
+                    closeMobileMenu();
+                    if (searchInput) searchInput.value = q;
+                    performSearch();
+                }
+            }
+        });
+    }
 }
 
 // ============================================
@@ -1885,15 +1973,8 @@ function initializePageApp() {
     // 144Hz Buttery Smooth Snap Controller
     initSmoothSnapScroll();
 
-    // Header nav links smooth section navigation
-    document.querySelectorAll('.header-nav .nav-link').forEach((link, idx) => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (typeof window.goToSection === 'function') {
-                window.goToSection(idx);
-            }
-        });
-    });
+    // Mobile Navigation Drawer
+    initMobileNav();
 
     // Scroll reveal (after DOM is populated)
     requestAnimationFrame(() => {
