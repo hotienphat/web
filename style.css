@@ -789,6 +789,648 @@ textarea {
   100% { transform: translateY(260%); }
 }
 
+/* ============================================================================
+   HANGING LANYARD ID BADGE (DÂY ĐEO THẺ ÁNH KIM METALLIC & CON LẮC VẬT LÝ)
+   ============================================================================ */
+.hero-lanyard-wrapper {
+  position: absolute;
+  top: 0;
+  right: clamp(1.75rem, 8vw, 8.5rem);
+  z-index: 25;
+  pointer-events: auto;
+  perspective: 1200px;
+  transform-origin: top center;
+  user-select: none;
+}
+
+.lanyard-pendulum {
+  transform-origin: top center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  will-change: transform;
+  filter: drop-shadow(0 25px 40px rgba(0, 0, 0, 0.55));
+}
+
+/* 1. Fabric Lanyard Strap (Dây đeo vải dệt) */
+.lanyard-strap {
+  position: relative;
+  width: 28px;
+  height: 165px;
+  background: #0d120f;
+  box-shadow: 
+    -4px 10px 25px rgba(0, 0, 0, 0.6),
+    inset 0 0 6px rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lanyard-strap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.05) 0px,
+    rgba(255, 255, 255, 0.05) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  opacity: 0.85;
+}
+
+.lanyard-strap-stitch {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  border-right: 1px dashed rgba(255, 255, 255, 0.22);
+}
+.lanyard-strap-stitch.left { left: 3px; }
+.lanyard-strap-stitch.right { right: 3px; }
+
+.lanyard-strap-text {
+  writing-mode: vertical-rl;
+  font-family: var(--font-heading);
+  font-size: 8px;
+  letter-spacing: 0.26em;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+  white-space: nowrap;
+  user-select: none;
+  transform: rotate(180deg);
+}
+
+/* 2. Metallic Hardware Clasp (Móc kẹp kim loại) */
+.lanyard-hardware {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 5;
+  margin-top: -1px;
+}
+
+/* Metallic Crimp Clamp */
+.hardware-clamp {
+  width: 32px;
+  height: 14px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #f4f4f5 0%, #a1a1aa 25%, #ffffff 48%, #52525b 75%, #27272a 100%);
+  position: relative;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+}
+
+.hardware-clamp-shine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.hardware-rivet {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
+}
+
+/* Swivel Ring */
+.hardware-ring {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 3.5px solid #d4d4d8;
+  background: transparent;
+  margin-top: -2px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.45), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+  position: relative;
+  z-index: 4;
+}
+
+/* Trigger Snap Hook */
+.hardware-hook {
+  width: 14px;
+  height: 24px;
+  position: relative;
+  margin-top: -4px;
+  z-index: 6;
+}
+
+.hardware-hook-stem {
+  width: 4px;
+  height: 8px;
+  background: linear-gradient(90deg, #71717a, #ffffff, #52525b);
+  margin: 0 auto;
+  border-radius: 1px;
+}
+
+.hardware-hook-loop {
+  width: 14px;
+  height: 18px;
+  border: 3px solid #d4d4d8;
+  border-radius: 7px 7px 10px 10px;
+  border-top: none;
+  background: transparent;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.9), 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hardware-hook-latch {
+  position: absolute;
+  top: 7px;
+  right: 1px;
+  width: 2.5px;
+  height: 11px;
+  background: #a1a1aa;
+  border-radius: 1px;
+  transform: rotate(-15deg);
+}
+
+/* 3. The ID Card Badge (Khung thẻ đeo Acrylic & Metallic Ánh Gương) */
+.lanyard-card {
+  position: relative;
+  width: 236px;
+  cursor: grab;
+  transform-origin: top center;
+  margin-top: -7px;
+  will-change: transform;
+}
+
+.lanyard-card:active {
+  cursor: grabbing;
+}
+
+/* Punch Slot Hole (Lỗ xỏ thẻ) */
+.card-slot-wrap {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 12px;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-slot-hole {
+  width: 32px;
+  height: 8px;
+  border-radius: 9999px;
+  background: #000000;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.95), 0 1px 1px rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Metallic Chrome Frame with Dynamic Mirror Angle */
+.card-metallic-frame {
+  position: relative;
+  padding: 7px;
+  border-radius: 18px;
+  background: linear-gradient(
+    var(--reflect-angle, 135deg),
+    #ffffff 0%,
+    #9ca3af 16%,
+    #f3f4f6 32%,
+    #374151 50%,
+    #ffffff 68%,
+    #1f2937 84%,
+    #9ca3af 100%
+  );
+  box-shadow: 
+    0 25px 60px -10px rgba(0, 0, 0, 0.75),
+    0 0 0 1px rgba(255, 255, 255, 0.4),
+    inset 0 1px 3px rgba(255, 255, 255, 0.85);
+  overflow: hidden;
+  transition: transform 0.15s ease-out;
+}
+
+/* Dynamic Specular Sheen (Ánh gương phản chiếu di chuyển theo chuột) */
+.metallic-specular-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  pointer-events: none;
+  z-index: 8;
+  background: radial-gradient(
+    circle 220px at var(--mouse-x, 50%) var(--mouse-y, 40%),
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0.28) 35%,
+    transparent 70%
+  );
+  mix-blend-mode: overlay;
+  opacity: 0.95;
+  will-change: background;
+}
+
+/* Holographic Prismatic Rainbow Foil */
+.metallic-holo-foil {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  pointer-events: none;
+  z-index: 9;
+  background: linear-gradient(
+    calc(var(--reflect-angle, 135deg) + 30deg),
+    rgba(255, 0, 128, 0.12),
+    rgba(0, 255, 255, 0.16),
+    rgba(255, 255, 0, 0.14),
+    rgba(0, 255, 128, 0.16)
+  );
+  mix-blend-mode: overlay;
+  opacity: 0.5;
+}
+
+/* Glass Glare Overlay (Vệt bóng kính mica) */
+.glass-glare-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  pointer-events: none;
+  z-index: 10;
+  background: linear-gradient(
+    var(--reflect-angle, 125deg),
+    transparent 35%,
+    rgba(255, 255, 255, 0.38) 48%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(255, 255, 255, 0.2) 53%,
+    transparent 65%
+  );
+  mix-blend-mode: screen;
+  opacity: 0.65;
+}
+
+/* Inner Card Surface */
+.card-inner-surface {
+  background: #090e0b;
+  border-radius: 12px;
+  padding: 12px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* Card Header Bar */
+.card-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.card-chip-box {
+  width: 26px;
+  height: 20px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #d97706, #fbbf24, #92400e);
+  position: relative;
+  border: 1px solid rgba(251, 191, 36, 0.6);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.chip-gold-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
+}
+
+.card-id-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card-pass-label {
+  font-family: var(--font-heading);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: var(--accent-cyan);
+}
+
+.card-id-code {
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.card-nfc-badge {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Card Photo Container */
+.card-photo-container {
+  width: 100%;
+  height: 190px;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  background: #040705;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.card-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  filter: contrast(1.05) brightness(1.02);
+  display: block;
+}
+
+/* High-tech Corner Brackets on Photo */
+.card-photo-corners .corner {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-color: var(--accent-cyan);
+  border-style: solid;
+  opacity: 0.75;
+}
+.card-photo-corners .tl { top: 4px; left: 4px; border-width: 2px 0 0 2px; }
+.card-photo-corners .tr { top: 4px; right: 4px; border-width: 2px 2px 0 0; }
+.card-photo-corners .bl { bottom: 4px; left: 4px; border-width: 0 0 2px 2px; }
+.card-photo-corners .br { bottom: 4px; right: 4px; border-width: 0 2px 2px 0; }
+
+/* Card Body Information */
+.card-body-info {
+  margin-top: 10px;
+}
+
+.card-name-title {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.card-user-name {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+.card-role-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent-purple-light);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 2px;
+}
+
+/* Security Hologram & Dept Meta */
+.card-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 8px;
+}
+
+.card-hologram-seal {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f43f5e, #a855f7, #06b6d4, #10b981);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  overflow: hidden;
+}
+
+.holo-seal-shine {
+  position: absolute;
+  inset: -100%;
+  background: linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.8) 50%, transparent 60%);
+  animation: holoRotate 4s linear infinite;
+}
+
+@keyframes holoRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.holo-seal-text {
+  font-family: var(--font-heading);
+  font-size: 6.5px;
+  font-weight: 900;
+  color: #ffffff;
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.card-dept-meta {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  gap: 2px;
+}
+
+.dept-line {
+  font-size: 8px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.dept-line strong {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.text-accent-moss {
+  color: var(--accent-purple-light) !important;
+}
+
+/* Security Barcode Box */
+.card-barcode-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding-top: 4px;
+}
+
+.barcode-stripes {
+  width: 100%;
+  height: 22px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    #ffffff 0px,
+    #ffffff 1px,
+    transparent 1px,
+    transparent 2px,
+    #ffffff 2px,
+    #ffffff 4px,
+    transparent 4px,
+    transparent 6px,
+    #ffffff 6px,
+    #ffffff 7px,
+    transparent 7px,
+    transparent 10px,
+    #ffffff 10px,
+    #ffffff 13px,
+    transparent 13px,
+    transparent 15px
+  );
+  opacity: 0.85;
+}
+
+.barcode-digits {
+  font-family: monospace;
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+}
+
+/* Drag Hint Tooltip */
+.lanyard-drag-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 10px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: rgba(14, 25, 17, 0.7);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 500;
+  backdrop-filter: blur(8px);
+  opacity: 0.7;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+.lanyard-card:hover .lanyard-drag-hint {
+  opacity: 1;
+  color: var(--accent-cyan);
+  border-color: var(--accent-purple);
+  transform: translateY(-2px);
+}
+
+/* ============================================================================
+   LANYARD LIGHT THEME OVERRIDES (ARCHITECTURAL SAGE MOSS)
+   ============================================================================ */
+body.light-theme .lanyard-strap {
+  background: #1c2720;
+}
+
+body.light-theme .card-inner-surface {
+  background: #edf3ed;
+  border-color: rgba(24, 45, 28, 0.12);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+body.light-theme .card-slot-hole {
+  background: #d0dbd0;
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.3), 0 1px 1px #fff;
+  border-color: rgba(24, 45, 28, 0.2);
+}
+
+body.light-theme .card-header-bar {
+  border-bottom-color: rgba(24, 45, 28, 0.1);
+}
+
+body.light-theme .card-user-name {
+  color: #0a160d;
+  text-shadow: none;
+}
+
+body.light-theme .card-role-title {
+  color: var(--accent-purple);
+}
+
+body.light-theme .card-meta-row {
+  background: rgba(24, 45, 28, 0.04);
+  border-color: rgba(24, 45, 28, 0.08);
+}
+
+body.light-theme .barcode-stripes {
+  filter: invert(1);
+  opacity: 0.75;
+}
+
+body.light-theme .lanyard-drag-hint {
+  background: rgba(240, 246, 240, 0.85);
+  border-color: rgba(24, 45, 28, 0.18);
+  color: #496350;
+}
+
+/* ============================================================================
+   LANYARD RESPONSIVE ADJUSTMENTS
+   ============================================================================ */
+@media (max-width: 1280px) {
+  .hero-lanyard-wrapper {
+    right: 3.5rem;
+    transform: scale(0.92);
+    transform-origin: top right;
+  }
+}
+
+@media (max-width: 1024px) {
+  .hero-lanyard-wrapper {
+    right: 2rem;
+    transform: scale(0.82);
+    transform-origin: top right;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-lanyard-wrapper {
+    right: 1rem;
+    top: -5px;
+    transform: scale(0.68);
+    transform-origin: top right;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-lanyard-wrapper {
+    right: 0.5rem;
+    top: -10px;
+    transform: scale(0.58);
+    transform-origin: top right;
+  }
+}
+
 /* ============================================
    CONTENT SECTIONS
    ============================================ */
