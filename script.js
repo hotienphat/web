@@ -1537,6 +1537,219 @@ function initHorizontalAccordion() {
 }
 
 // ============================================
+// HANGING LANYARD ID BADGE (ÁNH KIM METALLIC & CON LẮC VẬT LÝ)
+// ============================================
+function initLanyardBadge() {
+    const wrapper = document.getElementById('hero-lanyard-wrapper');
+    const pendulum = document.getElementById('lanyard-pendulum');
+    const card = document.getElementById('lanyard-card');
+    const metallicFrame = card ? card.querySelector('.card-metallic-frame') : null;
+    const dragHint = card ? card.querySelector('.lanyard-drag-hint') : null;
+
+    if (!wrapper || !pendulum || !card) return;
+
+    let ambientTween = null;
+    let isDragging = false;
+    let hasInteracted = false;
+    let currentRotation = 0;
+
+    // Start with lanyard positioned above the top edge
+    if (window.gsap) {
+        gsap.set(wrapper, { y: -620, opacity: 0 });
+        gsap.set(pendulum, { rotation: 24 });
+
+        // Sequence: "Thả dây đeo thẻ" drops down smoothly after intro
+        const dropTimeline = gsap.timeline({ delay: 1.15 });
+        dropTimeline.to(wrapper, {
+            y: 0,
+            opacity: 1,
+            duration: 1.8,
+            ease: "elastic.out(1.05, 0.42)"
+        });
+
+        dropTimeline.to(pendulum, {
+            keyframes: [
+                { rotation: -18, duration: 0.42, ease: "sine.out" },
+                { rotation: 12, duration: 0.48, ease: "sine.inOut" },
+                { rotation: -7, duration: 0.52, ease: "sine.inOut" },
+                { rotation: 3.5, duration: 0.58, ease: "sine.inOut" },
+                { rotation: -1.5, duration: 0.62, ease: "sine.inOut" },
+                { rotation: 0, duration: 0.7, ease: "power2.out" }
+            ],
+            onComplete: () => {
+                startAmbientSway();
+            }
+        }, "-=1.5");
+    } else {
+        wrapper.style.transform = 'none';
+        wrapper.style.opacity = '1';
+    }
+
+    function startAmbientSway() {
+        if (!window.gsap) return;
+        if (ambientTween) ambientTween.kill();
+        ambientTween = gsap.to(pendulum, {
+            rotation: 2.2,
+            duration: 3.8,
+            ease: "sine.inOut",
+            yoyo: true,
+            repeat: -1
+        });
+    }
+
+    // Dynamic 3D Tilt & Metallic Specular Glare Tracking
+    window.addEventListener('mousemove', (e) => {
+        if (!wrapper.isConnected) return;
+        const rect = card.getBoundingClientRect();
+        
+        // Calculate mouse relative to card
+        const cardCenterX = rect.left + rect.width / 2;
+        const cardCenterY = rect.top + rect.height / 2;
+        const dx = e.clientX - cardCenterX;
+        const dy = e.clientY - cardCenterY;
+        
+        // Percentage coordinates for specular shine spot
+        const pctX = Math.min(100, Math.max(0, ((e.clientX - rect.left) / rect.width) * 100));
+        const pctY = Math.min(100, Math.max(0, ((e.clientY - rect.top) / rect.height) * 100));
+        
+        // Dynamic specular glare angle
+        const angle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+
+        card.style.setProperty('--mouse-x', `${pctX.toFixed(1)}%`);
+        card.style.setProperty('--mouse-y', `${pctY.toFixed(1)}%`);
+        card.style.setProperty('--reflect-angle', `${angle.toFixed(1)}deg`);
+
+        // Subtly tilt frame in 3D when hovering/near
+        if (metallicFrame && !isDragging && window.gsap) {
+            const distance = Math.hypot(dx, dy);
+            if (distance < 550) {
+                const tiltX = Math.max(-12, Math.min(12, -dy * 0.03));
+                const tiltY = Math.max(-12, Math.min(12, dx * 0.03));
+                gsap.to(metallicFrame, {
+                    rotateX: tiltX,
+                    rotateY: tiltY,
+                    duration: 0.45,
+                    ease: "power1.out",
+                    overwrite: "auto"
+                });
+            } else {
+                gsap.to(metallicFrame, {
+                    rotateX: 0,
+                    rotateY: 0,
+                    duration: 0.6,
+                    ease: "power2.out",
+                    overwrite: "auto"
+                });
+            }
+        }
+    }, { passive: true });
+
+    // Interactive Drag & Pendulum Physics
+    function onDragStart() {
+        isDragging = true;
+        if (ambientTween) ambientTween.kill();
+
+        if (!hasInteracted && dragHint) {
+            hasInteracted = true;
+            if (window.gsap) {
+                gsap.to(dragHint, { opacity: 0, y: 10, duration: 0.4, onComplete: () => dragHint.remove() });
+            } else {
+                dragHint.remove();
+            }
+        }
+    }
+
+    function onDragMove(clientX, clientY) {
+        if (!isDragging) return;
+        const wrapRect = wrapper.getBoundingClientRect();
+        const pivotX = wrapRect.left + wrapRect.width / 2;
+        const pivotY = wrapRect.top;
+
+        // Angle between cursor and top anchor pivot
+        const rad = Math.atan2(clientX - pivotX, clientY - pivotY);
+        let deg = rad * (180 / Math.PI);
+        // Constrain max drag swing angle
+        deg = Math.max(-45, Math.min(45, deg));
+        currentRotation = deg;
+
+        if (window.gsap) {
+            gsap.set(pendulum, { rotation: deg });
+        } else {
+            pendulum.style.transform = `rotate(${deg}deg)`;
+        }
+    }
+
+    function onDragEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+
+        // Damped physical pendulum oscillation back to center
+        if (window.gsap) {
+            const rot = currentRotation;
+            gsap.to(pendulum, {
+                keyframes: [
+                    { rotation: -rot * 0.65, duration: 0.35, ease: "sine.inOut" },
+                    { rotation: rot * 0.38, duration: 0.42, ease: "sine.inOut" },
+                    { rotation: -rot * 0.18, duration: 0.5, ease: "sine.inOut" },
+                    { rotation: rot * 0.08, duration: 0.58, ease: "sine.inOut" },
+                    { rotation: 0, duration: 0.68, ease: "power2.out" }
+                ],
+                onComplete: () => {
+                    startAmbientSway();
+                }
+            });
+
+            if (metallicFrame) {
+                gsap.to(metallicFrame, { rotateX: 0, rotateY: 0, duration: 0.5, ease: "power2.out" });
+            }
+        }
+    }
+
+    // Mouse drag events
+    card.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onDragStart();
+
+        function onMouseMove(moveEvent) {
+            onDragMove(moveEvent.clientX, moveEvent.clientY);
+        }
+
+        function onMouseUp() {
+            window.removeEventListener('mousemove', onMouseMove);
+            window.removeEventListener('mouseup', onMouseUp);
+            onDragEnd();
+        }
+
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', onMouseUp);
+    });
+
+    // Touch drag events (Mobile/Tablet)
+    card.addEventListener('touchstart', (e) => {
+        if (!e.touches || !e.touches[0]) return;
+        const touch = e.touches[0];
+        onDragStart();
+
+        function onTouchMove(moveEvent) {
+            if (!moveEvent.touches || !moveEvent.touches[0]) return;
+            moveEvent.preventDefault();
+            const t = moveEvent.touches[0];
+            onDragMove(t.clientX, t.clientY);
+        }
+
+        function onTouchEnd() {
+            window.removeEventListener('touchmove', onTouchMove);
+            window.removeEventListener('touchend', onTouchEnd);
+            onDragEnd();
+        }
+
+        window.addEventListener('touchmove', onTouchMove, { passive: false });
+        window.addEventListener('touchend', onTouchEnd);
+    }, { passive: true });
+}
+
+// ============================================
 // INTRO ANIMATION (REPLACES STATIC POPUP)
 // ============================================
 function initIntroAnimation() {
@@ -1555,6 +1768,9 @@ function initIntroAnimation() {
 // PAGE INITIALIZATION
 // ============================================
 function initializePageApp() {
+    // Hanging Lanyard Badge with metallic reflections & physics
+    initLanyardBadge();
+
     // Split text animation for hero title
     splitTextAnimation();
 
