@@ -59,6 +59,13 @@ const audioPlaylist = [
         src: "./assets/congidephon.mp3",
         albumArt: "./assets/CGDH.jpg",
         dominantColor: "34, 211, 238" // Cyan glow
+    },
+    {
+        title: "LAVIEM. (TINH HÀ \"SAY HI\")",
+        artist: "Quang Hùng MasterD, Captain Boy, Pháp Kiều, Coolkid & Danny Chung",
+        src: "./assets/Danny Chung - LAVIEM.flac",
+        albumArt: "./assets/LVE.jpg",
+        dominantColor: "99, 102, 241" // Electric Indigo glow
     }
 ];
 
