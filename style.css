@@ -927,6 +927,8 @@ textarea {
   transform-origin: top center;
   margin-top: -6px;
   will-change: transform;
+  touch-action: none;
+  user-select: none;
 }
 
 .lanyard-card:active {
@@ -976,10 +978,10 @@ textarea {
     inset 0 1px 2px rgba(255, 255, 255, 0.95),
     inset 0 -2px 4px rgba(0, 0, 0, 0.3);
   overflow: hidden;
-  transition: transform 0.15s ease-out;
+  will-change: transform;
 }
 
-/* Subtle Realistic Glass Specular Sheen (Ánh gương quét nhẹ theo chuyển động) */
+/* Subtle Realistic Glass Specular Sheen (Ánh gương quét nhẹ tự nhiên) */
 .card-specular-glare {
   position: absolute;
   inset: 0;
@@ -989,13 +991,13 @@ textarea {
   background: linear-gradient(
     var(--glare-angle, 125deg),
     transparent 28%,
-    rgba(255, 255, 255, 0.05) 44%,
-    rgba(255, 255, 255, 0.28) 50%,
-    rgba(255, 255, 255, 0.05) 56%,
+    rgba(255, 255, 255, 0.04) 44%,
+    rgba(255, 255, 255, 0.22) 50%,
+    rgba(255, 255, 255, 0.04) 56%,
     transparent 72%
   );
   mix-blend-mode: screen;
-  opacity: 0.88;
+  opacity: 0.9;
   will-change: background;
 }
 
