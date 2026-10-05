@@ -4879,11 +4879,26 @@ body.light-theme .panel-inner {
   color: var(--text-muted);
 }
 
+/* Utility responsive visibility classes */
+.desktop-only-text {
+  display: inline;
+}
+.mobile-only-text {
+  display: none;
+}
+
 /* ============================================================================
    RESPONSIVE DESIGN SUITE: 1:1 DESKTOP-TO-MOBILE PROPORTIONAL SCALING (<= 900px)
    Preserve 100% of Desktop UI features & visual hierarchy, scaled to fit mobile viewports
    ============================================================================ */
 @media (max-width: 900px) {
+  .desktop-only-text {
+    display: none !important;
+  }
+  .mobile-only-text {
+    display: inline !important;
+  }
+
   /* 1. Full-Page Snap Experience Preserved with Hardware Momentum */
   html, body {
     height: 100% !important;
@@ -4909,13 +4924,19 @@ body.light-theme .panel-inner {
     max-height: 100dvh !important;
     scroll-snap-align: start !important;
     scroll-snap-stop: always !important;
-    padding: 3.5rem 0.85rem 0.85rem 2.2rem !important; /* Safe left-padding for left-docked soundtrack tab */
+    padding: 3.8rem 0.85rem 0.85rem 2.2rem !important; /* Safe left-padding for left-docked soundtrack tab */
     position: relative !important;
     overflow: hidden !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
     box-sizing: border-box !important;
+  }
+
+  /* When live lyrics pill is active, provide extra top breathing room */
+  .top-nav-dock.has-lyrics + .snap-container .snap-section,
+  .top-nav-dock.has-lyrics ~ .snap-container .snap-section {
+    padding-top: 4.8rem !important;
   }
 
   .container {
@@ -4927,12 +4948,12 @@ body.light-theme .panel-inner {
 
   /* 2. Floating Capsule Header: Full Desktop Nav scaled with horizontal pill scroll */
   .top-nav-dock {
-    top: 0.55rem !important;
+    top: 0.5rem !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
     width: calc(100vw - 1rem) !important;
     max-width: calc(100vw - 1rem) !important;
-    gap: 0.35rem !important;
+    gap: 0.3rem !important;
     box-sizing: border-box !important;
     z-index: 1000 !important;
     pointer-events: none !important;
@@ -4941,7 +4962,7 @@ body.light-theme .panel-inner {
   .floating-header {
     width: auto !important;
     max-width: 100% !important;
-    padding: 0.32rem 0.65rem !important;
+    padding: 0.3rem 0.6rem !important;
     border-radius: 9999px !important;
     box-sizing: border-box !important;
     pointer-events: auto !important;
@@ -4952,20 +4973,39 @@ body.light-theme .panel-inner {
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    gap: 0.4rem !important;
+    gap: 0.35rem !important;
+  }
+
+  .header-brand {
+    gap: 0.3rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  .brand-badge {
+    width: 25px !important;
+    height: 25px !important;
+    font-size: 0.7rem !important;
+  }
+
+  .brand-name {
+    font-size: 0.74rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.3px !important;
   }
 
   /* Desktop Nav Links visible, scrollable horizontally with hidden scrollbar */
   .header-nav {
     display: flex !important;
     align-items: center !important;
-    gap: 0.25rem !important;
+    gap: 0.2rem !important;
     overflow-x: auto !important;
     white-space: nowrap !important;
     scrollbar-width: none !important;
     -webkit-overflow-scrolling: touch !important;
-    padding: 2px 2px !important;
-    max-width: 48vw !important;
+    padding: 2px 4px !important;
+    max-width: 52vw !important;
+    mask-image: linear-gradient(to right, transparent 0, black 8px, black calc(100% - 8px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, black 8px, black calc(100% - 8px), transparent 100%);
   }
 
   .header-nav::-webkit-scrollbar {
@@ -4973,26 +5013,11 @@ body.light-theme .panel-inner {
   }
 
   .header-nav .nav-link {
-    font-size: 0.66rem !important;
-    padding: 0.22rem 0.42rem !important;
+    font-size: 0.62rem !important;
+    padding: 0.2rem 0.38rem !important;
     border-radius: 9999px !important;
     flex-shrink: 0 !important;
-  }
-
-  .header-brand {
-    gap: 0.35rem !important;
-    flex-shrink: 0 !important;
-  }
-
-  .brand-badge {
-    width: 26px !important;
-    height: 26px !important;
-    font-size: 0.72rem !important;
-  }
-
-  .brand-name {
-    font-size: 0.78rem !important;
-    font-weight: 700 !important;
+    font-weight: 600 !important;
   }
 
   .header-actions {
@@ -5019,7 +5044,7 @@ body.light-theme .panel-inner {
     border-radius: 50% !important;
   }
 
-  /* Live Lyrics Capsule on Mobile */
+  /* Live Lyrics Capsule on Mobile - Compact & Centered, leaves room for top-right lanyard badge */
   .top-nav-dock.has-lyrics {
     flex-direction: column !important;
     align-items: center !important;
@@ -5028,35 +5053,35 @@ body.light-theme .panel-inner {
 
   .top-nav-dock.has-lyrics .nav-lyrics-pill {
     width: auto !important;
-    max-width: calc(100vw - 1.25rem) !important;
-    padding: 0.25rem 0.6rem !important;
+    max-width: calc(100vw - 110px) !important;
+    padding: 0.25rem 0.55rem !important;
     box-sizing: border-box !important;
     pointer-events: auto !important;
   }
 
   .top-nav-dock.has-lyrics .nav-lyric-current {
-    max-width: 190px !important;
-    font-size: 0.7rem !important;
+    max-width: 150px !important;
+    font-size: 0.68rem !important;
   }
 
   .top-nav-dock.has-lyrics .nav-lyric-next {
     display: none !important;
   }
 
-  /* 3. Hanging Lanyard ID Badge: Scaled and Pinned Top-Right */
+  /* 3. Hanging Lanyard ID Badge: Scaled to 0.38 & Pinned Top-Right */
   .hero-lanyard-wrapper {
     display: block !important;
     position: absolute !important;
-    top: -8px !important;
-    right: 0.35rem !important;
+    top: 6px !important;
+    right: 0.25rem !important;
     z-index: 25 !important;
-    transform: scale(0.44) !important;
+    transform: scale(0.38) !important;
     transform-origin: top right !important;
     pointer-events: auto !important;
   }
 
   .hero-lanyard-wrapper .lanyard-strap {
-    height: 72px !important;
+    height: 52px !important;
   }
 
   /* 4. Left-Docked Soundtrack Button: Retained Exactly Like Desktop */
@@ -5074,7 +5099,7 @@ body.light-theme .panel-inner {
     z-index: 995 !important;
     border: 1px solid var(--border-subtle) !important;
     border-left: none !important;
-    background: rgba(10, 10, 20, 0.8) !important;
+    background: rgba(10, 10, 20, 0.85) !important;
     backdrop-filter: blur(12px) !important;
     -webkit-backdrop-filter: blur(12px) !important;
     display: flex !important;
@@ -5112,24 +5137,27 @@ body.light-theme .panel-inner {
     z-index: 10001 !important;
   }
 
-  /* 5. Section 1: Hero Section (Desktop Composition Scaled) */
+  /* 5. Section 1: Hero Section (Editorial Split Magazine Layout) */
   #hero-section.hero-page {
     justify-content: flex-end !important;
     padding-bottom: 1.5rem !important;
   }
 
+  /* Cutout portrait sits comfortably on the right half */
   .hero-portrait-stage {
     position: absolute !important;
     bottom: 0 !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    height: clamp(260px, 44vh, 380px) !important;
-    max-width: 85vw !important;
-    width: auto !important;
+    left: auto !important;
+    right: -5px !important;
+    transform: none !important;
+    height: clamp(260px, 44vh, 370px) !important;
+    max-width: 62vw !important;
+    width: 62vw !important;
     display: flex !important;
     align-items: flex-end !important;
-    justify-content: center !important;
+    justify-content: flex-end !important;
     z-index: 8 !important;
+    pointer-events: none !important;
   }
 
   .hero-cutout-img {
@@ -5137,7 +5165,8 @@ body.light-theme .panel-inner {
     max-height: 100% !important;
     width: auto !important;
     object-fit: contain !important;
-    object-position: bottom center !important;
+    object-position: bottom right !important;
+    filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.65));
   }
 
   .hero-marquee-wrapper {
@@ -5154,12 +5183,14 @@ body.light-theme .panel-inner {
     opacity: 0.16 !important;
   }
 
+  /* Hero Info Box sits cleanly on the left half without colliding with portrait */
   .hero-bottom-left {
     position: absolute !important;
-    bottom: 1.2rem !important;
+    bottom: 1.5rem !important;
     left: 2.2rem !important;
+    right: auto !important;
     z-index: 20 !important;
-    width: calc(100% - 3.2rem) !important;
+    max-width: 54vw !important;
     text-align: left !important;
   }
 
@@ -5174,27 +5205,28 @@ body.light-theme .panel-inner {
   }
 
   .hero-title {
-    font-size: clamp(1.4rem, 5vw, 1.85rem) !important;
+    font-size: clamp(1.35rem, 4.8vw, 1.75rem) !important;
     line-height: 1.2 !important;
     margin: 0.15rem 0 !important;
     font-weight: 800 !important;
   }
 
   .hero-tagline {
-    font-size: 0.76rem !important;
+    font-size: 0.75rem !important;
     margin-bottom: 0.45rem !important;
     min-height: 1.2rem !important;
+    line-height: 1.35 !important;
   }
 
   .hero-social-links {
     display: flex !important;
-    gap: 0.4rem !important;
+    gap: 0.35rem !important;
   }
 
   .hero-social-links .social-icon {
-    width: 30px !important;
-    height: 30px !important;
-    font-size: 0.8rem !important;
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 0.75rem !important;
     border-radius: 8px !important;
   }
 
@@ -5220,18 +5252,18 @@ body.light-theme .panel-inner {
 
   /* 6. Section Headers - Clean, Tight & Elegant */
   .section-header {
-    margin-bottom: 0.65rem !important;
+    margin-bottom: 0.55rem !important;
     text-align: center !important;
   }
 
   .section-title {
-    font-size: clamp(1.3rem, 4.5vw, 1.65rem) !important;
+    font-size: clamp(1.25rem, 4.2vw, 1.55rem) !important;
     line-height: 1.2 !important;
-    margin-bottom: 0.2rem !important;
+    margin-bottom: 0.15rem !important;
   }
 
   .section-subtitle {
-    font-size: 0.74rem !important;
+    font-size: 0.72rem !important;
     line-height: 1.35 !important;
     padding: 0 !important;
     max-width: 92% !important;
@@ -5239,8 +5271,8 @@ body.light-theme .panel-inner {
   }
 
   .section-divider {
-    margin: 0.35rem auto 0 !important;
-    width: 42px !important;
+    margin: 0.3rem auto 0 !important;
+    width: 38px !important;
     height: 2px !important;
   }
 
@@ -5258,35 +5290,35 @@ body.light-theme .panel-inner {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    gap: 0.65rem !important;
+    gap: 0.55rem !important;
     width: 100% !important;
   }
 
   .avatar-circle-wrapper {
-    width: 130px !important;
-    height: 130px !important;
+    width: 110px !important;
+    height: 110px !important;
     margin: 0 auto !important;
     flex-shrink: 0 !important;
   }
 
   .avatar-circle-frame {
-    width: 105px !important;
-    height: 105px !important;
+    width: 88px !important;
+    height: 88px !important;
   }
 
   .avatar-circle-glow {
-    width: 105px !important;
-    height: 105px !important;
+    width: 88px !important;
+    height: 88px !important;
   }
 
   .avatar-curved-text {
-    font-size: 8px !important;
+    font-size: 7.5px !important;
   }
 
   .avatar-center-badge {
-    width: 24px !important;
-    height: 24px !important;
-    font-size: 0.65rem !important;
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 0.6rem !important;
   }
 
   .about-info-col {
@@ -5294,55 +5326,55 @@ body.light-theme .panel-inner {
   }
 
   .about-text-block {
-    padding: 0.65rem 0.8rem !important;
+    padding: 0.55rem 0.75rem !important;
     border-radius: 12px !important;
-    margin-bottom: 0.45rem !important;
+    margin-bottom: 0.35rem !important;
   }
 
   .about-lead {
-    font-size: 0.82rem !important;
+    font-size: 0.8rem !important;
     line-height: 1.35 !important;
-    margin-bottom: 0.2rem !important;
+    margin-bottom: 0.15rem !important;
   }
 
   .about-text-block p:not(.about-lead) {
-    font-size: 0.72rem !important;
-    line-height: 1.35 !important;
+    font-size: 0.7rem !important;
+    line-height: 1.3 !important;
   }
 
   .about-info-cards {
     display: grid !important;
     grid-template-columns: repeat(3, 1fr) !important;
-    gap: 0.35rem !important;
+    gap: 0.3rem !important;
   }
 
   .info-card {
-    padding: 0.45rem 0.3rem !important;
-    border-radius: 10px !important;
+    padding: 0.35rem 0.25rem !important;
+    border-radius: 8px !important;
     flex-direction: column !important;
     align-items: center !important;
     text-align: center !important;
-    gap: 0.2rem !important;
+    gap: 0.15rem !important;
   }
 
   .info-card-icon {
-    width: 24px !important;
-    height: 24px !important;
-    font-size: 0.75rem !important;
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 0.7rem !important;
   }
 
   .info-card-icon img {
-    width: 18px !important;
-    height: 18px !important;
+    width: 16px !important;
+    height: 16px !important;
   }
 
   .info-card-label {
-    font-size: 0.58rem !important;
+    font-size: 0.55rem !important;
     margin-bottom: 1px !important;
   }
 
   .info-card-text {
-    font-size: 0.66rem !important;
+    font-size: 0.62rem !important;
     font-weight: 700 !important;
     line-height: 1.2 !important;
   }
@@ -5353,29 +5385,29 @@ body.light-theme .panel-inner {
 
   .tech-marquee-bar {
     position: absolute !important;
-    bottom: 0.6rem !important;
+    bottom: 0.5rem !important;
     left: 2.2rem !important;
     right: 0.85rem !important;
-    height: 32px !important;
+    height: 28px !important;
     border-radius: 8px !important;
   }
 
   .tech-marquee-bar .marquee-item {
-    font-size: 0.68rem !important;
-    gap: 0.3rem !important;
+    font-size: 0.65rem !important;
+    gap: 0.25rem !important;
   }
 
   /* 8. Section 3: Bento Grid Shortcuts (2x2 Balanced Matrix) */
   .bento-grid {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
-    gap: 0.5rem !important;
+    gap: 0.45rem !important;
     width: 100% !important;
   }
 
   .bento-card {
     grid-column: span 1 !important;
-    padding: 0.6rem 0.55rem !important;
+    padding: 0.52rem 0.5rem !important;
     border-radius: 12px !important;
     display: flex !important;
     flex-direction: column !important;
@@ -5384,21 +5416,21 @@ body.light-theme .panel-inner {
   }
 
   .bento-card-header {
-    gap: 0.35rem !important;
-    margin-bottom: 0.4rem !important;
+    gap: 0.3rem !important;
+    margin-bottom: 0.35rem !important;
     align-items: center !important;
   }
 
   .bento-card-icon {
-    width: 24px !important;
-    height: 24px !important;
-    font-size: 0.72rem !important;
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 0.68rem !important;
     border-radius: 6px !important;
     flex-shrink: 0 !important;
   }
 
   .bento-card-title {
-    font-size: 0.74rem !important;
+    font-size: 0.72rem !important;
     font-weight: 700 !important;
     line-height: 1.2 !important;
   }
@@ -5410,72 +5442,95 @@ body.light-theme .panel-inner {
   .bento-links-wrap {
     display: grid !important;
     grid-template-columns: 1fr !important;
-    gap: 0.28rem !important;
+    gap: 0.25rem !important;
   }
 
   .bento-pill-link {
-    padding: 0.28rem 0.45rem !important;
-    font-size: 0.65rem !important;
+    padding: 0.25rem 0.4rem !important;
+    font-size: 0.62rem !important;
     border-radius: 6px !important;
-    gap: 0.3rem !important;
+    gap: 0.25rem !important;
   }
 
   .bento-pill-link i {
-    font-size: 0.7rem !important;
+    font-size: 0.66rem !important;
   }
 
   /* 9. Section 4: Projects Accordion (Vertical Stack with Active Expand) */
   .horizontal-accordion {
     flex-direction: column !important;
-    height: clamp(340px, 52vh, 430px) !important;
+    height: clamp(330px, 52vh, 420px) !important;
     gap: 0.4rem !important;
     width: 100% !important;
   }
 
   .accordion-panel {
-    flex: 0 0 42px !important;
+    flex: 0 0 44px !important;
+    min-height: 44px !important;
     border-radius: 12px !important;
-    transition: flex 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transition: flex 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease !important;
     overflow: hidden !important;
+    cursor: pointer !important;
+    position: relative !important;
   }
 
   .accordion-panel.active {
     flex: 1 1 auto !important;
+    cursor: default !important;
   }
 
-  .accordion-panel .panel-vertical-title {
+  /* Collapsed Panel: Visible Number & Title */
+  .accordion-panel:not(.active) .panel-inner {
+    padding: 0 0.85rem !important;
+    height: 44px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 0.65rem !important;
+    box-sizing: border-box !important;
+  }
+
+  .accordion-panel:not(.active) .panel-head {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.35rem !important;
+    padding: 0 !important;
+  }
+
+  .accordion-panel:not(.active) .panel-num {
+    font-size: 0.85rem !important;
+    font-weight: 800 !important;
+    color: var(--accent-cyan) !important;
+  }
+
+  .accordion-panel:not(.active) .panel-badge {
     display: none !important;
   }
 
-  .accordion-panel .panel-expanded-content {
+  .accordion-panel:not(.active) .panel-vertical-title {
     display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-between !important;
-    height: 100% !important;
+    writing-mode: horizontal-tb !important;
+    transform: none !important;
+    letter-spacing: 0.3px !important;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    color: var(--text-primary) !important;
+    opacity: 0.85 !important;
+    margin: 0 !important;
+    justify-content: flex-start !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
   }
 
   .accordion-panel:not(.active) .panel-expanded-content {
     display: none !important;
   }
 
-  .accordion-panel .panel-head {
-    padding: 0.45rem 0.75rem !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-  }
-
-  .accordion-panel .panel-num {
-    font-size: 0.8rem !important;
-  }
-
-  .accordion-panel .panel-badge {
-    font-size: 0.65rem !important;
-    padding: 2px 6px !important;
-  }
-
+  /* Active Panel: Expanded */
   .accordion-panel.active .panel-inner {
-    padding: 0.65rem 0.75rem !important;
+    padding: 0.65rem 0.8rem !important;
     height: 100% !important;
     display: flex !important;
     flex-direction: column !important;
@@ -5483,16 +5538,47 @@ body.light-theme .panel-inner {
     box-sizing: border-box !important;
   }
 
+  .accordion-panel.active .panel-vertical-title {
+    display: none !important;
+  }
+
+  .accordion-panel.active .panel-head {
+    padding: 0 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 0.15rem !important;
+  }
+
+  .accordion-panel.active .panel-num {
+    font-size: 0.9rem !important;
+    font-weight: 800 !important;
+  }
+
+  .accordion-panel.active .panel-badge {
+    opacity: 1 !important;
+    font-size: 0.62rem !important;
+    padding: 2px 6px !important;
+  }
+
+  .accordion-panel.active .panel-expanded-content {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    flex: 1 !important;
+    gap: 0.35rem !important;
+  }
+
   .panel-title {
-    font-size: 1rem !important;
+    font-size: 0.95rem !important;
     line-height: 1.25 !important;
-    margin: 0.15rem 0 !important;
+    margin: 0.1rem 0 !important;
   }
 
   .panel-desc {
-    font-size: 0.72rem !important;
+    font-size: 0.7rem !important;
     line-height: 1.35 !important;
-    margin-bottom: 0.3rem !important;
+    margin-bottom: 0.25rem !important;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -5500,25 +5586,25 @@ body.light-theme .panel-inner {
   }
 
   .panel-tech-tags {
-    gap: 0.3rem !important;
-    margin-bottom: 0.35rem !important;
+    gap: 0.25rem !important;
+    margin-bottom: 0.25rem !important;
   }
 
   .panel-tech-tags span {
-    font-size: 0.62rem !important;
-    padding: 2px 5px !important;
+    font-size: 0.6rem !important;
+    padding: 1.5px 5px !important;
   }
 
   .panel-btn-group {
-    gap: 0.4rem !important;
+    gap: 0.35rem !important;
     margin-top: 0 !important;
   }
 
   .panel-action-btn {
-    padding: 0.38rem 0.7rem !important;
-    font-size: 0.72rem !important;
+    padding: 0.35rem 0.65rem !important;
+    font-size: 0.7rem !important;
     border-radius: 8px !important;
-    gap: 0.35rem !important;
+    gap: 0.3rem !important;
   }
 
   /* 10. Section 5: 3D Tree Section (Three.js WebGL Interactive) */
@@ -5528,7 +5614,7 @@ body.light-theme .panel-inner {
   }
 
   .tree-3d-wrapper {
-    height: clamp(260px, 46vh, 370px) !important;
+    height: clamp(250px, 44vh, 350px) !important;
     border-radius: 14px !important;
     position: relative !important;
     margin: 0 !important;
@@ -5536,34 +5622,34 @@ body.light-theme .panel-inner {
   }
 
   .tree-hint-badge {
-    top: 8px !important;
-    left: 8px !important;
-    font-size: 0.65rem !important;
-    padding: 3px 7px !important;
+    top: 6px !important;
+    left: 6px !important;
+    font-size: 0.62rem !important;
+    padding: 2px 6px !important;
   }
 
   .tree-top-toolbar {
-    top: 8px !important;
-    right: 8px !important;
-    gap: 0.3rem !important;
+    top: 6px !important;
+    right: 6px !important;
+    gap: 0.25rem !important;
   }
 
   .tree-tool-btn {
-    padding: 4px 7px !important;
-    font-size: 0.68rem !important;
+    padding: 3px 6px !important;
+    font-size: 0.65rem !important;
   }
 
   .tree-controls {
     bottom: 8px !important;
     max-width: 95% !important;
-    padding: 4px 6px !important;
+    padding: 3px 6px !important;
     gap: 3px !important;
     border-radius: 9999px !important;
   }
 
   .season-btn {
-    padding: 4px 8px !important;
-    font-size: 0.68rem !important;
+    padding: 3px 7px !important;
+    font-size: 0.65rem !important;
     gap: 3px !important;
     border-radius: 9999px !important;
   }
@@ -5577,70 +5663,70 @@ body.light-theme .panel-inner {
   .donate-grid {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
-    gap: 0.55rem !important;
+    gap: 0.5rem !important;
     width: 100% !important;
   }
 
   .donate-card {
-    padding: 0.65rem 0.6rem !important;
+    padding: 0.55rem 0.5rem !important;
     border-radius: 12px !important;
   }
 
   .donate-card-header {
-    margin-bottom: 0.4rem !important;
+    margin-bottom: 0.35rem !important;
   }
 
   .donate-card-title {
-    font-size: 0.8rem !important;
-    gap: 0.3rem !important;
+    font-size: 0.78rem !important;
+    gap: 0.25rem !important;
   }
 
   .toggle-qr-btn {
-    padding: 3px 6px !important;
-    font-size: 0.64rem !important;
+    padding: 2.5px 5px !important;
+    font-size: 0.62rem !important;
     border-radius: 6px !important;
   }
 
   .qr-placeholder {
-    height: 95px !important;
-    margin-bottom: 0.4rem !important;
+    height: 85px !important;
+    margin-bottom: 0.35rem !important;
   }
 
   .qr-placeholder img {
-    width: 85px !important;
-    height: 85px !important;
+    width: 75px !important;
+    height: 75px !important;
   }
 
   .donate-info-row {
-    font-size: 0.68rem !important;
-    margin-bottom: 0.28rem !important;
+    font-size: 0.65rem !important;
+    margin-bottom: 0.25rem !important;
   }
 
   .donate-info-label {
-    font-size: 0.6rem !important;
+    font-size: 0.58rem !important;
   }
 
   .donate-info-value {
-    font-size: 0.72rem !important;
+    font-size: 0.68rem !important;
   }
 
   .copy-btn {
-    padding: 2px 5px !important;
-    font-size: 0.62rem !important;
+    padding: 2px 4px !important;
+    font-size: 0.6rem !important;
   }
 
   .contact-footer-wrap {
-    margin-top: 0.55rem !important;
-    padding-top: 0.45rem !important;
+    margin-top: 0.4rem !important;
+    padding-top: 0.35rem !important;
   }
 
   .footer-email-link {
-    font-size: 0.78rem !important;
-    margin-bottom: 0.15rem !important;
+    font-size: 0.75rem !important;
+    margin-bottom: 0.1rem !important;
   }
 
   .copyright-text {
-    font-size: 0.65rem !important;
+    font-size: 0.62rem !important;
   }
 
   /* 12. Hide Obsolete Desktop Scroll Indicators */
