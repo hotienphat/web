@@ -1537,26 +1537,33 @@ function initHorizontalAccordion() {
 }
 
 // ============================================
-// HANGING LANYARD ID BADGE (ÁNH KIM METALLIC & CON LẮC VẬT LÝ)
+// HANGING LANYARD ID BADGE (PHONG CÁCH TỐI GIẢN CAO CẤP & ÁNH KIM PHẢN CHIẾU THẬT)
 // ============================================
 function initLanyardBadge() {
     const wrapper = document.getElementById('hero-lanyard-wrapper');
     const pendulum = document.getElementById('lanyard-pendulum');
+    const strap = document.getElementById('lanyardStrap') || wrapper;
     const card = document.getElementById('lanyard-card');
-    const metallicFrame = card ? card.querySelector('.card-metallic-frame') : null;
-    const dragHint = card ? card.querySelector('.lanyard-drag-hint') : null;
+    const metallicFrame = card ? card.querySelector('.card-frame-shell') : null;
 
     if (!wrapper || !pendulum || !card) return;
 
     let ambientTween = null;
     let isDragging = false;
-    let hasInteracted = false;
     let currentRotation = 0;
+    let anchorX = 0;
+    let anchorY = 0;
+
+    function updateAnchor() {
+        const rect = strap.getBoundingClientRect();
+        anchorX = rect.left + rect.width / 2;
+        anchorY = rect.top; // Fixed ceiling attachment point
+    }
 
     // Start with lanyard positioned above the top edge
     if (window.gsap) {
         gsap.set(wrapper, { y: -620, opacity: 0 });
-        gsap.set(pendulum, { rotation: 24 });
+        gsap.set(pendulum, { rotation: 22 });
 
         // Sequence: "Thả dây đeo thẻ" drops down smoothly after intro
         const dropTimeline = gsap.timeline({ delay: 1.15 });
@@ -1569,11 +1576,11 @@ function initLanyardBadge() {
 
         dropTimeline.to(pendulum, {
             keyframes: [
-                { rotation: -18, duration: 0.42, ease: "sine.out" },
-                { rotation: 12, duration: 0.48, ease: "sine.inOut" },
-                { rotation: -7, duration: 0.52, ease: "sine.inOut" },
-                { rotation: 3.5, duration: 0.58, ease: "sine.inOut" },
-                { rotation: -1.5, duration: 0.62, ease: "sine.inOut" },
+                { rotation: -16, duration: 0.42, ease: "sine.out" },
+                { rotation: 11, duration: 0.48, ease: "sine.inOut" },
+                { rotation: -6, duration: 0.52, ease: "sine.inOut" },
+                { rotation: 3, duration: 0.58, ease: "sine.inOut" },
+                { rotation: -1, duration: 0.62, ease: "sine.inOut" },
                 { rotation: 0, duration: 0.7, ease: "power2.out" }
             ],
             onComplete: () => {
@@ -1597,34 +1604,26 @@ function initLanyardBadge() {
         });
     }
 
-    // Dynamic 3D Tilt & Metallic Specular Glare Tracking
+    // Dynamic 3D Tilt & Specular Glare Tracking
     window.addEventListener('mousemove', (e) => {
         if (!wrapper.isConnected) return;
         const rect = card.getBoundingClientRect();
         
-        // Calculate mouse relative to card
         const cardCenterX = rect.left + rect.width / 2;
         const cardCenterY = rect.top + rect.height / 2;
         const dx = e.clientX - cardCenterX;
         const dy = e.clientY - cardCenterY;
         
-        // Percentage coordinates for specular shine spot
-        const pctX = Math.min(100, Math.max(0, ((e.clientX - rect.left) / rect.width) * 100));
-        const pctY = Math.min(100, Math.max(0, ((e.clientY - rect.top) / rect.height) * 100));
-        
-        // Dynamic specular glare angle
-        const angle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
-
-        card.style.setProperty('--mouse-x', `${pctX.toFixed(1)}%`);
-        card.style.setProperty('--mouse-y', `${pctY.toFixed(1)}%`);
-        card.style.setProperty('--reflect-angle', `${angle.toFixed(1)}deg`);
+        // Realistic subtle glare angle glide
+        const angle = 125 + (dx / window.innerWidth) * 45;
+        card.style.setProperty('--glare-angle', `${angle.toFixed(1)}deg`);
 
         // Subtly tilt frame in 3D when hovering/near
         if (metallicFrame && !isDragging && window.gsap) {
             const distance = Math.hypot(dx, dy);
             if (distance < 550) {
-                const tiltX = Math.max(-12, Math.min(12, -dy * 0.03));
-                const tiltY = Math.max(-12, Math.min(12, dx * 0.03));
+                const tiltX = Math.max(-10, Math.min(10, -dy * 0.025));
+                const tiltY = Math.max(-10, Math.min(10, dx * 0.025));
                 gsap.to(metallicFrame, {
                     rotateX: tiltX,
                     rotateY: tiltY,
@@ -1647,28 +1646,26 @@ function initLanyardBadge() {
     // Interactive Drag & Pendulum Physics
     function onDragStart() {
         isDragging = true;
+        updateAnchor();
         if (ambientTween) ambientTween.kill();
-
-        if (!hasInteracted && dragHint) {
-            hasInteracted = true;
-            if (window.gsap) {
-                gsap.to(dragHint, { opacity: 0, y: 10, duration: 0.4, onComplete: () => dragHint.remove() });
-            } else {
-                dragHint.remove();
-            }
-        }
+        if (window.gsap) gsap.killTweensOf(pendulum);
     }
 
     function onDragMove(clientX, clientY) {
         if (!isDragging) return;
-        const wrapRect = wrapper.getBoundingClientRect();
-        const pivotX = wrapRect.left + wrapRect.width / 2;
-        const pivotY = wrapRect.top;
 
-        // Angle between cursor and top anchor pivot
-        const rad = Math.atan2(clientX - pivotX, clientY - pivotY);
+        // Vector from fixed top ceiling anchor to cursor
+        const dx = clientX - anchorX;
+        const dy = Math.max(90, clientY - anchorY); // Keep downwards distance positive
+
+        // Mathematical angle from anchor:
+        // When pulling right (dx > 0): atan2(dx, dy) is positive.
+        // In CSS transform, positive rotation is clockwise (to the right).
+        // Therefore, pulling right moves the card right! (100% correct, no inversion)
+        const rad = Math.atan2(dx, dy);
         let deg = rad * (180 / Math.PI);
-        // Constrain max drag swing angle
+
+        // Constrain max drag swing angle for natural physics
         deg = Math.max(-45, Math.min(45, deg));
         currentRotation = deg;
 
@@ -1677,22 +1674,31 @@ function initLanyardBadge() {
         } else {
             pendulum.style.transform = `rotate(${deg}deg)`;
         }
+
+        // Specular light shifts with the rotation angle
+        const glareAngle = 125 + deg * 1.5;
+        card.style.setProperty('--glare-angle', `${glareAngle.toFixed(1)}deg`);
     }
 
     function onDragEnd() {
         if (!isDragging) return;
         isDragging = false;
 
+        const rot = currentRotation;
+        if (Math.abs(rot) < 0.5) {
+            startAmbientSway();
+            return;
+        }
+
         // Damped physical pendulum oscillation back to center
         if (window.gsap) {
-            const rot = currentRotation;
             gsap.to(pendulum, {
                 keyframes: [
-                    { rotation: -rot * 0.65, duration: 0.35, ease: "sine.inOut" },
-                    { rotation: rot * 0.38, duration: 0.42, ease: "sine.inOut" },
-                    { rotation: -rot * 0.18, duration: 0.5, ease: "sine.inOut" },
-                    { rotation: rot * 0.08, duration: 0.58, ease: "sine.inOut" },
-                    { rotation: 0, duration: 0.68, ease: "power2.out" }
+                    { rotation: -rot * 0.65, duration: 0.36, ease: "sine.inOut" },
+                    { rotation: rot * 0.40, duration: 0.44, ease: "sine.inOut" },
+                    { rotation: -rot * 0.20, duration: 0.52, ease: "sine.inOut" },
+                    { rotation: rot * 0.08, duration: 0.60, ease: "sine.inOut" },
+                    { rotation: 0, duration: 0.72, ease: "power2.out" }
                 ],
                 onComplete: () => {
                     startAmbientSway();
