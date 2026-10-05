@@ -1542,103 +1542,141 @@ function initHorizontalAccordion() {
 function initLanyardBadge() {
     const wrapper = document.getElementById('hero-lanyard-wrapper');
     const pendulum = document.getElementById('lanyard-pendulum');
-    const strap = document.getElementById('lanyardStrap') || wrapper;
+    const anchorPin = document.getElementById('lanyard-anchor-pin');
     const card = document.getElementById('lanyard-card');
     const metallicFrame = card ? card.querySelector('.card-frame-shell') : null;
 
     if (!wrapper || !pendulum || !card) return;
 
-    // Physics Simulation State
+    // Simulation State
     let isDragging = false;
     let currentAngle = 0;
-    let angularVelocity = 0;
-    let prevAngle = 0;
-    let secondaryAngle = 0;
     let targetAngle = 0;
+    let prevAngle = 0;
+    let angularVelocity = 0; // deg/sec
+    let secondaryAngle = 0;
 
     let tiltX = 0, tiltY = 0;
     let targetTiltX = 0, targetTiltY = 0;
     let glareAngle = 125;
-    let targetGlareAngle = 125;
+    let glarePos = 50;
 
     let anchorX = 0, anchorY = 0;
+    let grabAngleOffset = 0;
     let pointerX = 0, pointerY = 0;
+    let mousePctX = 50, mousePctY = 30;
 
     function updateAnchor() {
-        const rect = strap.getBoundingClientRect();
-        anchorX = rect.left + rect.width / 2;
-        anchorY = rect.top; // Fixed ceiling pivot
+        if (anchorPin) {
+            const rect = anchorPin.getBoundingClientRect();
+            anchorX = rect.left;
+            anchorY = rect.top;
+        } else {
+            const rect = wrapper.getBoundingClientRect();
+            anchorX = rect.left + rect.width / 2;
+            anchorY = rect.top;
+        }
     }
 
     // Drop-in Animation on load ("Thả dây đeo thẻ")
     if (window.gsap) {
         gsap.set(wrapper, { y: -650, opacity: 0 });
-        currentAngle = 24;
-        angularVelocity = -2.5;
+        currentAngle = 22;
+        angularVelocity = -90;
 
         gsap.to(wrapper, {
             y: 0,
             opacity: 1,
-            duration: 1.6,
-            ease: "elastic.out(1.05, 0.45)",
-            delay: 1.15,
-            onStart: () => {
+            duration: 1.5,
+            ease: "elastic.out(1.02, 0.45)",
+            delay: 1.1,
+            onComplete: () => {
                 updateAnchor();
             }
         });
     } else {
         wrapper.style.transform = 'none';
         wrapper.style.opacity = '1';
+        updateAnchor();
     }
 
-    // Real-Time 144Hz Spring Physics Loop via GSAP Ticker
+    // Real-Time 144Hz Physics Engine via GSAP Ticker
     function physicsTick(time, deltaTime) {
         if (!wrapper.isConnected) return;
 
-        // Normalized delta (1.0 = ~16.67ms 60fps frame)
-        const dt = Math.min((deltaTime || 16.67) / 16.67, 2.0);
+        const dtSec = Math.min((deltaTime || 16.67) / 1000, 0.05); // Frame delta in seconds
+        const dtNorm = Math.min((deltaTime || 16.67) / 16.67, 2.5); // Normalized frame step
 
         if (isDragging) {
-            // Drag tracking: Calculate target angle from ceiling anchor
+            // Tactile 1:1 Direct Drag Tracking (No lag, no inverted motion)
             const dx = pointerX - anchorX;
             const dy = Math.max(90, pointerY - anchorY);
-            const rad = Math.atan2(dx, dy);
-            targetAngle = Math.max(-50, Math.min(50, rad * (180 / Math.PI)));
+            const currentPointerAngle = Math.atan2(dx, dy) * (180 / Math.PI);
+            targetAngle = Math.max(-55, Math.min(55, currentPointerAngle + grabAngleOffset));
 
-            // High-frequency spring follow
+            // Instant responsive follow with micro-jitter filtering
             prevAngle = currentAngle;
-            currentAngle += (targetAngle - currentAngle) * 0.42 * dt;
-            angularVelocity = (currentAngle - prevAngle) / dt;
-            targetGlareAngle = 125 + currentAngle * 1.5;
+            currentAngle += (targetAngle - currentAngle) * Math.min(1.0, 0.82 * dtNorm);
+
+            // Filtered velocity estimation (degrees per second)
+            const instVelocity = (currentAngle - prevAngle) / Math.max(0.001, dtSec);
+            angularVelocity = angularVelocity * 0.4 + instVelocity * 0.6;
+
+            // Dynamic 3D tilt while dragging (card leans into movement direction)
+            targetTiltY = Math.max(-14, Math.min(14, angularVelocity * 0.04));
+            targetTiltX = Math.max(-8, Math.min(8, -Math.abs(angularVelocity) * 0.018));
         } else {
-            // Free Pendulum Physics: Hooke's Law + Air Damping
-            const ambientBreeze = Math.sin(Date.now() * 0.0018) * 2.2;
-            const springForce = (ambientBreeze - currentAngle) * 0.058;
+            // True Physical Pendulum Equations:
+            // d2θ/dt2 = - (g/L) * sin(θ) - γ * (dθ/dt)
+            const thetaRad = currentAngle * (Math.PI / 180);
+            const gravityTorque = -Math.sin(thetaRad) * 44.0 * (180 / Math.PI);
 
-            angularVelocity += springForce * dt;
-            angularVelocity *= Math.pow(0.958, dt); // Air resistance
-            currentAngle += angularVelocity * dt;
+            // Ambient gentle breeze when settled
+            const ambientBreeze = Math.sin(Date.now() * 0.0016) * 1.8;
+            const breezeTorque = (ambientBreeze - currentAngle) * 3.2;
 
-            targetGlareAngle = 125 + currentAngle * 1.2;
+            const totalAcc = gravityTorque + breezeTorque;
+            angularVelocity += totalAcc * dtSec;
+
+            // Exponential air damping
+            const airDamping = Math.pow(0.978, dtNorm);
+            angularVelocity *= airDamping;
+
+            currentAngle += angularVelocity * dtSec;
+
+            // Dynamic 3D tilt follows swing velocity
+            const swingTiltY = Math.max(-12, Math.min(12, angularVelocity * 0.035));
+            const swingTiltX = Math.max(-6, Math.min(6, -Math.abs(angularVelocity) * 0.015));
+            targetTiltY = swingTiltY;
+            targetTiltX = swingTiltX;
         }
 
-        // Secondary flex wobble (organic joint motion between hardware & card)
-        secondaryAngle += (currentAngle * 0.28 - secondaryAngle) * 0.22 * dt;
+        // Secondary flex wobble: card hinges slightly at the clasp hook
+        const targetSecondary = -angularVelocity * 0.012 + currentAngle * 0.14;
+        secondaryAngle += (targetSecondary - secondaryAngle) * Math.min(1.0, 0.32 * dtNorm);
 
-        // Smooth 3D tilt interpolation (zero jitter)
-        tiltX += (targetTiltX - tiltX) * 0.12 * dt;
-        tiltY += (targetTiltY - tiltY) * 0.12 * dt;
+        // Smooth 3D tilt interpolation
+        tiltX += (targetTiltX - tiltX) * 0.16 * dtNorm;
+        tiltY += (targetTiltY - tiltY) * 0.16 * dtNorm;
 
-        // Smooth specular light angle
-        glareAngle += (targetGlareAngle - glareAngle) * 0.12 * dt;
+        // Realistic glass specular light sweep
+        const targetGlareAngle = 125 + currentAngle * 0.75 + tiltX * 0.6;
+        glareAngle += (targetGlareAngle - glareAngle) * 0.18 * dtNorm;
 
-        // Apply transforms directly to hardware layers
+        const targetGlarePos = 50 + currentAngle * 1.1 + tiltY * 1.5;
+        glarePos += (targetGlarePos - glarePos) * 0.18 * dtNorm;
+
+        // Apply hardware-accelerated transforms
         pendulum.style.transform = `rotate(${currentAngle.toFixed(2)}deg)`;
         card.style.transform = `rotate(${secondaryAngle.toFixed(2)}deg)`;
         if (metallicFrame) {
-            metallicFrame.style.transform = `perspective(900px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg)`;
+            metallicFrame.style.transform = `perspective(1000px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg)`;
         }
+
         card.style.setProperty('--glare-angle', `${glareAngle.toFixed(1)}deg`);
+        card.style.setProperty('--glare-pos', `${glarePos.toFixed(1)}%`);
+        card.style.setProperty('--glare-x', `${mousePctX.toFixed(1)}%`);
+        card.style.setProperty('--glare-y', `${mousePctY.toFixed(1)}%`);
     }
 
     if (window.gsap && gsap.ticker) {
@@ -1653,9 +1691,9 @@ function initLanyardBadge() {
         requestAnimationFrame(loop);
     }
 
-    // Dynamic Mouse Hover 3D Parallax
+    // Dynamic Mouse Hover 3D Parallax & Specular Light Tracking
     window.addEventListener('mousemove', (e) => {
-        if (!wrapper.isConnected || isDragging) return;
+        if (!wrapper.isConnected) return;
         const rect = card.getBoundingClientRect();
         const cardCenterX = rect.left + rect.width / 2;
         const cardCenterY = rect.top + rect.height / 2;
@@ -1663,16 +1701,20 @@ function initLanyardBadge() {
         const dy = e.clientY - cardCenterY;
         const distance = Math.hypot(dx, dy);
 
-        if (distance < 550) {
-            targetTiltX = Math.max(-10, Math.min(10, -dy * 0.024));
-            targetTiltY = Math.max(-10, Math.min(10, dx * 0.024));
-        } else {
+        // Point light coordinate on card
+        mousePctX = Math.min(100, Math.max(0, ((e.clientX - rect.left) / rect.width) * 100));
+        mousePctY = Math.min(100, Math.max(0, ((e.clientY - rect.top) / rect.height) * 100));
+
+        if (!isDragging && distance < 650) {
+            targetTiltX = Math.max(-12, Math.min(12, -dy * 0.024));
+            targetTiltY = Math.max(-12, Math.min(12, dx * 0.024));
+        } else if (!isDragging) {
             targetTiltX = 0;
             targetTiltY = 0;
         }
     }, { passive: true });
 
-    // Pointer Events API (Handles Mouse, Touch, Stylus with PointerCapture)
+    // Pointer Events API (Zero grip slippage across Mouse, Touch, Stylus)
     card.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         isDragging = true;
@@ -1681,7 +1723,15 @@ function initLanyardBadge() {
         pointerX = e.clientX;
         pointerY = e.clientY;
 
-        // Capture pointer so moving fast never loses the card
+        // Zero-Jump Grab: compute exact angle difference at moment of touch
+        const dx = pointerX - anchorX;
+        const dy = Math.max(90, pointerY - anchorY);
+        const pointerAngle = Math.atan2(dx, dy) * (180 / Math.PI);
+        grabAngleOffset = currentAngle - pointerAngle;
+        targetAngle = currentAngle;
+        angularVelocity = 0;
+
+        // Pointer Capture guarantees cursor remains locked to card even during fast sweeps
         if (card.setPointerCapture) {
             try {
                 card.setPointerCapture(e.pointerId);
@@ -1700,26 +1750,22 @@ function initLanyardBadge() {
         if (!isDragging) return;
         isDragging = false;
 
-        // Release pointer capture
         if (card.releasePointerCapture && e && e.pointerId) {
             try {
                 card.releasePointerCapture(e.pointerId);
             } catch (_) {}
         }
 
-        // Clamp release momentum velocity to prevent wild flipping
-        angularVelocity = Math.max(-28, Math.min(28, angularVelocity * 0.85));
-        targetTiltX = 0;
-        targetTiltY = 0;
+        // Clamp release momentum velocity to prevent wild spinning
+        angularVelocity = Math.max(-550, Math.min(550, angularVelocity));
     }
 
     card.addEventListener('pointerup', releasePointer);
     card.addEventListener('pointercancel', releasePointer);
 
-    // Window resize: re-anchor
-    window.addEventListener('resize', () => {
-        updateAnchor();
-    }, { passive: true });
+    // Dynamic re-anchoring on viewport resize or scroll
+    window.addEventListener('resize', updateAnchor, { passive: true });
+    window.addEventListener('scroll', updateAnchor, { passive: true });
 }
 
 // ============================================
