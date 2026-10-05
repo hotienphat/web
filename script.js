@@ -1537,20 +1537,27 @@ function initHorizontalAccordion() {
 }
 
 // ============================================
-// HANGING LANYARD ID BADGE (144Hz REAL-TIME SPRING PHYSICS & TACTILE DRAG)
+// HANGING LANYARD ID BADGE (144Hz REAL-TIME SPRING PHYSICS & TACTILE DIRECT DRAG)
 // ============================================
 function initLanyardBadge() {
     const wrapper = document.getElementById('hero-lanyard-wrapper');
     const pendulum = document.getElementById('lanyard-pendulum');
     const anchorPin = document.getElementById('lanyard-anchor-pin');
+    const strap = document.getElementById('lanyardStrap');
     const card = document.getElementById('lanyard-card');
     const metallicFrame = card ? card.querySelector('.card-frame-shell') : null;
 
     if (!wrapper || !pendulum || !card) return;
 
-    // Simulation State
+    // Simulation Configuration & State
+    const BASE_STRAP_LEN = 260; // Dây dài tự nhiên, sang trọng
+    let currentStrapLen = BASE_STRAP_LEN;
+    let targetStrapLen = BASE_STRAP_LEN;
+    let prevStrapLen = BASE_STRAP_LEN;
+    let strapVelocity = 0; // px/sec
+
     let isDragging = false;
-    let currentAngle = 0;
+    let currentAngle = 0; // CSS angle: negative is tilted right, positive is tilted left
     let targetAngle = 0;
     let prevAngle = 0;
     let angularVelocity = 0; // deg/sec
@@ -1578,16 +1585,16 @@ function initLanyardBadge() {
         }
     }
 
-    // Drop-in Animation on load ("Thả dây đeo thẻ")
+    // Drop-in Animation on load ("Thả dây đeo thẻ mượt mà từ trên xuống")
     if (window.gsap) {
-        gsap.set(wrapper, { y: -650, opacity: 0 });
-        currentAngle = 22;
-        angularVelocity = -90;
+        gsap.set(wrapper, { y: -750, opacity: 0 });
+        currentAngle = -16;
+        angularVelocity = 85;
 
         gsap.to(wrapper, {
             y: 0,
             opacity: 1,
-            duration: 1.5,
+            duration: 1.6,
             ease: "elastic.out(1.02, 0.45)",
             delay: 1.1,
             onComplete: () => {
@@ -1600,7 +1607,7 @@ function initLanyardBadge() {
         updateAnchor();
     }
 
-    // Real-Time 144Hz Physics Engine via GSAP Ticker
+    // Real-Time 144Hz Physics Engine via GSAP Ticker / RAF
     function physicsTick(time, deltaTime) {
         if (!wrapper.isConnected) return;
 
@@ -1608,67 +1615,110 @@ function initLanyardBadge() {
         const dtNorm = Math.min((deltaTime || 16.67) / 16.67, 2.5); // Normalized frame step
 
         if (isDragging) {
-            // Tactile 1:1 Direct Drag Tracking (No lag, no inverted motion)
+            // Direct 1:1 Drag Tracking (Kéo trái qua trái, kéo phải qua phải, kéo tự do mọi hướng)
             const dx = pointerX - anchorX;
-            const dy = Math.max(90, pointerY - anchorY);
-            const currentPointerAngle = Math.atan2(dx, dy) * (180 / Math.PI);
-            targetAngle = Math.max(-55, Math.min(55, currentPointerAngle + grabAngleOffset));
+            const dy = pointerY - anchorY;
 
-            // Instant responsive follow with micro-jitter filtering
+            // rawPointerAngle: dx > 0 (phải) -> dương; dx < 0 (trái) -> âm
+            const rawPointerAngle = Math.atan2(dx, Math.max(30, dy)) * (180 / Math.PI);
+
+            // Trong CSS rotate(): góc âm quay ngược chiều kim đồng hồ (hướng sang PHẢI),
+            // góc dương quay cùng chiều kim đồng hồ (hướng sang TRÁI).
+            // Do đó: currentPointerAngle = -rawPointerAngle đảm bảo kéo phải -> sang phải, kéo trái -> sang trái!
+            const currentPointerAngle = -rawPointerAngle;
+            const desiredAngle = currentPointerAngle + grabAngleOffset;
+
+            // Cho phép kéo tự do góc siêu rộng (tới ±88 độ) không bị chặn cứng
+            targetAngle = Math.max(-88, Math.min(88, desiredAngle));
+
+            // Follow tức thì không delay
             prevAngle = currentAngle;
-            currentAngle += (targetAngle - currentAngle) * Math.min(1.0, 0.82 * dtNorm);
+            currentAngle += (targetAngle - currentAngle) * Math.min(1.0, 0.85 * dtNorm);
 
-            // Filtered velocity estimation (degrees per second)
+            // Đo gia tốc vận tốc góc
             const instVelocity = (currentAngle - prevAngle) / Math.max(0.001, dtSec);
-            angularVelocity = angularVelocity * 0.4 + instVelocity * 0.6;
+            angularVelocity = angularVelocity * 0.35 + instVelocity * 0.65;
 
-            // Dynamic 3D tilt while dragging (card leans into movement direction)
-            targetTiltY = Math.max(-14, Math.min(14, angularVelocity * 0.04));
-            targetTiltX = Math.max(-8, Math.min(8, -Math.abs(angularVelocity) * 0.018));
+            // Độ co giãn đàn hồi khi kéo dây xuống hoặc kéo lên
+            const currentDist = Math.hypot(dx, dy);
+            const restReach = BASE_STRAP_LEN + 150; // khoảng cách từ chốt neo tới điểm cầm thẻ
+            if (currentDist > restReach) {
+                targetStrapLen = BASE_STRAP_LEN + (currentDist - restReach) * 0.72;
+            } else {
+                targetStrapLen = Math.max(170, BASE_STRAP_LEN + (currentDist - restReach) * 0.45);
+            }
+            targetStrapLen = Math.min(460, targetStrapLen);
+
+            prevStrapLen = currentStrapLen;
+            currentStrapLen += (targetStrapLen - currentStrapLen) * Math.min(1.0, 0.85 * dtNorm);
+            const instStrapVel = (currentStrapLen - prevStrapLen) / Math.max(0.001, dtSec);
+            strapVelocity = strapVelocity * 0.35 + instStrapVel * 0.65;
+
+            // 3D tilt nghiêng theo hướng văng kéo
+            targetTiltY = Math.max(-18, Math.min(18, -angularVelocity * 0.04));
+            targetTiltX = Math.max(-12, Math.min(12, -Math.abs(angularVelocity) * 0.018 + (currentStrapLen - BASE_STRAP_LEN) * 0.05));
         } else {
-            // True Physical Pendulum Equations:
-            // d2θ/dt2 = - (g/L) * sin(θ) - γ * (dθ/dt)
+            // Vật lý con lắc tự do (Pendulum Harmonic Gravity)
+            // Với quy ước CSS: currentAngle < 0 (nghiêng phải) -> -sin(theta) > 0 -> gia tốc kéo về 0
+            // currentAngle > 0 (nghiêng trái) -> -sin(theta) < 0 -> gia tốc kéo về 0
             const thetaRad = currentAngle * (Math.PI / 180);
-            const gravityTorque = -Math.sin(thetaRad) * 44.0 * (180 / Math.PI);
+            const effLength = Math.max(0.3, currentStrapLen / 500.0);
+            const gConst = 9.81 / effLength;
+            const gravityTorque = -Math.sin(thetaRad) * gConst * (180 / Math.PI) * 0.45;
 
-            // Ambient gentle breeze when settled
-            const ambientBreeze = Math.sin(Date.now() * 0.0016) * 1.8;
-            const breezeTorque = (ambientBreeze - currentAngle) * 3.2;
+            // Gió nhẹ tự nhiên đung đưa khi thẻ đứng yên
+            const ambientBreeze = Math.sin(Date.now() * 0.0015) * 1.5;
+            const breezeTorque = (ambientBreeze - currentAngle) * 2.8;
 
             const totalAcc = gravityTorque + breezeTorque;
             angularVelocity += totalAcc * dtSec;
 
-            // Exponential air damping
-            const airDamping = Math.pow(0.978, dtNorm);
+            // Lực cản không khí
+            const airDamping = Math.pow(0.982, dtNorm);
             angularVelocity *= airDamping;
-
             currentAngle += angularVelocity * dtSec;
 
-            // Dynamic 3D tilt follows swing velocity
-            const swingTiltY = Math.max(-12, Math.min(12, angularVelocity * 0.035));
-            const swingTiltX = Math.max(-6, Math.min(6, -Math.abs(angularVelocity) * 0.015));
+            // Lực đàn hồi kéo dây về chiều dài ban đầu (Boing / Spring damping)
+            const springForce = -(currentStrapLen - BASE_STRAP_LEN) * 125.0;
+            const dampingForce = -strapVelocity * 8.5;
+            const strapAcc = springForce + dampingForce;
+            strapVelocity += strapAcc * dtSec;
+            currentStrapLen += strapVelocity * dtSec;
+
+            // Triệt tiêu rung siêu vi
+            if (Math.abs(currentStrapLen - BASE_STRAP_LEN) < 0.2 && Math.abs(strapVelocity) < 0.5) {
+                currentStrapLen = BASE_STRAP_LEN;
+                strapVelocity = 0;
+            }
+
+            // 3D tilt theo nhịp văng con lắc
+            const swingTiltY = Math.max(-14, Math.min(14, -angularVelocity * 0.035));
+            const swingTiltX = Math.max(-8, Math.min(8, -Math.abs(angularVelocity) * 0.015));
             targetTiltY = swingTiltY;
             targetTiltX = swingTiltX;
         }
 
-        // Secondary flex wobble: card hinges slightly at the clasp hook
-        const targetSecondary = -angularVelocity * 0.012 + currentAngle * 0.14;
-        secondaryAngle += (targetSecondary - secondaryAngle) * Math.min(1.0, 0.32 * dtNorm);
+        // Độ lắc linh hoạt của móc treo kim loại (secondary flex hinge)
+        const targetSecondary = -angularVelocity * 0.014 - currentAngle * 0.12;
+        secondaryAngle += (targetSecondary - secondaryAngle) * Math.min(1.0, 0.35 * dtNorm);
 
-        // Smooth 3D tilt interpolation
-        tiltX += (targetTiltX - tiltX) * 0.16 * dtNorm;
-        tiltY += (targetTiltY - tiltY) * 0.16 * dtNorm;
+        // Nội suy độ nghiêng 3D mượt mà
+        tiltX += (targetTiltX - tiltX) * 0.18 * dtNorm;
+        tiltY += (targetTiltY - tiltY) * 0.18 * dtNorm;
 
-        // Realistic glass specular light sweep
-        const targetGlareAngle = 125 + currentAngle * 0.75 + tiltX * 0.6;
+        // Quét vệt phản quang mặt kính & ánh xà cừ 7 màu theo ánh sáng
+        const targetGlareAngle = 125 - currentAngle * 0.8 + tiltX * 0.6;
         glareAngle += (targetGlareAngle - glareAngle) * 0.18 * dtNorm;
 
-        const targetGlarePos = 50 + currentAngle * 1.1 + tiltY * 1.5;
+        const targetGlarePos = 50 - currentAngle * 1.2 + tiltY * 1.5;
         glarePos += (targetGlarePos - glarePos) * 0.18 * dtNorm;
 
-        // Apply hardware-accelerated transforms
+        // Áp dụng GPU Transforms
         pendulum.style.transform = `rotate(${currentAngle.toFixed(2)}deg)`;
         card.style.transform = `rotate(${secondaryAngle.toFixed(2)}deg)`;
+        if (strap) {
+            strap.style.height = `${currentStrapLen.toFixed(1)}px`;
+        }
         if (metallicFrame) {
             metallicFrame.style.transform = `perspective(1000px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg)`;
         }
@@ -1701,7 +1751,7 @@ function initLanyardBadge() {
         const dy = e.clientY - cardCenterY;
         const distance = Math.hypot(dx, dy);
 
-        // Point light coordinate on card
+        // Tọa độ điểm sáng trên mặt thẻ
         mousePctX = Math.min(100, Math.max(0, ((e.clientX - rect.left) / rect.width) * 100));
         mousePctY = Math.min(100, Math.max(0, ((e.clientY - rect.top) / rect.height) * 100));
 
@@ -1714,8 +1764,8 @@ function initLanyardBadge() {
         }
     }, { passive: true });
 
-    // Pointer Events API (Zero grip slippage across Mouse, Touch, Stylus)
-    card.addEventListener('pointerdown', (e) => {
+    // Pointer Events API (Khóa chạm mượt mà trên Chuột, Cảm ứng điện thoại, Bút Stylus)
+    function onPointerDown(e) {
         e.preventDefault();
         isDragging = true;
         updateAnchor();
@@ -1723,28 +1773,35 @@ function initLanyardBadge() {
         pointerX = e.clientX;
         pointerY = e.clientY;
 
-        // Zero-Jump Grab: compute exact angle difference at moment of touch
         const dx = pointerX - anchorX;
-        const dy = Math.max(90, pointerY - anchorY);
-        const pointerAngle = Math.atan2(dx, dy) * (180 / Math.PI);
-        grabAngleOffset = currentAngle - pointerAngle;
+        const dy = pointerY - anchorY;
+
+        // Tính góc chạm tại thời điểm nhấn để không bị giật (Zero-Jump Grab)
+        const rawPointerAngle = Math.atan2(dx, Math.max(30, dy)) * (180 / Math.PI);
+        const currentPointerAngle = -rawPointerAngle;
+
+        grabAngleOffset = currentAngle - currentPointerAngle;
         targetAngle = currentAngle;
+        prevAngle = currentAngle;
         angularVelocity = 0;
 
-        // Pointer Capture guarantees cursor remains locked to card even during fast sweeps
+        prevStrapLen = currentStrapLen;
+        targetStrapLen = currentStrapLen;
+        strapVelocity = 0;
+
         if (card.setPointerCapture) {
             try {
                 card.setPointerCapture(e.pointerId);
             } catch (_) {}
         }
-    });
+    }
 
-    card.addEventListener('pointermove', (e) => {
+    function onPointerMove(e) {
         if (!isDragging) return;
         e.preventDefault();
         pointerX = e.clientX;
         pointerY = e.clientY;
-    });
+    }
 
     function releasePointer(e) {
         if (!isDragging) return;
@@ -1756,12 +1813,19 @@ function initLanyardBadge() {
             } catch (_) {}
         }
 
-        // Clamp release momentum velocity to prevent wild spinning
-        angularVelocity = Math.max(-550, Math.min(550, angularVelocity));
+        // Truyền lực văng quán tính khi thả tay
+        angularVelocity = Math.max(-700, Math.min(700, angularVelocity));
+        strapVelocity = Math.max(-600, Math.min(600, strapVelocity));
     }
 
+    card.addEventListener('pointerdown', onPointerDown);
+    card.addEventListener('pointermove', onPointerMove);
     card.addEventListener('pointerup', releasePointer);
     card.addEventListener('pointercancel', releasePointer);
+
+    if (strap) {
+        strap.addEventListener('pointerdown', onPointerDown);
+    }
 
     // Dynamic re-anchoring on viewport resize or scroll
     window.addEventListener('resize', updateAnchor, { passive: true });
