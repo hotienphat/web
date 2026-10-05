@@ -40,51 +40,75 @@
     <canvas id="cursor-trail-canvas" aria-hidden="true"></canvas>
     <div class="noise-overlay" aria-hidden="true"></div>
 
-    <!-- ===== FLOATING CAPSULE HEADER (INSPIRED BY REFERENCE DESIGN) ===== -->
-    <header id="main-header" class="floating-header">
-        <div class="header-inner">
-            <!-- Brand / Logo -->
-            <a href="#hero-section" class="header-brand" aria-label="Lake Fot Home">
-                <span class="brand-badge">LF</span>
-                <span class="brand-name">LAKE FOT</span>
-            </a>
-
-            <!-- Navigation Links (Centered) -->
-            <nav class="header-nav" aria-label="Điều hướng">
-                <a href="#hero-section" class="nav-link active">HOME</a>
-                <a href="#about-section" class="nav-link">ABOUT</a>
-                <a href="#shortcuts-section" class="nav-link">CONNECT</a>
-                <a href="#projects-section" class="nav-link">WORK</a>
-                <a href="#tree-3d-section" class="nav-link">3D TREE</a>
-                <a href="#donate-section" class="nav-link">DONATE</a>
-            </nav>
-
-            <!-- Actions (Right) -->
-            <div class="header-actions">
-                <!-- Search (Sleek unified pill with balanced 38px height) -->
-                <div class="search-container">
-                    <i class="fas fa-search search-lead-icon" aria-hidden="true"></i>
-                    <input type="text" id="searchInput" aria-label="Tìm kiếm" placeholder="Tìm nhanh..."
-                        class="search-input" autocomplete="off">
-                    <button id="searchButton" class="search-submit-btn" title="Tìm kiếm" aria-label="Tìm kiếm">
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                    <div id="suggestionsDropdown" class="suggestions-dropdown hidden"></div>
-                </div>
-
-                <!-- Theme Toggle Button -->
-                <button id="themeToggleBtn" class="theme-toggle-btn" title="Chuyển chế độ Sáng / Tối" aria-label="Đổi giao diện">
-                    <i class="fas fa-sun theme-icon-sun"></i>
-                    <i class="fas fa-moon theme-icon-moon"></i>
-                </button>
-
-                <!-- Hire Me / Contact CTA Button -->
-                <a href="https://www.facebook.com/KaedeharaKazuha0805" target="_blank" rel="noopener noreferrer" class="hire-me-btn">
-                    <span>Hire Me</span>
+    <!-- ===== TOP FLOATING DOCK (HEADER + DYNAMIC LYRICS CAPSULE) ===== -->
+    <div id="topNavDock" class="top-nav-dock">
+        <header id="main-header" class="floating-header">
+            <div class="header-inner">
+                <!-- Brand / Logo -->
+                <a href="#hero-section" class="header-brand" aria-label="Lake Fot Home">
+                    <span class="brand-badge">LF</span>
+                    <span class="brand-name">LAKE FOT</span>
                 </a>
+
+                <!-- Navigation Links (Centered) -->
+                <nav class="header-nav" aria-label="Điều hướng">
+                    <a href="#hero-section" class="nav-link active">HOME</a>
+                    <a href="#about-section" class="nav-link">ABOUT</a>
+                    <a href="#shortcuts-section" class="nav-link">CONNECT</a>
+                    <a href="#projects-section" class="nav-link">WORK</a>
+                    <a href="#tree-3d-section" class="nav-link">3D TREE</a>
+                    <a href="#donate-section" class="nav-link">DONATE</a>
+                </nav>
+
+                <!-- Actions (Right) -->
+                <div class="header-actions">
+                    <!-- Search (Sleek unified pill with balanced 38px height) -->
+                    <div class="search-container">
+                        <i class="fas fa-search search-lead-icon" aria-hidden="true"></i>
+                        <input type="text" id="searchInput" aria-label="Tìm kiếm" placeholder="Tìm nhanh..."
+                            class="search-input" autocomplete="off">
+                        <button id="searchButton" class="search-submit-btn" title="Tìm kiếm" aria-label="Tìm kiếm">
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <div id="suggestionsDropdown" class="suggestions-dropdown hidden"></div>
+                    </div>
+
+                    <!-- Theme Toggle Button -->
+                    <button id="themeToggleBtn" class="theme-toggle-btn" title="Chuyển chế độ Sáng / Tối" aria-label="Đổi giao diện">
+                        <i class="fas fa-sun theme-icon-sun"></i>
+                        <i class="fas fa-moon theme-icon-moon"></i>
+                    </button>
+
+                    <!-- Hire Me / Contact CTA Button -->
+                    <a href="https://www.facebook.com/KaedeharaKazuha0805" target="_blank" rel="noopener noreferrer" class="hire-me-btn">
+                        <span>Hire Me</span>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dynamic Island Live Lyrics Capsule -->
+        <div id="navLyricsPill" class="nav-lyrics-pill" aria-label="Lời bài hát trực tiếp">
+            <div class="lyrics-pill-inner">
+                <div class="lyrics-pill-wave" aria-hidden="true">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <div class="lyrics-pill-content">
+                    <div class="lyrics-pill-badge">
+                        <i class="fas fa-music"></i>
+                        <span id="navLyricsTrackName">Phép Màu</span>
+                    </div>
+                    <div class="lyrics-pill-lines">
+                        <p id="navCurrentLyric" class="nav-lyric-current">Đang phát lời bài hát...</p>
+                        <p id="navNextLyric" class="nav-lyric-next"></p>
+                    </div>
+                </div>
+                <button id="navLyricsCloseBtn" class="lyrics-pill-close-btn" title="Ẩn lời bài hát" aria-label="Ẩn lời bài hát">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
         </div>
-    </header>
+    </div>
 
     <!-- ===== MAIN SNAP CONTAINER ===== -->
     <div id="page-content" class="snap-container">
@@ -649,7 +673,7 @@
                                 <i class="fas fa-wallet momo-icon"></i>
                                 <span>Momo</span>
                             </div>
-                            <button data-qr-target="momoQrPlaceholder" class="toggle-qr-btn">Hiện QR</button>
+                            <button data-qr-target="momoQrPlaceholder" class="toggle-qr-btn momo-qr-btn">Hiện QR</button>
                         </div>
                         <div id="momoQrPlaceholder" class="qr-placeholder hidden">
                             <img src="./assets/Momo.png" alt="Momo QR Code">
@@ -675,7 +699,7 @@
                                 <i class="fas fa-university bank-icon"></i>
                                 <span>Ngân Hàng</span>
                             </div>
-                            <button data-qr-target="bankQrPlaceholder" class="toggle-qr-btn">Hiện QR</button>
+                            <button data-qr-target="bankQrPlaceholder" class="toggle-qr-btn bank-qr-btn">Hiện QR</button>
                         </div>
                         <div id="bankQrPlaceholder" class="qr-placeholder hidden">
                             <img src="./assets/Viettin.png" alt="Bank QR Code">
@@ -714,15 +738,6 @@
             </div>
         </section>
 
-    </div>
-
-    <!-- ===== LYRICS OVERLAY ===== -->
-    <div id="lyricsOverlay">
-        <button id="closeLyricsBtn" class="close-lyrics-btn" title="Đóng lời bài hát" aria-label="Đóng lời bài hát">
-            <i class="fas fa-times" aria-hidden="true"></i>
-        </button>
-        <p id="currentLyric"></p>
-        <p id="nextLyric"></p>
     </div>
 
     <!-- ===== LEFT-DOCKED VERTICAL MUSIC TAB (NO CLUTTER) ===== -->
