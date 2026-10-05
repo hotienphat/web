@@ -672,7 +672,7 @@ function performSearch() {
     // Internal section mappings
     const sectionMap = [
         { keys: ["về bản thân", "about", "hồ tiến phát", "fot", "thông tin cá nhân"], target: "#about-section" },
-        { keys: ["dự án", "project", "projects", "random", "tạo khung", "giám thị"], target: "#projects-section" },
+        { keys: ["dự án", "project", "projects", "kỷ luật", "kỷ luật online", "trực nề nếp", "nề nếp", "tạo khung", "giám thị", "random"], target: "#projects-section" },
         { keys: ["cây 3d", "3d", "tree", "threejs", "bonsai", "mùa"], target: "#tree-3d-section" },
         { keys: ["liên kết", "link", "shortcuts", "bento", "mạng xã hội", "giải trí"], target: "#shortcuts-section" },
         { keys: ["ủng hộ", "donate", "momo", "ngân hàng", "viettinbank", "stk"], target: "#donate-section" },
@@ -1575,7 +1575,10 @@ function initLanyardBadge() {
     if (!wrapper || !pendulum || !card) return;
 
     // Simulation Configuration & State
-    const BASE_STRAP_LEN = 260; // Dây dài tự nhiên, sang trọng
+    function getBaseStrapLen() {
+        return window.innerWidth <= 900 ? 135 : 260; // Mobile dây dài 135px vừa vặn, desktop 260px sang trọng
+    }
+    let BASE_STRAP_LEN = getBaseStrapLen();
     let currentStrapLen = BASE_STRAP_LEN;
     let targetStrapLen = BASE_STRAP_LEN;
     let prevStrapLen = BASE_STRAP_LEN;
@@ -1610,14 +1613,28 @@ function initLanyardBadge() {
         }
     }
 
+    window.addEventListener('resize', () => {
+        BASE_STRAP_LEN = getBaseStrapLen();
+        if (!isDragging) {
+            targetStrapLen = BASE_STRAP_LEN;
+        }
+        if (window.gsap) {
+            const isMob = window.innerWidth <= 900;
+            gsap.set(wrapper, { xPercent: isMob ? -50 : 0 });
+        }
+        updateAnchor();
+    }, { passive: true });
+
     // Drop-in Animation on load ("Thả dây đeo thẻ mượt mà từ trên xuống")
+    const isMobile = window.innerWidth <= 900;
     if (window.gsap) {
-        gsap.set(wrapper, { y: -750, opacity: 0 });
+        gsap.set(wrapper, { y: -750, opacity: 0, xPercent: isMobile ? -50 : 0 });
         currentAngle = -16;
         angularVelocity = 85;
 
         gsap.to(wrapper, {
             y: 0,
+            xPercent: isMobile ? -50 : 0,
             opacity: 1,
             duration: 1.6,
             ease: "elastic.out(1.02, 0.45)",
@@ -1627,7 +1644,7 @@ function initLanyardBadge() {
             }
         });
     } else {
-        wrapper.style.transform = 'none';
+        wrapper.style.transform = isMobile ? 'translateX(-50%)' : 'none';
         wrapper.style.opacity = '1';
         updateAnchor();
     }
@@ -1666,13 +1683,16 @@ function initLanyardBadge() {
 
             // Độ co giãn đàn hồi khi kéo dây xuống hoặc kéo lên
             const currentDist = Math.hypot(dx, dy);
-            const restReach = BASE_STRAP_LEN + 150; // khoảng cách từ chốt neo tới điểm cầm thẻ
+            const isMob = window.innerWidth <= 900;
+            const minStrap = isMob ? 80 : 170;
+            const maxStrap = isMob ? 260 : 460;
+            const restReach = BASE_STRAP_LEN + (isMob ? 80 : 150); // khoảng cách từ chốt neo tới điểm cầm thẻ
             if (currentDist > restReach) {
                 targetStrapLen = BASE_STRAP_LEN + (currentDist - restReach) * 0.72;
             } else {
-                targetStrapLen = Math.max(170, BASE_STRAP_LEN + (currentDist - restReach) * 0.45);
+                targetStrapLen = Math.max(minStrap, BASE_STRAP_LEN + (currentDist - restReach) * 0.45);
             }
-            targetStrapLen = Math.min(460, targetStrapLen);
+            targetStrapLen = Math.min(maxStrap, targetStrapLen);
 
             prevStrapLen = currentStrapLen;
             currentStrapLen += (targetStrapLen - currentStrapLen) * Math.min(1.0, 0.85 * dtNorm);

@@ -540,7 +540,389 @@
         }
 
         // -------------------------------------------------------------
-        // 9. Resize Handling & ResizeObserver (Crucial for unhiding)
+        // 8.1 Hand Gesture Camera Controller (MediaPipe Hands / AI Vision)
+        // -------------------------------------------------------------
+        initHandGestureController();
+
+        function initHandGestureController() {
+            const cameraBtn = document.getElementById("treeCameraBtn");
+            const stopBtn = document.getElementById("treeStopCamBtn");
+            const guideBtn = document.getElementById("treeGestureGuideBtn");
+            const feedbackEl = document.getElementById("treeGestureFeedback");
+            const feedbackText = document.getElementById("treeGestureText");
+            const pipWrapper = document.getElementById("treePipWrapper");
+            const pipVideo = document.getElementById("treePipVideo");
+            const pipCanvas = document.getElementById("treePipCanvas");
+            const pipDot = document.getElementById("pipHandDot");
+            const guideModal = document.getElementById("treeGestureModal");
+            const closeModalBtn = document.getElementById("closeGestureModalBtn");
+            const modalBackdrop = document.getElementById("gestureModalBackdrop");
+
+            if (!cameraBtn) return;
+
+            let mediaStream = null;
+            let handsDetector = null;
+            let cameraUtilsCamera = null;
+            let isTracking = false;
+            let animLoopId = null;
+            let lastSeasonSwitchTime = 0;
+            let feedbackTimeout = null;
+
+            // Hand skeleton topology for PIP rendering
+            const HAND_CONNECTIONS = [
+                [0, 1], [1, 2], [2, 3], [3, 4],
+                [0, 5], [5, 6], [6, 7], [7, 8],
+                [5, 9], [9, 10], [10, 11], [11, 12],
+                [9, 13], [13, 14], [14, 15], [15, 16],
+                [13, 17], [17, 18], [18, 19], [19, 20],
+                [0, 17]
+            ];
+
+            // Modal Interactions
+            if (guideBtn && guideModal) {
+                guideBtn.addEventListener("click", () => {
+                    guideModal.style.display = "flex";
+                });
+            }
+            if (closeModalBtn && guideModal) {
+                closeModalBtn.addEventListener("click", () => {
+                    guideModal.style.display = "none";
+                });
+            }
+            if (modalBackdrop && guideModal) {
+                modalBackdrop.addEventListener("click", () => {
+                    guideModal.style.display = "none";
+                });
+            }
+            window.addEventListener("keydown", (e) => {
+                if (e.key === "Escape" && guideModal && guideModal.style.display === "flex") {
+                    guideModal.style.display = "none";
+                }
+            });
+
+            function showFeedback(icon, text, persistMs = 2000) {
+                if (!feedbackEl || !feedbackText) return;
+                const iconEl = feedbackEl.querySelector(".gesture-icon");
+                if (iconEl) iconEl.textContent = icon;
+                feedbackText.textContent = text;
+                feedbackEl.style.display = "flex";
+
+                if (feedbackTimeout) clearTimeout(feedbackTimeout);
+                if (persistMs > 0) {
+                    feedbackTimeout = setTimeout(() => {
+                        if (isTracking && feedbackText) {
+                            if (iconEl) iconEl.textContent = "🖐️";
+                            feedbackText.textContent = "Đang nhận diện bàn tay...";
+                        }
+                    }, persistMs);
+                }
+            }
+
+            // Start Camera Stream
+            async function startCamera() {
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    alert("Trình duyệt hoặc môi trường của bạn không hỗ trợ truy cập Camera trực tiếp. Vui lòng kiểm tra quyền camera hoặc thử trên Chrome / Safari.");
+                    return;
+                }
+
+                try {
+                    cameraBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> <span>Đang khởi động...</span>`;
+                    cameraBtn.disabled = true;
+
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        video: {
+                            facingMode: "user",
+                            width: { ideal: 480 },
+                            height: { ideal: 360 }
+                        },
+                        audio: false
+                    });
+
+                    mediaStream = stream;
+                    if (pipVideo) {
+                        pipVideo.srcObject = stream;
+                        await pipVideo.play();
+                    }
+
+                    // Once permission granted, hide the request button as requested: "khi nào cấp cái nút đó mới ẩn đi"
+                    cameraBtn.style.display = "none";
+                    cameraBtn.disabled = false;
+                    cameraBtn.innerHTML = `<i class="fas fa-video"></i> <span>Camera AI</span>`;
+
+                    if (stopBtn) stopBtn.style.display = "inline-flex";
+                    if (pipWrapper) pipWrapper.style.display = "block";
+                    if (feedbackEl) feedbackEl.style.display = "flex";
+
+                    showFeedback("🖐️", "Đã bật Camera. Hãy đưa bàn tay vào khung hình!", 3500);
+
+                    // Pause auto rotation to allow fluid manual gesture navigation
+                    isAutoRotating = false;
+                    if (controls) controls.autoRotate = false;
+                    if (rotateBtn) {
+                        rotateBtn.classList.remove("active");
+                        rotateBtn.innerHTML = `<i class="fas fa-play"></i> <span>Tự xoay</span>`;
+                    }
+
+                    isTracking = true;
+                    setupDetector();
+                } catch (err) {
+                    console.error("[Tree3D] Camera access error:", err);
+                    cameraBtn.disabled = false;
+                    cameraBtn.innerHTML = `<i class="fas fa-video"></i> <span>Camera AI</span>`;
+                    alert("Không thể truy cập camera. Vui lòng cho phép quyền truy cập Camera trong trình duyệt để điều khiển bằng cử chỉ tay.");
+                }
+            }
+
+            // Stop Camera Stream
+            function stopCamera() {
+                isTracking = false;
+                if (mediaStream) {
+                    mediaStream.getTracks().forEach(track => track.stop());
+                    mediaStream = null;
+                }
+                if (pipVideo) {
+                    pipVideo.pause();
+                    pipVideo.srcObject = null;
+                }
+                if (cameraUtilsCamera && cameraUtilsCamera.stop) {
+                    try { cameraUtilsCamera.stop(); } catch (_) {}
+                    cameraUtilsCamera = null;
+                }
+                if (animLoopId) {
+                    cancelAnimationFrame(animLoopId);
+                    animLoopId = null;
+                }
+
+                if (cameraBtn) cameraBtn.style.display = "inline-flex";
+                if (stopBtn) stopBtn.style.display = "none";
+                if (pipWrapper) pipWrapper.style.display = "none";
+                if (feedbackEl) feedbackEl.style.display = "none";
+                if (pipDot) pipDot.style.display = "none";
+
+                // Resume auto-rotation
+                isAutoRotating = true;
+                if (controls) controls.autoRotate = true;
+                if (rotateBtn) {
+                    rotateBtn.classList.add("active");
+                    rotateBtn.innerHTML = `<i class="fas fa-sync-alt fa-spin"></i> <span>Tự xoay</span>`;
+                }
+            }
+
+            if (cameraBtn) cameraBtn.addEventListener("click", startCamera);
+            if (stopBtn) stopBtn.addEventListener("click", stopCamera);
+            window.addEventListener("beforeunload", stopCamera);
+
+            // Initialize MediaPipe Hands Detector
+            function setupDetector() {
+                if (typeof window.Hands !== "undefined") {
+                    try {
+                        handsDetector = new window.Hands({
+                            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+                        });
+
+                        handsDetector.setOptions({
+                            maxNumHands: 1,
+                            modelComplexity: 1,
+                            minDetectionConfidence: 0.5,
+                            minTrackingConfidence: 0.5
+                        });
+
+                        handsDetector.onResults(onHandResults);
+
+                        if (typeof window.Camera !== "undefined") {
+                            cameraUtilsCamera = new window.Camera(pipVideo, {
+                                onFrame: async () => {
+                                    if (isTracking && pipVideo && pipVideo.readyState >= 2 && handsDetector) {
+                                        try {
+                                            await handsDetector.send({ image: pipVideo });
+                                        } catch (_) {}
+                                    }
+                                },
+                                width: 480,
+                                height: 360
+                            });
+                            cameraUtilsCamera.start();
+                        } else {
+                            runFrameLoop();
+                        }
+                        return;
+                    } catch (e) {
+                        console.warn("[Tree3D] MediaPipe Hands init warning:", e);
+                    }
+                }
+                // Fallback loop if Camera utility is not present
+                runFrameLoop();
+            }
+
+            function runFrameLoop() {
+                async function loop() {
+                    if (!isTracking) return;
+                    if (pipVideo && pipVideo.readyState >= 2 && handsDetector) {
+                        try {
+                            await handsDetector.send({ image: pipVideo });
+                        } catch (_) {}
+                    }
+                    animLoopId = requestAnimationFrame(loop);
+                }
+                animLoopId = requestAnimationFrame(loop);
+            }
+
+            // Process Hand Results
+            function onHandResults(results) {
+                if (!isTracking) return;
+
+                const ctx = pipCanvas ? pipCanvas.getContext("2d") : null;
+                const vw = pipVideo.videoWidth || 320;
+                const vh = pipVideo.videoHeight || 240;
+
+                if (pipCanvas && (pipCanvas.width !== vw || pipCanvas.height !== vh)) {
+                    pipCanvas.width = vw;
+                    pipCanvas.height = vh;
+                }
+
+                if (ctx) ctx.clearRect(0, 0, vw, vh);
+
+                if (!results.multiHandLandmarks || results.multiHandLandmarks.length === 0) {
+                    if (pipDot) pipDot.style.display = "none";
+                    return;
+                }
+
+                const landmarks = results.multiHandLandmarks[0];
+
+                // Draw skeleton in PIP canvas
+                if (ctx) {
+                    ctx.save();
+                    ctx.lineWidth = 2.5;
+                    ctx.strokeStyle = "rgba(34, 211, 238, 0.85)";
+                    ctx.shadowColor = "#22d3ee";
+                    ctx.shadowBlur = 6;
+
+                    // Draw bones
+                    HAND_CONNECTIONS.forEach(([i, j]) => {
+                        const p1 = landmarks[i];
+                        const p2 = landmarks[j];
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x * vw, p1.y * vh);
+                        ctx.lineTo(p2.x * vw, p2.y * vh);
+                        ctx.stroke();
+                    });
+
+                    // Draw joints
+                    ctx.fillStyle = "rgba(168, 85, 247, 0.95)";
+                    ctx.shadowColor = "#a855f7";
+                    ctx.shadowBlur = 8;
+                    landmarks.forEach(p => {
+                        ctx.beginPath();
+                        ctx.arc(p.x * vw, p.y * vh, 3.5, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+                    ctx.restore();
+                }
+
+                // Calculate Palm Center
+                // Note: Video is mirrored with scaleX(-1). We invert X to make user's physical movement match screen direction.
+                const rawPalmX = (landmarks[0].x + landmarks[9].x) * 0.5;
+                const rawPalmY = (landmarks[0].y + landmarks[9].y) * 0.5;
+                const userX = 1 - rawPalmX; // 0 = user left, 1 = user right
+                const userY = rawPalmY;     // 0 = user top, 1 = user bottom
+
+                // Position PIP hand dot
+                if (pipDot) {
+                    pipDot.style.display = "block";
+                    pipDot.style.left = `${rawPalmX * 100}%`;
+                    pipDot.style.top = `${rawPalmY * 100}%`;
+                }
+
+                // Detect Finger Count (Extended Fingers)
+                const wrist = landmarks[0];
+                function isFingerExtended(tipIdx, pipIdx) {
+                    const tip = landmarks[tipIdx];
+                    const pip = landmarks[pipIdx];
+                    const dTip = Math.hypot(tip.x - wrist.x, tip.y - wrist.y);
+                    const dPip = Math.hypot(pip.x - wrist.x, pip.y - wrist.y);
+                    return dTip > dPip * 1.15;
+                }
+
+                const pinkyMcp = landmarks[17];
+                const thumbTip = landmarks[4];
+                const thumbIp = landmarks[3];
+                const dThumbTip = Math.hypot(thumbTip.x - pinkyMcp.x, thumbTip.y - pinkyMcp.y);
+                const dThumbIp = Math.hypot(thumbIp.x - pinkyMcp.x, thumbIp.y - pinkyMcp.y);
+                const thumbExtended = dThumbTip > dThumbIp * 1.12;
+
+                const indexExtended = isFingerExtended(8, 6);
+                const middleExtended = isFingerExtended(12, 10);
+                const ringExtended = isFingerExtended(16, 14);
+                const pinkyExtended = isFingerExtended(20, 18);
+
+                const extendedCount = [thumbExtended, indexExtended, middleExtended, ringExtended, pinkyExtended].filter(Boolean).length;
+
+                // Hand Span / Scale (Distance from camera for Zoom)
+                const handSpan = Math.hypot(landmarks[9].x - landmarks[0].x, landmarks[9].y - landmarks[0].y);
+
+                // 1. Season Switching via Extended Finger Count (debounced)
+                const now = performance.now();
+                if (now - lastSeasonSwitchTime > 1200) {
+                    if (extendedCount === 1) {
+                        applySeason("spring");
+                        showFeedback("🌸", "Mùa Xuân (1 ngón tay)", 2200);
+                        lastSeasonSwitchTime = now;
+                    } else if (extendedCount === 2) {
+                        applySeason("summer");
+                        showFeedback("☀️", "Mùa Hạ (2 ngón tay)", 2200);
+                        lastSeasonSwitchTime = now;
+                    } else if (extendedCount === 3) {
+                        applySeason("autumn");
+                        showFeedback("🍁", "Mùa Thu (3 ngón tay)", 2200);
+                        lastSeasonSwitchTime = now;
+                    } else if (extendedCount >= 4) {
+                        applySeason("winter");
+                        showFeedback("❄️", "Mùa Đông (Xòe bàn tay)", 2200);
+                        lastSeasonSwitchTime = now;
+                    } else if (extendedCount === 0) {
+                        showFeedback("✊", "Đang giữ nguyên góc nhìn (Nắm tay)", 1500);
+                    }
+                }
+
+                // 2. Camera Rotation (Pan/Tilt) via Hand Position Joystick
+                // Deadband around center (0.42 to 0.58)
+                const dx = userX - 0.5;
+                const dy = userY - 0.5;
+                const deadband = 0.07;
+
+                const target = (controls && controls.target) ? controls.target : defaultTarget;
+                const offset = new THREE.Vector3().subVectors(camera.position, target);
+                let radius = offset.length();
+                let theta = Math.atan2(offset.x, offset.z);
+                let phi = Math.acos(Math.max(-1, Math.min(1, offset.y / Math.max(0.1, radius))));
+
+                if (Math.abs(dx) > deadband) {
+                    const steerX = (dx > 0 ? (dx - deadband) : (dx + deadband)) * 0.085;
+                    theta += steerX;
+                }
+
+                if (Math.abs(dy) > deadband) {
+                    const steerY = (dy > 0 ? (dy - deadband) : (dy + deadband)) * 0.045;
+                    phi = Math.max(0.2, Math.min(Math.PI / 2 + 0.05, phi + steerY));
+                }
+
+                // 3. Zoom In / Zoom Out via Hand Span
+                if (handSpan > 0.28) {
+                    radius = Math.max(13, radius - 0.38);
+                    showFeedback("🔍", "Phóng to (Tay lại gần)", 1000);
+                } else if (handSpan < 0.13 && handSpan > 0.04) {
+                    radius = Math.min(48, radius + 0.38);
+                    showFeedback("🔍", "Thu nhỏ (Tay ra xa)", 1000);
+                }
+
+                offset.x = radius * Math.sin(phi) * Math.sin(theta);
+                offset.y = radius * Math.cos(phi);
+                offset.z = radius * Math.sin(phi) * Math.cos(theta);
+
+                camera.position.copy(target).add(offset);
+                camera.lookAt(target);
+            }
+        }
         // -------------------------------------------------------------
         function handleResize() {
             if (!container) return;

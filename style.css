@@ -3764,6 +3764,293 @@ main {
   font-weight: 600;
 }
 
+/* Tree Camera & Gesture Control Styles */
+.tree-cam-btn {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #34d399;
+}
+
+.tree-cam-btn:hover {
+  background: rgba(16, 185, 129, 0.28);
+  border-color: rgba(16, 185, 129, 0.6);
+  color: #6ee7b7;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.35);
+}
+
+.tree-cam-stop-btn {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #f87171;
+}
+
+.tree-cam-stop-btn:hover {
+  background: rgba(239, 68, 68, 0.28);
+  border-color: rgba(239, 68, 68, 0.6);
+  color: #fca5a5;
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.35);
+}
+
+.cam-dot-pulse {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 8px #ef4444;
+  animation: camPulse 1.2s infinite ease-in-out;
+}
+
+@keyframes camPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+}
+
+.tree-guide-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0 !important;
+  justify-content: center;
+  border-radius: 50% !important;
+  color: var(--accent-cyan);
+  border-color: rgba(34, 211, 238, 0.35);
+}
+
+.tree-guide-btn:hover {
+  color: #fff;
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 14px rgba(34, 211, 238, 0.35);
+}
+
+/* Gesture Live Feedback Pill */
+.tree-gesture-feedback {
+  position: absolute;
+  top: 62px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  background: rgba(12, 12, 28, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(34, 211, 238, 0.4);
+  border-radius: 9999px;
+  padding: 5px 14px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #f1f5f9;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  animation: feedbackFadeIn 0.3s ease;
+}
+
+@keyframes feedbackFadeIn {
+  from { opacity: 0; transform: translate(-50%, -8px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* Mini PIP Camera Preview */
+.tree-pip-wrapper {
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+  width: 112px;
+  height: 84px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1.5px solid rgba(34, 211, 238, 0.45);
+  background: #090914;
+  z-index: 6;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  pointer-events: auto;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.tree-pip-wrapper:hover {
+  transform: scale(1.08);
+  border-color: rgba(34, 211, 238, 0.8);
+}
+
+.tree-pip-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+  display: block;
+}
+
+.tree-pip-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transform: scaleX(-1);
+}
+
+.pip-hand-dot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #22d3ee;
+  box-shadow: 0 0 10px #22d3ee, 0 0 20px #22d3ee;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  display: none;
+}
+
+/* Gesture Help Modal */
+.tree-gesture-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.gesture-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 5, 15, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.gesture-modal-card {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 440px;
+  background: rgba(15, 15, 30, 0.95);
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  border-radius: 18px;
+  padding: 1.25rem 1.4rem;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), 0 0 30px rgba(168, 85, 247, 0.15);
+  animation: gestureModalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes gestureModalIn {
+  from { opacity: 0; transform: scale(0.92) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.gesture-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.6rem;
+}
+
+.gesture-modal-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.gesture-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.gesture-close-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.gesture-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.gesture-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.gesture-item-icon {
+  font-size: 1.35rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.gesture-item-info strong {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--accent-cyan);
+  margin-bottom: 2px;
+}
+
+.gesture-item-info p {
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.gesture-security-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.68rem;
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 8px;
+  padding: 6px 10px;
+  margin-top: 0.2rem;
+}
+
+/* Light Theme Adaptations */
+body.light-theme .tree-gesture-feedback {
+  background: rgba(255, 255, 255, 0.9);
+  color: #1e293b;
+  border-color: rgba(34, 211, 238, 0.6);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+body.light-theme .gesture-modal-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(168, 85, 247, 0.3);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+}
+
+body.light-theme .gesture-modal-title {
+  color: #0f172a;
+}
+
+body.light-theme .gesture-item {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+body.light-theme .gesture-item-info p {
+  color: #475569;
+}
+
 /* Responsive Styles for 3D Tree */
 @media (max-width: 768px) {
   .tree-3d-wrapper {
@@ -5068,20 +5355,21 @@ body.light-theme .panel-inner {
     display: none !important;
   }
 
-  /* 3. Hanging Lanyard ID Badge: Scaled to 0.38 & Pinned Top-Right */
+  /* 3. Hanging Lanyard ID Badge: Centered with longer strap */
   .hero-lanyard-wrapper {
     display: block !important;
     position: absolute !important;
-    top: 6px !important;
-    right: 0.25rem !important;
+    top: -5px !important;
+    left: 50% !important;
+    right: auto !important;
     z-index: 25 !important;
-    transform: scale(0.38) !important;
-    transform-origin: top right !important;
+    transform: translateX(-50%) scale(0.42) !important;
+    transform-origin: top center !important;
     pointer-events: auto !important;
   }
 
   .hero-lanyard-wrapper .lanyard-strap {
-    height: 52px !important;
+    height: 135px !important;
   }
 
   /* 4. Left-Docked Soundtrack Button: Retained Exactly Like Desktop */
@@ -5295,24 +5583,28 @@ body.light-theme .panel-inner {
   }
 
   .avatar-circle-wrapper {
-    width: 110px !important;
-    height: 110px !important;
+    width: 140px !important;
+    height: 140px !important;
     margin: 0 auto !important;
     flex-shrink: 0 !important;
   }
 
   .avatar-circle-frame {
-    width: 88px !important;
-    height: 88px !important;
+    width: 106px !important;
+    height: 106px !important;
   }
 
   .avatar-circle-glow {
-    width: 88px !important;
-    height: 88px !important;
+    width: 106px !important;
+    height: 106px !important;
   }
 
   .avatar-curved-text {
-    font-size: 7.5px !important;
+    font-size: 21px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.16em !important;
+    fill: var(--accent-cyan) !important;
+    text-shadow: 0 0 10px rgba(34, 211, 238, 0.6) !important;
   }
 
   .avatar-center-badge {
@@ -5383,18 +5675,25 @@ body.light-theme .panel-inner {
     display: none !important;
   }
 
+  /* Full-Bleed Edge-to-Edge Marquee on Mobile (Tràn viền 100% như trên PC) */
   .tech-marquee-bar {
     position: absolute !important;
-    bottom: 0.5rem !important;
-    left: 2.2rem !important;
-    right: 0.85rem !important;
-    height: 28px !important;
-    border-radius: 8px !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100vw !important;
+    height: 32px !important;
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    z-index: 10 !important;
+    margin: 0 !important;
   }
 
   .tech-marquee-bar .marquee-item {
-    font-size: 0.65rem !important;
-    gap: 0.25rem !important;
+    font-size: 0.68rem !important;
+    gap: 0.3rem !important;
   }
 
   /* 8. Section 3: Bento Grid Shortcuts (2x2 Balanced Matrix) */
@@ -5637,6 +5936,26 @@ body.light-theme .panel-inner {
   .tree-tool-btn {
     padding: 3px 6px !important;
     font-size: 0.65rem !important;
+  }
+
+  .tree-guide-btn {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 0.6rem !important;
+  }
+
+  .tree-pip-wrapper {
+    width: 72px !important;
+    height: 54px !important;
+    bottom: 46px !important;
+    left: 8px !important;
+    border-radius: 8px !important;
+  }
+
+  .tree-gesture-feedback {
+    top: 36px !important;
+    font-size: 0.62rem !important;
+    padding: 3px 8px !important;
   }
 
   .tree-controls {
