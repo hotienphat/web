@@ -16,7 +16,7 @@ let circularVisualizerCanvas, circularVisualizerCtx, circularRafId;
 let playPauseMusicBtn, stopMusicBtn, musicProgressBar, albumArtElement;
 let currentTimeEl, durationEl, songTitleEl, songArtistEl;
 let volumeBtn, volumeSlider, prevTrackBtn, nextTrackBtn;
-let lyricsOverlay, currentLyricEl, nextLyricEl, nowPlayingIndicator;
+let topNavDock, navLyricsPill, currentLyricEl, nextLyricEl, navLyricsTrackName, nowPlayingIndicator;
 let isLyricsEnabled = true;
 
 // Search
@@ -726,9 +726,12 @@ function initMusicPlayer() {
     volumeSlider = document.getElementById('volumeSlider');
     prevTrackBtn = document.getElementById('prevTrackBtn');
     nextTrackBtn = document.getElementById('nextTrackBtn');
-    lyricsOverlay = document.getElementById('lyricsOverlay');
-    currentLyricEl = document.getElementById('currentLyric');
-    nextLyricEl = document.getElementById('nextLyric');
+    topNavDock = document.getElementById('topNavDock');
+    navLyricsPill = document.getElementById('navLyricsPill');
+    currentLyricEl = document.getElementById('navCurrentLyric');
+    nextLyricEl = document.getElementById('navNextLyric');
+    navLyricsTrackName = document.getElementById('navLyricsTrackName');
+    const navLyricsCloseBtn = document.getElementById('navLyricsCloseBtn');
 
     // Docked Tab & Slide-Out Drawer Logic
     const playerDockBtn = document.getElementById('playerDockBtn');
@@ -736,7 +739,6 @@ function initMusicPlayer() {
     const playerPanel = document.getElementById('playerPanel');
     const closePlayerBtn = document.getElementById('closePlayerBtn');
     const toggleLyricsBtn = document.getElementById('toggleLyricsBtn');
-    const closeLyricsBtn = document.getElementById('closeLyricsBtn');
 
     if (playerDockBtn && playerPanel) {
         playerDockBtn.addEventListener('click', () => {
@@ -767,7 +769,7 @@ function initMusicPlayer() {
 
     const essentials = [playPauseMusicBtn, stopMusicBtn, musicProgressBar, albumArtElement,
         currentTimeEl, durationEl, songTitleEl, songArtistEl, volumeBtn, volumeSlider,
-        prevTrackBtn, nextTrackBtn, lyricsOverlay, currentLyricEl, nextLyricEl];
+        prevTrackBtn, nextTrackBtn];
 
     if (essentials.some(el => !el)) {
         console.error("Missing music player DOM elements!");
@@ -796,11 +798,13 @@ function initMusicPlayer() {
         }
         if (nowPlayingIndicator) nowPlayingIndicator.classList.add('active');
         updatePlaylistUI();
+        if (audioPlayer) updateLyrics(audioPlayer.currentTime);
     });
     audioPlayer.addEventListener('pause', () => {
         updatePlayPauseIcon();
         if (albumArtElement) albumArtElement.classList.add('paused');
         if (nowPlayingIndicator && audioPlayer.currentTime === 0) nowPlayingIndicator.classList.remove('active');
+        if (topNavDock) topNavDock.classList.remove('has-lyrics');
         updatePlaylistUI();
     });
 
@@ -811,7 +815,7 @@ function initMusicPlayer() {
     updateTrackButtonsState();
     updateVolumeIcon();
 
-    // Toggle Lyrics Button
+    // Toggle Lyrics Button in Drawer
     if (toggleLyricsBtn) {
         toggleLyricsBtn.addEventListener('click', () => {
             isLyricsEnabled = !isLyricsEnabled;
@@ -820,12 +824,13 @@ function initMusicPlayer() {
         });
     }
 
-    // Close Lyrics Button
-    if (closeLyricsBtn) {
-        closeLyricsBtn.addEventListener('click', () => {
+    // Close Lyrics Button in Nav Pill
+    if (navLyricsCloseBtn) {
+        navLyricsCloseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             isLyricsEnabled = false;
             updateLyricsIcon();
-            if (audioPlayer) updateLyrics(audioPlayer.currentTime);
+            if (topNavDock) topNavDock.classList.remove('has-lyrics');
         });
     }
 }
@@ -974,9 +979,9 @@ function stopAudio() {
     if (nowPlayingIndicator) nowPlayingIndicator.classList.remove('active');
 
     // Reset lyrics
-    if (lyricsOverlay) lyricsOverlay.classList.remove('visible');
+    if (topNavDock) topNavDock.classList.remove('has-lyrics');
     if (currentLyricEl) { currentLyricEl.textContent = ''; currentLyricEl.classList.remove('active'); }
-    if (nextLyricEl) { nextLyricEl.textContent = ''; nextLyricEl.classList.remove('visible'); }
+    if (nextLyricEl) { nextLyricEl.textContent = ''; }
     currentLyricIndex = -1;
 }
 
@@ -1083,31 +1088,28 @@ function updateTrackButtonsState() {
 }
 
 // ============================================
-// LYRICS
+// LYRICS (INTEGRATED INTO DYNAMIC TOP NAV CAPSULE)
 // ============================================
 // Update Lyrics UI
 function updateLyrics(time) {
-    if (!isLyricsEnabled || !audioPlayer || !lyricsOverlay || !currentLyricEl || !nextLyricEl) {
-        if (lyricsOverlay) lyricsOverlay.classList.remove('visible');
+    if (!isLyricsEnabled || !audioPlayer) {
+        if (topNavDock) topNavDock.classList.remove('has-lyrics');
         return;
     }
 
     const track = audioPlaylist[currentTrackIndex];
-    const hasLyrics = track && track.title && track.title.includes("Phép Màu (Đàn Cá Gỗ OST)");
+    const hasLyrics = track && track.title && track.title.includes("Phép Màu");
 
-    if (!hasLyrics) {
-        lyricsOverlay.classList.remove('visible');
-        currentLyricEl.textContent = ''; currentLyricEl.classList.remove('active');
-        nextLyricEl.textContent = ''; nextLyricEl.classList.remove('visible');
+    if (!hasLyrics || audioPlayer.paused || audioPlayer.ended) {
+        if (topNavDock) topNavDock.classList.remove('has-lyrics');
+        if (currentLyricEl) currentLyricEl.textContent = '';
+        if (nextLyricEl) nextLyricEl.textContent = '';
         currentLyricIndex = -1;
         return;
     }
 
-    if (!audioPlayer.paused || audioPlayer.readyState >= 2) {
-        lyricsOverlay.classList.add('visible');
-    } else {
-        lyricsOverlay.classList.remove('visible');
-    }
+    if (topNavDock) topNavDock.classList.add('has-lyrics');
+    if (navLyricsTrackName) navLyricsTrackName.textContent = track.title.split('(')[0].trim();
 
     let newIdx = -1;
     for (let i = 0; i < phepMauLyrics.length; i++) {
@@ -1119,26 +1121,27 @@ function updateLyrics(time) {
         currentLyricIndex = newIdx;
 
         if (currentLyricIndex !== -1 && phepMauLyrics[currentLyricIndex]) {
-            currentLyricEl.classList.remove('active');
-            setTimeout(() => {
-                currentLyricEl.textContent = phepMauLyrics[currentLyricIndex].text;
-                currentLyricEl.classList.add('active');
-            }, 50);
+            if (currentLyricEl) {
+                currentLyricEl.classList.remove('active');
+                setTimeout(() => {
+                    if (currentLyricEl && phepMauLyrics[currentLyricIndex]) {
+                        currentLyricEl.textContent = phepMauLyrics[currentLyricIndex].text;
+                        currentLyricEl.classList.add('active');
+                    }
+                }, 30);
+            }
         } else {
-            currentLyricEl.textContent = '';
-            currentLyricEl.classList.remove('active');
+            if (currentLyricEl) {
+                currentLyricEl.textContent = '';
+                currentLyricEl.classList.remove('active');
+            }
         }
 
         const nextIdx = currentLyricIndex + 1;
         if (nextIdx < phepMauLyrics.length && phepMauLyrics[nextIdx] && phepMauLyrics[nextIdx].text.trim()) {
-            nextLyricEl.classList.remove('visible');
-            setTimeout(() => {
-                nextLyricEl.textContent = phepMauLyrics[nextIdx].text;
-                nextLyricEl.classList.add('visible');
-            }, 100);
+            if (nextLyricEl) nextLyricEl.textContent = phepMauLyrics[nextIdx].text;
         } else {
-            nextLyricEl.textContent = '';
-            nextLyricEl.classList.remove('visible');
+            if (nextLyricEl) nextLyricEl.textContent = '';
         }
     }
 }
