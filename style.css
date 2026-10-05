@@ -1077,7 +1077,7 @@ textarea {
 .card-inner-surface {
   background: #090e0b;
   border-radius: 12px;
-  padding: 12px;
+  padding: 10px;
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1089,8 +1089,8 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
-  padding-bottom: 6px;
+  margin-bottom: 8px;
+  padding-bottom: 5px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -1145,7 +1145,7 @@ textarea {
 /* Card Photo Container */
 .card-photo-container {
   width: 100%;
-  height: 190px;
+  height: 245px;
   border-radius: 8px;
   overflow: hidden;
   position: relative;
@@ -1158,8 +1158,8 @@ textarea {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: top center;
-  filter: contrast(1.05) brightness(1.02);
+  object-position: center 48%;
+  filter: contrast(1.04) brightness(1.02);
   display: block;
 }
 
@@ -1179,12 +1179,12 @@ textarea {
 
 /* Card Body Information */
 .card-body-info {
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .card-name-title {
   text-align: center;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .card-user-name {
@@ -1213,11 +1213,11 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 8px;
+  padding: 5px 8px;
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .card-hologram-seal {
