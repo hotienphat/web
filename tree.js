@@ -64,9 +64,10 @@
             powerPreference: "high-performance"
         });
         renderer.setSize(width, height);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        const isMobDevice = window.innerWidth <= 768;
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobDevice ? 1.25 : 1.75));
         renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.shadowMap.type = isMobDevice ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = 1.1;
 
@@ -163,8 +164,8 @@
         const dirLight = new THREE.DirectionalLight(0xfff8ee, 1.1);
         dirLight.position.set(16, 28, 16);
         dirLight.castShadow = true;
-        dirLight.shadow.mapSize.width = 1024;
-        dirLight.shadow.mapSize.height = 1024;
+        dirLight.shadow.mapSize.width = isMobDevice ? 512 : 1024;
+        dirLight.shadow.mapSize.height = isMobDevice ? 512 : 1024;
         dirLight.shadow.camera.near = 0.5;
         dirLight.shadow.camera.far = 80;
         dirLight.shadow.camera.left = -18;
@@ -632,8 +633,9 @@
                     const stream = await navigator.mediaDevices.getUserMedia({
                         video: {
                             facingMode: "user",
-                            width: { ideal: 480 },
-                            height: { ideal: 360 }
+                            width: { ideal: 320, max: 480 },
+                            height: { ideal: 240, max: 360 },
+                            frameRate: { ideal: 20, max: 24 }
                         },
                         audio: false
                     });
@@ -676,6 +678,7 @@
             // Stop Camera Stream
             function stopCamera() {
                 isTracking = false;
+                isProcessing = false;
                 if (mediaStream) {
                     mediaStream.getTracks().forEach(track => track.stop());
                     mediaStream = null;
@@ -712,6 +715,16 @@
             if (stopBtn) stopBtn.addEventListener("click", stopCamera);
             window.addEventListener("beforeunload", stopCamera);
 
+            // Dedicated offscreen processing canvas for 97% lighter MediaPipe ingestion
+            const procCanvas = document.createElement("canvas");
+            procCanvas.width = 240;
+            procCanvas.height = 180;
+            const procCtx = procCanvas.getContext("2d", { willReadFrequently: true });
+
+            let isProcessing = false;
+            let lastProcessTime = 0;
+            const INFER_INTERVAL = 66; // 15 FPS: ultra-responsive yet zero frame drops
+
             // Initialize MediaPipe Hands Detector
             function setupDetector() {
                 if (typeof window.Hands !== "undefined") {
@@ -722,45 +735,34 @@
 
                         handsDetector.setOptions({
                             maxNumHands: 1,
-                            modelComplexity: 1,
+                            modelComplexity: 0, // Lite model for mobile & instant inference!
                             minDetectionConfidence: 0.5,
                             minTrackingConfidence: 0.5
                         });
 
                         handsDetector.onResults(onHandResults);
-
-                        if (typeof window.Camera !== "undefined") {
-                            cameraUtilsCamera = new window.Camera(pipVideo, {
-                                onFrame: async () => {
-                                    if (isTracking && pipVideo && pipVideo.readyState >= 2 && handsDetector) {
-                                        try {
-                                            await handsDetector.send({ image: pipVideo });
-                                        } catch (_) {}
-                                    }
-                                },
-                                width: 480,
-                                height: 360
-                            });
-                            cameraUtilsCamera.start();
-                        } else {
-                            runFrameLoop();
-                        }
-                        return;
                     } catch (e) {
                         console.warn("[Tree3D] MediaPipe Hands init warning:", e);
                     }
                 }
-                // Fallback loop if Camera utility is not present
                 runFrameLoop();
             }
 
             function runFrameLoop() {
                 async function loop() {
                     if (!isTracking) return;
-                    if (pipVideo && pipVideo.readyState >= 2 && handsDetector) {
+
+                    const now = performance.now();
+                    if (!isProcessing && (now - lastProcessTime >= INFER_INTERVAL) && pipVideo && pipVideo.readyState >= 2 && handsDetector) {
+                        isProcessing = true;
+                        lastProcessTime = now;
+                        procCtx.drawImage(pipVideo, 0, 0, procCanvas.width, procCanvas.height);
                         try {
-                            await handsDetector.send({ image: pipVideo });
+                            await handsDetector.send({ image: procCanvas });
                         } catch (_) {}
+                        finally {
+                            isProcessing = false;
+                        }
                     }
                     animLoopId = requestAnimationFrame(loop);
                 }

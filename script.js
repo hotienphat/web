@@ -31,8 +31,9 @@ class ParticleSystem {
         this.canvas = document.getElementById(canvasId);
         if (!this.canvas) return;
 
-        // Disable if user prefers reduced motion
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        // Disable on mobile/touch screens or if prefers reduced motion (saves massive battery & avoids jank)
+        const isMobile = window.innerWidth <= 900 || ('ontouchstart' in window);
+        if (isMobile || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             this.canvas.style.display = 'none';
             return;
         }
@@ -41,15 +42,26 @@ class ParticleSystem {
         this.particles = [];
         this.mouseX = 0;
         this.mouseY = 0;
-        this.particleCount = window.innerWidth < 768 ? 25 : 100;
-        this.connectionDistance = 160;
+        this.particleCount = 60;
+        this.connectionDistance = 140;
         this.rafId = null;
+        this.isVisible = true;
 
         this.resize();
-        window.addEventListener('resize', () => this.resize());
+        window.addEventListener('resize', () => this.resize(), { passive: true });
         window.addEventListener('mousemove', (e) => {
             this.mouseX = e.clientX;
             this.mouseY = e.clientY;
+        }, { passive: true });
+
+        document.addEventListener('visibilitychange', () => {
+            this.isVisible = !document.hidden;
+            if (this.isVisible && !this.rafId) {
+                this.animate();
+            } else if (!this.isVisible && this.rafId) {
+                cancelAnimationFrame(this.rafId);
+                this.rafId = null;
+            }
         });
 
         this.init();
@@ -143,8 +155,9 @@ class CursorTrail {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
         if (!this.canvas) return;
-        // Disable on touch devices or if prefers reduced motion
-        if ('ontouchstart' in window || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        // Disable on touch devices, mobile screens, or if prefers reduced motion
+        const isMobile = window.innerWidth <= 900 || ('ontouchstart' in window);
+        if (isMobile || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             this.canvas.style.display = 'none';
             return;
         }
@@ -263,42 +276,10 @@ function typewriterEffect(elementId, texts, speed = 60, pause = 2000) {
 }
 
 // ============================================
-// 3D TILT EFFECT
+// 3D TILT EFFECT (Cleaned - Bento Grid uses CSS)
 // ============================================
 function init3DTilt() {
-    document.addEventListener('mousemove', (e) => {
-        const cards = document.querySelectorAll('.shortcut-card');
-        cards.forEach(card => {
-            const rect = card.getBoundingClientRect();
-            const cardCenterX = rect.left + rect.width / 2;
-            const cardCenterY = rect.top + rect.height / 2;
-            const dx = e.clientX - cardCenterX;
-            const dy = e.clientY - cardCenterY;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            if (dist < 300) {
-                const rotateX = -(dy / 20);
-                const rotateY = dx / 20;
-                const intensity = Math.max(0, 1 - dist / 300);
-                card.style.transform = `perspective(800px) rotateX(${rotateX * intensity}deg) rotateY(${rotateY * intensity}deg) translateY(-4px)`;
-
-                // Update radial gradient position for spotlight
-                const relX = ((e.clientX - rect.left) / rect.width) * 100;
-                const relY = ((e.clientY - rect.top) / rect.height) * 100;
-                card.style.setProperty('--mouse-x', relX + '%');
-                card.style.setProperty('--mouse-y', relY + '%');
-            } else {
-                card.style.transform = '';
-            }
-        });
-    });
-
-    // Reset on mouse leave
-    document.addEventListener('mouseleave', () => {
-        document.querySelectorAll('.shortcut-card').forEach(card => {
-            card.style.transform = '';
-        });
-    });
+    // Obsolete: Bento Grid uses hardware-accelerated CSS hover transitions
 }
 
 // ============================================
@@ -541,51 +522,7 @@ function initSmoothSnapScroll() {
     window.goToSection = goToSection;
 }
 
-// ============================================
-// RENDER SHORTCUTS
-// ============================================
-function renderShortcuts() {
-    const container = document.getElementById('shortcutsContainer');
-    if (!container) return;
-    container.innerHTML = '';
-
-    shortcutSections.forEach((section, sIndex) => {
-        const groupDiv = document.createElement('div');
-        groupDiv.className = 'shortcuts-group reveal-element';
-
-        const titleEl = document.createElement('h3');
-        titleEl.className = 'shortcuts-group-title';
-        titleEl.textContent = section.title;
-        groupDiv.appendChild(titleEl);
-
-        const gridDiv = document.createElement('div');
-        gridDiv.className = 'shortcuts-grid reveal-stagger';
-
-        section.shortcuts.forEach(shortcut => {
-            const link = document.createElement('a');
-            link.href = shortcut.url;
-            link.target = "_blank";
-            link.rel = "noopener noreferrer";
-            link.className = 'shortcut-card';
-            link.addEventListener('click', addRipple);
-
-            const iconEl = document.createElement('i');
-            const prefix = shortcut.iconPrefixOverride || section.iconPrefix || 'fas';
-            iconEl.className = `${prefix} fa-${shortcut.icon} shortcut-card-icon`;
-            link.appendChild(iconEl);
-
-            const nameSpan = document.createElement('span');
-            nameSpan.className = 'shortcut-card-name';
-            nameSpan.textContent = shortcut.name;
-            link.appendChild(nameSpan);
-
-            gridDiv.appendChild(link);
-        });
-
-        groupDiv.appendChild(gridDiv);
-        container.appendChild(groupDiv);
-    });
-}
+// Bento grid is rendered directly in HTML with modern semantic layout
 
 // ============================================
 // SEARCH SUGGESTIONS
@@ -1200,9 +1137,32 @@ function initCircularVisualizer() {
     if (!circularVisualizerCanvas) return;
     circularVisualizerCtx = circularVisualizerCanvas.getContext('2d');
 
+    let visCachedDpr = 1;
+    let visCachedW = 0;
+    let visCachedH = 0;
+    let visCachedInnerRadius = 0;
+    let visCachedMaxBar = 0;
+
+    function resizeCircularVisualizer() {
+        if (!circularVisualizerCanvas) return;
+        const rect = circularVisualizerCanvas.getBoundingClientRect();
+        visCachedDpr = Math.min(window.devicePixelRatio || 1, 2);
+        visCachedW = Math.round(rect.width * visCachedDpr) || 300;
+        visCachedH = Math.round(rect.height * visCachedDpr) || 300;
+        if (circularVisualizerCanvas.width !== visCachedW || circularVisualizerCanvas.height !== visCachedH) {
+            circularVisualizerCanvas.width = visCachedW;
+            circularVisualizerCanvas.height = visCachedH;
+        }
+        const isMobile = visCachedW < 220 * visCachedDpr;
+        visCachedInnerRadius = (isMobile ? 74 : 94) * visCachedDpr;
+        visCachedMaxBar = Math.max(10, (visCachedW / 2) - visCachedInnerRadius - 2 * visCachedDpr);
+    }
+
     if (audioPlayer) {
+        window.addEventListener('resize', resizeCircularVisualizer, { passive: true });
         audioPlayer.addEventListener('play', () => {
             if (!isVisualizerInitialized) setupAudioGraph();
+            resizeCircularVisualizer();
             if (isVisualizerInitialized === "fake") {
                 if (!circularRafId) drawCircularVisualizer();
             } else if (isVisualizerInitialized && audioContext && audioContext.state === 'suspended') {
@@ -1252,28 +1212,13 @@ function drawCircularVisualizer() {
         analyser.getByteFrequencyData(dataArray);
     }
 
-    // Handle high DPI and CSS scaling efficiently
-    const rect = circularVisualizerCanvas.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
-    // Set actual size in memory (scaled by DPR)
-    const displayWidth = Math.round(rect.width * dpr);
-    const displayHeight = Math.round(rect.height * dpr);
-
-    if (circularVisualizerCanvas.width !== displayWidth || circularVisualizerCanvas.height !== displayHeight) {
-        circularVisualizerCanvas.width = displayWidth;
-        circularVisualizerCanvas.height = displayHeight;
-    }
-
-    const w = circularVisualizerCanvas.width;
-    const h = circularVisualizerCanvas.height;
+    const w = visCachedW || circularVisualizerCanvas.width;
+    const h = visCachedH || circularVisualizerCanvas.height;
+    const dpr = visCachedDpr;
     const cx = w / 2;
     const cy = h / 2;
-
-    // Dynamically calculate radius based on container size
-    // Desktop: avatar is 180px -> radius 90px. Mobile: avatar is 140px -> radius 70px.
-    const isMobile = w < 220 * dpr;
-    const innerRadius = (isMobile ? 74 : 94) * dpr; // 4px gap from avatar scaled
-    const maxBarLength = (w / 2) - innerRadius - 2 * dpr;
+    const innerRadius = visCachedInnerRadius || 74 * dpr;
+    const maxBarLength = visCachedMaxBar || 30 * dpr;
     const numBars = 64;
 
     circularVisualizerCtx.clearRect(0, 0, w, h);
@@ -1576,7 +1521,7 @@ function initLanyardBadge() {
 
     // Simulation Configuration & State
     function getBaseStrapLen() {
-        return window.innerWidth <= 900 ? 135 : 260; // Mobile dây dài 135px vừa vặn, desktop 260px sang trọng
+        return window.innerWidth <= 900 ? 190 : 260; // Mobile dây dài 190px giúp thẻ treo xuống rộng rãi, dễ tương tác
     }
     let BASE_STRAP_LEN = getBaseStrapLen();
     let currentStrapLen = BASE_STRAP_LEN;
@@ -1600,6 +1545,56 @@ function initLanyardBadge() {
     let grabAngleOffset = 0;
     let pointerX = 0, pointerY = 0;
     let mousePctX = 50, mousePctY = 30;
+
+    // Mobile Con Quay Hồi Chuyển (DeviceOrientation Gyroscope)
+    let isGyroActive = false;
+    let targetGyroAngle = 0;
+    let gyroPitch = 0;
+
+    function handleOrientation(e) {
+        if (e.gamma === null || e.gamma === undefined) return;
+        isGyroActive = true;
+
+        // e.gamma: trục nghiêng trái/phải [-90, 90] độ.
+        // Nghiêng điện thoại sang phải (gamma > 0) -> thẻ bị trọng lực kéo sang phải (-gamma trong CSS rotate)
+        // Nghiêng điện thoại sang trái (gamma < 0) -> thẻ bị trọng lực kéo sang trái (+gamma trong CSS rotate)
+        const clampedGamma = Math.max(-50, Math.min(50, e.gamma));
+        targetGyroAngle = -clampedGamma * 0.85;
+
+        // e.beta: trục nghiêng trước/sau [-180, 180] độ. Cầm thông thường khoảng 45 độ.
+        const clampedBeta = Math.max(10, Math.min(80, e.beta || 45));
+        gyroPitch = (clampedBeta - 45) * 0.35;
+    }
+
+    if (window.DeviceOrientationEvent) {
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+            const reqPermission = () => {
+                DeviceOrientationEvent.requestPermission().then(res => {
+                    if (res === 'granted') {
+                        window.addEventListener('deviceorientation', handleOrientation, true);
+                    }
+                }).catch(() => {});
+                window.removeEventListener('touchstart', reqPermission);
+                window.removeEventListener('click', reqPermission);
+            };
+            window.addEventListener('touchstart', reqPermission, { passive: true, once: true });
+            window.addEventListener('click', reqPermission, { passive: true, once: true });
+        } else {
+            window.addEventListener('deviceorientation', handleOrientation, true);
+        }
+    }
+
+    // Hero Visibility Observer to stop physics ticker when scrolled away (Saves 100% CPU when browsing other sections)
+    let isHeroVisible = true;
+    if ('IntersectionObserver' in window) {
+        const heroObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                isHeroVisible = entry.isIntersecting;
+            });
+        }, { threshold: 0.05 });
+        const heroSection = document.getElementById('hero-section');
+        if (heroSection) heroObserver.observe(heroSection);
+    }
 
     function updateAnchor() {
         if (anchorPin) {
@@ -1651,7 +1646,7 @@ function initLanyardBadge() {
 
     // Real-Time 144Hz Physics Engine via GSAP Ticker / RAF
     function physicsTick(time, deltaTime) {
-        if (!wrapper.isConnected) return;
+        if (!wrapper.isConnected || !isHeroVisible) return;
 
         const dtSec = Math.min((deltaTime || 16.67) / 1000, 0.05); // Frame delta in seconds
         const dtNorm = Math.min((deltaTime || 16.67) / 16.67, 2.5); // Normalized frame step
@@ -1666,7 +1661,6 @@ function initLanyardBadge() {
 
             // Trong CSS rotate(): góc âm quay ngược chiều kim đồng hồ (hướng sang PHẢI),
             // góc dương quay cùng chiều kim đồng hồ (hướng sang TRÁI).
-            // Do đó: currentPointerAngle = -rawPointerAngle đảm bảo kéo phải -> sang phải, kéo trái -> sang trái!
             const currentPointerAngle = -rawPointerAngle;
             const desiredAngle = currentPointerAngle + grabAngleOffset;
 
@@ -1684,9 +1678,9 @@ function initLanyardBadge() {
             // Độ co giãn đàn hồi khi kéo dây xuống hoặc kéo lên
             const currentDist = Math.hypot(dx, dy);
             const isMob = window.innerWidth <= 900;
-            const minStrap = isMob ? 80 : 170;
-            const maxStrap = isMob ? 260 : 460;
-            const restReach = BASE_STRAP_LEN + (isMob ? 80 : 150); // khoảng cách từ chốt neo tới điểm cầm thẻ
+            const minStrap = isMob ? 120 : 170;
+            const maxStrap = isMob ? 340 : 460;
+            const restReach = BASE_STRAP_LEN + (isMob ? 100 : 150); // khoảng cách từ chốt neo tới điểm cầm thẻ
             if (currentDist > restReach) {
                 targetStrapLen = BASE_STRAP_LEN + (currentDist - restReach) * 0.72;
             } else {
@@ -1703,19 +1697,23 @@ function initLanyardBadge() {
             targetTiltY = Math.max(-18, Math.min(18, -angularVelocity * 0.04));
             targetTiltX = Math.max(-12, Math.min(12, -Math.abs(angularVelocity) * 0.018 + (currentStrapLen - BASE_STRAP_LEN) * 0.05));
         } else {
-            // Vật lý con lắc tự do (Pendulum Harmonic Gravity)
-            // Với quy ước CSS: currentAngle < 0 (nghiêng phải) -> -sin(theta) > 0 -> gia tốc kéo về 0
-            // currentAngle > 0 (nghiêng trái) -> -sin(theta) < 0 -> gia tốc kéo về 0
+            // Vật lý con lắc tự do (Pendulum Harmonic Gravity) + Con Quay Hồi Chuyển Điện Thoại
             const thetaRad = currentAngle * (Math.PI / 180);
             const effLength = Math.max(0.3, currentStrapLen / 500.0);
             const gConst = 9.81 / effLength;
             const gravityTorque = -Math.sin(thetaRad) * gConst * (180 / Math.PI) * 0.45;
 
+            // Lực kéo từ con quay hồi chuyển điện thoại (Gyroscope Gravity Pull)
+            let gyroTorque = 0;
+            if (isGyroActive) {
+                gyroTorque = (targetGyroAngle - currentAngle) * 3.8;
+            }
+
             // Gió nhẹ tự nhiên đung đưa khi thẻ đứng yên
             const ambientBreeze = Math.sin(Date.now() * 0.0015) * 1.5;
-            const breezeTorque = (ambientBreeze - currentAngle) * 2.8;
+            const breezeTorque = (ambientBreeze - currentAngle) * (isGyroActive ? 0.6 : 2.8);
 
-            const totalAcc = gravityTorque + breezeTorque;
+            const totalAcc = gravityTorque + gyroTorque + breezeTorque;
             angularVelocity += totalAcc * dtSec;
 
             // Lực cản không khí
@@ -1736,11 +1734,17 @@ function initLanyardBadge() {
                 strapVelocity = 0;
             }
 
-            // 3D tilt theo nhịp văng con lắc
+            // 3D tilt theo nhịp văng con lắc và con quay hồi chuyển
             const swingTiltY = Math.max(-14, Math.min(14, -angularVelocity * 0.035));
             const swingTiltX = Math.max(-8, Math.min(8, -Math.abs(angularVelocity) * 0.015));
-            targetTiltY = swingTiltY;
-            targetTiltX = swingTiltX;
+
+            if (isGyroActive) {
+                targetTiltX = swingTiltX + gyroPitch;
+                targetTiltY = swingTiltY + (targetGyroAngle * 0.22);
+            } else {
+                targetTiltY = swingTiltY;
+                targetTiltX = swingTiltX;
+            }
         }
 
         // Độ lắc linh hoạt của móc treo kim loại (secondary flex hinge)
@@ -1788,7 +1792,7 @@ function initLanyardBadge() {
 
     // Dynamic Mouse Hover 3D Parallax & Specular Light Tracking
     window.addEventListener('mousemove', (e) => {
-        if (!wrapper.isConnected) return;
+        if (!wrapper.isConnected || !isHeroVisible || window.innerWidth <= 900) return;
         const rect = card.getBoundingClientRect();
         const cardCenterX = rect.left + rect.width / 2;
         const cardCenterY = rect.top + rect.height / 2;
@@ -1905,9 +1909,6 @@ function initializePageApp() {
     // Typewriter for tagline
     typewriterEffect('hero-tagline', heroTaglines, 50, 2500);
 
-    // Render shortcuts (if old container exists)
-    renderShortcuts();
-
     // Music player
     initMusicPlayer();
 
@@ -1933,8 +1934,6 @@ function initializePageApp() {
         initScrollReveal();
     });
 
-    // 3D Tilt effect on cards
-    init3DTilt();
 
     // Footer year
     const yearEl = document.getElementById('currentYear');
