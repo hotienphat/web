@@ -930,6 +930,7 @@ function loadTrack(idx) {
     const muted = audioPlayer ? audioPlayer.muted : false;
 
     audioPlayer.src = track.src;
+    audioPlayer.preload = 'auto';
     audioPlayer.volume = vol;
     audioPlayer.muted = muted;
 
@@ -1084,9 +1085,9 @@ function updateLyrics(time) {
     }
 
     const track = audioPlaylist[currentTrackIndex];
-    const hasLyrics = track && track.title && track.title.includes("Phép Màu");
+    const lyricsList = (track && track.lyrics) ? track.lyrics : (track && track.title && track.title.includes("Phép Màu") ? phepMauLyrics : null);
 
-    if (!hasLyrics || audioPlayer.paused || audioPlayer.ended) {
+    if (!lyricsList || audioPlayer.paused || audioPlayer.ended) {
         if (topNavDock) topNavDock.classList.remove('has-lyrics');
         if (currentLyricEl) currentLyricEl.textContent = '';
         if (nextLyricEl) nextLyricEl.textContent = '';
@@ -1098,20 +1099,20 @@ function updateLyrics(time) {
     if (navLyricsTrackName) navLyricsTrackName.textContent = track.title.split('(')[0].trim();
 
     let newIdx = -1;
-    for (let i = 0; i < phepMauLyrics.length; i++) {
-        if (time >= phepMauLyrics[i].time) newIdx = i;
+    for (let i = 0; i < lyricsList.length; i++) {
+        if (time >= lyricsList[i].time) newIdx = i;
         else break;
     }
 
     if (newIdx !== currentLyricIndex) {
         currentLyricIndex = newIdx;
 
-        if (currentLyricIndex !== -1 && phepMauLyrics[currentLyricIndex]) {
+        if (currentLyricIndex !== -1 && lyricsList[currentLyricIndex]) {
             if (currentLyricEl) {
                 currentLyricEl.classList.remove('active');
                 setTimeout(() => {
-                    if (currentLyricEl && phepMauLyrics[currentLyricIndex]) {
-                        currentLyricEl.textContent = phepMauLyrics[currentLyricIndex].text;
+                    if (currentLyricEl && lyricsList[currentLyricIndex]) {
+                        currentLyricEl.textContent = lyricsList[currentLyricIndex].text;
                         currentLyricEl.classList.add('active');
                     }
                 }, 30);
@@ -1124,8 +1125,8 @@ function updateLyrics(time) {
         }
 
         const nextIdx = currentLyricIndex + 1;
-        if (nextIdx < phepMauLyrics.length && phepMauLyrics[nextIdx] && phepMauLyrics[nextIdx].text.trim()) {
-            if (nextLyricEl) nextLyricEl.textContent = phepMauLyrics[nextIdx].text;
+        if (nextIdx < lyricsList.length && lyricsList[nextIdx] && lyricsList[nextIdx].text.trim()) {
+            if (nextLyricEl) nextLyricEl.textContent = lyricsList[nextIdx].text;
         } else {
             if (nextLyricEl) nextLyricEl.textContent = '';
         }
@@ -1780,18 +1781,103 @@ function initLanyardBadge() {
 }
 
 // ============================================
-// INTRO ANIMATION (REPLACES STATIC POPUP)
+// BACKGROUND MUSIC (LAVIEM AUTO-PLAY ON BOOT)
+// ============================================
+function startBackgroundMusic() {
+    if (!audioPlayer) return;
+
+    if (currentTrackIndex !== 0) {
+        currentTrackIndex = 0;
+        loadTrack(0);
+    }
+
+    if (audioPlayer.paused || audioPlayer.ended) {
+        const playPromise = audioPlayer.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                console.log("🎵 LAVIEM background music playing successfully!");
+                updatePlayPauseIcon();
+            }).catch(err => {
+                console.warn("Autoplay blocked by browser policy. Queuing playback on first user gesture:", err);
+                const unlockOnGesture = () => {
+                    if (audioPlayer && (audioPlayer.paused || audioPlayer.ended)) {
+                        audioPlayer.play().then(() => {
+                            console.log("🎵 LAVIEM unlocked and playing!");
+                            updatePlayPauseIcon();
+                        }).catch(e => console.warn("Unlock play error:", e));
+                    }
+                    ['pointerdown', 'touchstart', 'click', 'keydown', 'wheel', 'scroll'].forEach(evt => {
+                        window.removeEventListener(evt, unlockOnGesture, { capture: true });
+                        document.removeEventListener(evt, unlockOnGesture, { capture: true });
+                    });
+                };
+                ['pointerdown', 'touchstart', 'click', 'keydown', 'wheel', 'scroll'].forEach(evt => {
+                    window.addEventListener(evt, unlockOnGesture, { once: true, passive: true, capture: true });
+                    document.addEventListener(evt, unlockOnGesture, { once: true, passive: true, capture: true });
+                });
+            });
+        }
+    }
+}
+
+// ============================================
+// INTRO ANIMATION & SYNCHRONIZED STARTUP FLOW
 // ============================================
 function initIntroAnimation() {
     const introOverlay = document.getElementById('intro-overlay');
-    if (!introOverlay) return;
+    const pageContent = document.getElementById('page-content');
 
-    setTimeout(() => {
+    if (pageContent) {
+        pageContent.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            pageContent.style.opacity = '1';
+        });
+    }
+
+    if (!introOverlay) {
+        document.body.classList.remove('loading');
+        splitTextAnimation();
+        typewriterEffect('hero-tagline', heroTaglines, 50, 2500);
+        startBackgroundMusic();
+        return;
+    }
+
+    let hasTransitioned = false;
+
+    const finishStartup = () => {
+        if (hasTransitioned) return;
+        hasTransitioned = true;
+
+        // 1. Boot background music (LAVIEM) upon circle landing
+        startBackgroundMusic();
+
+        // 2. Seamlessly fade out intro overlay
         introOverlay.classList.add('fade-out');
+        document.body.classList.remove('loading');
+
+        // 3. Kick off hero typography animations smoothly as page content appears
         setTimeout(() => {
-            introOverlay.remove();
-        }, 600);
-    }, 1500);
+            splitTextAnimation();
+            typewriterEffect('hero-tagline', heroTaglines, 50, 2500);
+        }, 100);
+
+        // 4. Remove overlay from DOM once fade-out completes
+        setTimeout(() => {
+            if (introOverlay && introOverlay.parentNode) {
+                introOverlay.remove();
+            }
+        }, 550);
+    };
+
+    // User can click or tap anywhere on the intro overlay to immediately skip and unlock audio
+    introOverlay.addEventListener('pointerdown', finishStartup);
+    introOverlay.addEventListener('click', finishStartup);
+
+    // Synchronized with circle landing:
+    // introAvatarPop completes at 0.95s (when circle settles/lands firmly down)
+    // Shockwave emits at 0.92s
+    // Exactly at 1000ms (as the circle places down), trigger finishStartup!
+    setTimeout(finishStartup, 1000);
 }
 
 // ============================================
@@ -1801,11 +1887,12 @@ function initializePageApp() {
     // Hanging Lanyard Badge with metallic reflections & physics
     initLanyardBadge();
 
-    // Split text animation for hero title
-    splitTextAnimation();
-
-    // Typewriter for tagline
-    typewriterEffect('hero-tagline', heroTaglines, 50, 2500);
+    // If there is no intro overlay, start typography animations immediately
+    const introOverlay = document.getElementById('intro-overlay');
+    if (!introOverlay) {
+        splitTextAnimation();
+        typewriterEffect('hero-tagline', heroTaglines, 50, 2500);
+    }
 
     // Music player
     initMusicPlayer();
@@ -1826,12 +1913,10 @@ function initializePageApp() {
     // 144Hz Buttery Smooth Snap Controller
     initSmoothSnapScroll();
 
-
     // Scroll reveal (after DOM is populated)
     requestAnimationFrame(() => {
         initScrollReveal();
     });
-
 
     // Footer year
     const yearEl = document.getElementById('currentYear');
@@ -1852,43 +1937,23 @@ function initializePageApp() {
 }
 
 // ============================================
-// PAGE LOAD FLOW
+// BOOT FLOW & DOM READY
 // ============================================
-window.addEventListener('load', () => {
-    const loadingScreen = document.getElementById('loading-screen');
+function bootPortfolioExperience() {
     const pageContent = document.getElementById('page-content');
-
-    document.body.classList.add('loading');
+    if (pageContent) {
+        pageContent.classList.remove('hidden');
+    }
 
     // Initialize background effects immediately
     new ParticleSystem('particles-canvas');
     new CursorTrail('cursor-trail-canvas');
 
-    const minLoadTime = 300;
+    // Initialize full app logic and music player
+    initializePageApp();
 
-    setTimeout(() => {
-        // Fade out loading screen
-        if (loadingScreen) {
-            loadingScreen.style.opacity = '0';
-            loadingScreen.addEventListener('transitionend', () => {
-                loadingScreen.style.display = 'none';
-            }, { once: true });
-        }
-
-        // Show page content
-        if (pageContent) {
-            pageContent.classList.remove('hidden');
-            requestAnimationFrame(() => { pageContent.style.opacity = '1'; });
-        }
-
-        // Initialize app
-        initializePageApp();
-        document.body.classList.remove('loading');
-
-        // Trigger dynamic Intro Animation
-        initIntroAnimation();
-
-    }, minLoadTime);
+    // Trigger synchronized dynamic Intro Animation & Startup
+    initIntroAnimation();
 
     // Contact Form AJAX Submission
     const contactForm = document.getElementById('contactForm');
@@ -1938,5 +2003,11 @@ window.addEventListener('load', () => {
                 });
         });
     }
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootPortfolioExperience, { once: true });
+} else {
+    bootPortfolioExperience();
+}
 
