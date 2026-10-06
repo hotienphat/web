@@ -8,9 +8,6 @@
 let currentTrackIndex = 0;
 let currentLyricIndex = -1;
 let audioPlayer;
-let audioContext, analyser, sourceNode, dataArray;
-let isVisualizerInitialized = false;
-let circularVisualizerCanvas, circularVisualizerCtx, circularRafId;
 
 // Music player DOM refs
 let playPauseMusicBtn, stopMusicBtn, musicProgressBar, albumArtElement;
@@ -313,23 +310,60 @@ function initSmoothSnapScroll() {
     let touchStartY = 0;
     let touchStartTime = 0;
 
-    // Detect section based on current scroll position
+    // Detect section based on current scroll position using viewport focal region and offsetTop
     function getNearestSectionIndex() {
         const scrollY = pageContent.scrollTop;
-        const vh = window.innerHeight;
-        return Math.min(Math.max(Math.round(scrollY / vh), 0), sections.length - 1);
+        const viewHeight = window.innerHeight;
+
+        // Bottom of the page: activate the last section
+        if (scrollY + viewHeight >= pageContent.scrollHeight - 20) {
+            return sections.length - 1;
+        }
+
+        // Viewport focal line at 40% from top to prevent premature switching while inside tall sections
+        const focalY = scrollY + viewHeight * 0.4;
+        for (let i = 0; i < sections.length; i++) {
+            const secTop = sections[i].offsetTop;
+            const secBottom = secTop + sections[i].offsetHeight;
+            if (focalY >= secTop && focalY < secBottom) {
+                return i;
+            }
+        }
+
+        // Fallback to nearest section top
+        let closestIdx = 0;
+        let minDiff = Infinity;
+        for (let i = 0; i < sections.length; i++) {
+            const diff = Math.abs(sections[i].offsetTop - scrollY);
+            if (diff < minDiff) {
+                minDiff = diff;
+                closestIdx = i;
+            }
+        }
+        return closestIdx;
     }
 
     currentSectionIndex = getNearestSectionIndex();
 
     // Smooth navigation with GSAP (144fps interpolation)
-    function goToSection(index, duration = 0.85) {
+    function goToSection(index, duration = 0.85, forceTop = false) {
         if (index < 0 || index >= sections.length) return;
         if (isAnimating) return;
 
+        const prevIndex = currentSectionIndex;
         isAnimating = true;
         currentSectionIndex = index;
-        const targetY = sections[index].offsetTop;
+
+        const targetSec = sections[index];
+        const viewHeight = window.innerHeight;
+        let targetY = targetSec.offsetTop;
+
+        // If scrolling backward into a section that is taller than viewport,
+        // land at its bottom so the user can naturally scroll up through it without skipping content
+        if (!forceTop && index < prevIndex && targetSec.offsetHeight > viewHeight + 10) {
+            targetY = targetSec.offsetTop + targetSec.offsetHeight - viewHeight;
+        }
+        targetY = Math.max(0, Math.min(targetY, pageContent.scrollHeight - viewHeight));
 
         if (window.gsap) {
             gsap.to(pageContent, {
@@ -359,11 +393,33 @@ function initSmoothSnapScroll() {
         }
     }
 
-    // Intercept wheel events completely to eliminate 144Hz browser snap stutter on desktop
+    // Intercept wheel events completely to eliminate 144Hz browser snap stutter on desktop,
+    // while allowing natural scrolling inside sections that exceed viewport height.
     window.addEventListener('wheel', (e) => {
         if (window.innerWidth <= 900) return; // Allow natural scrolling on mobile/tablet screens
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
         if (e.target.closest('#playerPanel') || e.target.closest('#mobileNavSheet')) return; // Allow smooth scrolling inside drawers
+
+        const currentSec = sections[currentSectionIndex];
+        if (currentSec) {
+            const secTop = currentSec.offsetTop;
+            const secHeight = currentSec.offsetHeight;
+            const viewHeight = window.innerHeight;
+            const maxScrollInSec = secTop + secHeight - viewHeight;
+
+            // If section is taller than viewport, allow natural scroll inside before jumping
+            if (secHeight > viewHeight + 10) {
+                const currentScroll = pageContent.scrollTop;
+                // Scrolling down and has not reached the bottom of section
+                if (e.deltaY > 0 && currentScroll < maxScrollInSec - 15) {
+                    return;
+                }
+                // Scrolling up and has not reached the top of section
+                if (e.deltaY < 0 && currentScroll > secTop + 15) {
+                    return;
+                }
+            }
+        }
 
         e.preventDefault();
         if (isAnimating) return;
@@ -441,7 +497,7 @@ function initSmoothSnapScroll() {
                     } else {
                         const idx = sections.indexOf(targetSec);
                         if (idx !== -1) {
-                            goToSection(idx);
+                            goToSection(idx, 0.85, true);
                         }
                     }
                 }
@@ -613,7 +669,7 @@ function performSearch() {
         { keys: ["cây 3d", "3d", "tree", "threejs", "bonsai", "mùa"], target: "#tree-3d-section" },
         { keys: ["liên kết", "link", "shortcuts", "bento", "mạng xã hội", "giải trí"], target: "#shortcuts-section" },
         { keys: ["ủng hộ", "donate", "momo", "ngân hàng", "viettinbank", "stk"], target: "#donate-section" },
-        { keys: ["liên hệ", "contact", "email", "tin nhắn"], target: "#contact-section" }
+        { keys: ["liên hệ", "contact", "email", "tin nhắn"], target: "#donate-section" }
     ];
 
     const match = sectionMap.find(m => m.keys.some(k => query.includes(k)));
@@ -822,11 +878,7 @@ function renderPlaylist() {
                 } else {
                     currentTrackIndex = idx;
                     loadTrack(idx);
-                    if (audioContext && audioContext.state === 'suspended') {
-                        audioContext.resume().then(() => audioPlayer.play().catch(handlePlayError)).catch(handlePlayError);
-                    } else {
-                        audioPlayer.play().catch(handlePlayError);
-                    }
+                    audioPlayer.play().catch(handlePlayError);
                 }
                 updatePlaylistUI();
             }
@@ -862,14 +914,9 @@ function updateLyricsIcon() {
 
 function togglePlayerPanel(e) {
     if (!audioPlayer) return;
-    if (!isVisualizerInitialized) setupAudioGraph();
 
     if (audioPlayer.paused || audioPlayer.ended) {
-        if (audioContext && audioContext.state === 'suspended') {
-            audioContext.resume().then(() => audioPlayer.play().catch(handlePlayError)).catch(handlePlayError);
-        } else {
-            audioPlayer.play().catch(handlePlayError);
-        }
+        audioPlayer.play().catch(handlePlayError);
     } else {
         audioPlayer.pause();
     }
@@ -906,14 +953,9 @@ function loadTrack(idx) {
 
 function togglePlayPause() {
     if (!audioPlayer) return;
-    if (!isVisualizerInitialized) setupAudioGraph();
 
     if (audioPlayer.paused || audioPlayer.ended) {
-        if (audioContext && audioContext.state === 'suspended') {
-            audioContext.resume().then(() => audioPlayer.play().catch(handlePlayError)).catch(handlePlayError);
-        } else {
-            audioPlayer.play().catch(handlePlayError);
-        }
+        audioPlayer.play().catch(handlePlayError);
     } else {
         audioPlayer.pause();
     }
@@ -925,10 +967,6 @@ function stopAudio() {
     audioPlayer.pause();
     audioPlayer.currentTime = 0;
 
-    if (circularRafId) { cancelAnimationFrame(circularRafId); circularRafId = null; }
-    if (circularVisualizerCtx && circularVisualizerCanvas) {
-        circularVisualizerCtx.clearRect(0, 0, circularVisualizerCanvas.width, circularVisualizerCanvas.height);
-    }
     if (albumArtElement) { albumArtElement.classList.remove('spinning'); albumArtElement.classList.remove('paused'); }
     const bubbleArt = document.getElementById('bubbleAlbumArt');
     if (bubbleArt) { bubbleArt.classList.remove('spinning'); bubbleArt.classList.remove('paused'); }
@@ -1011,11 +1049,7 @@ function playNextTrack() {
     currentTrackIndex = (currentTrackIndex + 1) % audioPlaylist.length;
     loadTrack(currentTrackIndex);
     if (wasPlaying || audioPlaylist.length > 0) {
-        if (audioContext && audioContext.state === 'suspended') {
-            audioContext.resume().then(() => audioPlayer.play().catch(handlePlayError)).catch(handlePlayError);
-        } else {
-            audioPlayer.play().catch(handlePlayError);
-        }
+        audioPlayer.play().catch(handlePlayError);
     }
 }
 
@@ -1024,11 +1058,7 @@ function playPrevTrack() {
     currentTrackIndex = (currentTrackIndex - 1 + audioPlaylist.length) % audioPlaylist.length;
     loadTrack(currentTrackIndex);
     if (wasPlaying || audioPlaylist.length > 0) {
-        if (audioContext && audioContext.state === 'suspended') {
-            audioContext.resume().then(() => audioPlayer.play().catch(handlePlayError)).catch(handlePlayError);
-        } else {
-            audioPlayer.play().catch(handlePlayError);
-        }
+        audioPlayer.play().catch(handlePlayError);
     }
 }
 
@@ -1102,157 +1132,7 @@ function updateLyrics(time) {
     }
 }
 
-// ============================================
-// AUDIO GRAPH & CIRCULAR VISUALIZER
-// ============================================
-function setupAudioGraph() {
-    if (isVisualizerInitialized || !audioPlayer) return;
 
-    if (window.location.protocol === 'file:') {
-        console.warn("Visualizer is running in FAKE mode for local files to prevent audio silencing.");
-        isVisualizerInitialized = "fake";
-        dataArray = new Uint8Array(64);
-        return;
-    }
-
-    try {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioContext.createAnalyser();
-        analyser.fftSize = 256;
-        if (!sourceNode || sourceNode.mediaElement !== audioPlayer) {
-            sourceNode = audioContext.createMediaElementSource(audioPlayer);
-        }
-        sourceNode.connect(analyser);
-        analyser.connect(audioContext.destination);
-        dataArray = new Uint8Array(analyser.frequencyBinCount);
-        isVisualizerInitialized = true;
-    } catch (e) {
-        console.error("AudioContext setup error:", e);
-        isVisualizerInitialized = false;
-    }
-}
-
-function initCircularVisualizer() {
-    circularVisualizerCanvas = document.getElementById('circular-visualizer');
-    if (!circularVisualizerCanvas) return;
-    circularVisualizerCtx = circularVisualizerCanvas.getContext('2d');
-
-    let visCachedDpr = 1;
-    let visCachedW = 0;
-    let visCachedH = 0;
-    let visCachedInnerRadius = 0;
-    let visCachedMaxBar = 0;
-
-    function resizeCircularVisualizer() {
-        if (!circularVisualizerCanvas) return;
-        const rect = circularVisualizerCanvas.getBoundingClientRect();
-        visCachedDpr = Math.min(window.devicePixelRatio || 1, 2);
-        visCachedW = Math.round(rect.width * visCachedDpr) || 300;
-        visCachedH = Math.round(rect.height * visCachedDpr) || 300;
-        if (circularVisualizerCanvas.width !== visCachedW || circularVisualizerCanvas.height !== visCachedH) {
-            circularVisualizerCanvas.width = visCachedW;
-            circularVisualizerCanvas.height = visCachedH;
-        }
-        const isMobile = visCachedW < 220 * visCachedDpr;
-        visCachedInnerRadius = (isMobile ? 74 : 94) * visCachedDpr;
-        visCachedMaxBar = Math.max(10, (visCachedW / 2) - visCachedInnerRadius - 2 * visCachedDpr);
-    }
-
-    if (audioPlayer) {
-        window.addEventListener('resize', resizeCircularVisualizer, { passive: true });
-        audioPlayer.addEventListener('play', () => {
-            if (!isVisualizerInitialized) setupAudioGraph();
-            resizeCircularVisualizer();
-            if (isVisualizerInitialized === "fake") {
-                if (!circularRafId) drawCircularVisualizer();
-            } else if (isVisualizerInitialized && audioContext && audioContext.state === 'suspended') {
-                audioContext.resume().then(() => { if (!circularRafId) drawCircularVisualizer(); });
-            } else if (isVisualizerInitialized && !circularRafId) {
-                drawCircularVisualizer();
-            }
-        });
-        audioPlayer.addEventListener('pause', () => {
-            if (circularRafId) { cancelAnimationFrame(circularRafId); circularRafId = null; }
-        });
-        audioPlayer.addEventListener('ended', () => {
-            if (circularRafId) { cancelAnimationFrame(circularRafId); circularRafId = null; }
-            if (circularVisualizerCtx && circularVisualizerCanvas) {
-                circularVisualizerCtx.clearRect(0, 0, circularVisualizerCanvas.width, circularVisualizerCanvas.height);
-            }
-        });
-    }
-}
-
-function drawCircularVisualizer() {
-    if (!isVisualizerInitialized || !circularVisualizerCtx || !dataArray || !circularVisualizerCanvas) {
-        if (circularRafId) cancelAnimationFrame(circularRafId);
-        circularRafId = null;
-        return;
-    }
-
-    circularRafId = requestAnimationFrame(drawCircularVisualizer);
-
-    if (isVisualizerInitialized === "fake") {
-        const time = Date.now() / 150;
-        const isPlaying = audioPlayer && !audioPlayer.paused && !audioPlayer.ended && audioPlayer.currentTime > 0;
-
-        for (let i = 0; i < dataArray.length; i++) {
-            if (isPlaying) {
-                const noise = Math.sin(time * 0.5 + i * 0.2) * Math.cos(time * 0.3 - i * 0.1) * Math.sin(time * 0.1);
-                let val = (0.2 + 0.8 * Math.abs(noise)) * 180;
-                const beat = Math.pow(Math.sin(time * 0.25), 6);
-                if (i % 2 === 0) val += beat * 75;
-                dataArray[i] = Math.min(255, Math.max(0, val));
-            } else {
-                dataArray[i] = Math.max(0, dataArray[i] - 10);
-            }
-        }
-    } else {
-        if (!analyser) return;
-        analyser.getByteFrequencyData(dataArray);
-    }
-
-    const w = visCachedW || circularVisualizerCanvas.width;
-    const h = visCachedH || circularVisualizerCanvas.height;
-    const dpr = visCachedDpr;
-    const cx = w / 2;
-    const cy = h / 2;
-    const innerRadius = visCachedInnerRadius || 74 * dpr;
-    const maxBarLength = visCachedMaxBar || 30 * dpr;
-    const numBars = 64;
-
-    circularVisualizerCtx.clearRect(0, 0, w, h);
-
-    const bufLen = isVisualizerInitialized === "fake" ? dataArray.length : (analyser ? analyser.frequencyBinCount : dataArray.length);
-
-    for (let i = 0; i < numBars; i++) {
-        const dataIdx = Math.min(bufLen - 1, Math.floor((i / numBars) * (bufLen * 0.7)));
-        const amplitude = dataArray[dataIdx] / 255;
-        const barLen = Math.max(2 * dpr, amplitude * maxBarLength);
-
-        const angle = (i / numBars) * Math.PI * 2 - Math.PI / 2;
-        const x1 = cx + Math.cos(angle) * innerRadius;
-        const y1 = cy + Math.sin(angle) * innerRadius;
-        const x2 = cx + Math.cos(angle) * (innerRadius + barLen);
-        const y2 = cy + Math.sin(angle) * (innerRadius + barLen);
-
-        circularVisualizerCtx.beginPath();
-        circularVisualizerCtx.moveTo(x1, y1);
-        circularVisualizerCtx.lineTo(x2, y2);
-        circularVisualizerCtx.lineWidth = (isMobile ? 1.5 : 2.5) * dpr;
-        circularVisualizerCtx.lineCap = 'round';
-
-        // Gradient from purple to cyan based on position
-        const hue = 270 + (i / numBars) * 90; // purple to cyan
-        circularVisualizerCtx.strokeStyle = `hsla(${hue}, 80%, 65%, ${0.4 + amplitude * 0.6})`;
-        circularVisualizerCtx.shadowBlur = amplitude * 12 * dpr;
-        circularVisualizerCtx.shadowColor = `hsla(${hue}, 80%, 65%, 0.6)`;
-        circularVisualizerCtx.stroke();
-    }
-
-    // Reset shadow
-    circularVisualizerCtx.shadowBlur = 0;
-}
 
 // ============================================
 // DONATE SECTION
@@ -1321,13 +1201,17 @@ function splitTextAnimation() {
     const title = document.getElementById('hero-title');
     if (!title) return;
 
-    const text = title.textContent;
+    const text = (title.getAttribute('aria-label') || title.textContent).trim();
+    if (!title.getAttribute('aria-label')) {
+        title.setAttribute('aria-label', text);
+    }
     title.textContent = '';
     title.style.opacity = '1';
 
     [...text].forEach((char, i) => {
         const span = document.createElement('span');
         span.className = 'char';
+        span.setAttribute('aria-hidden', 'true');
         span.textContent = char === ' ' ? '\u00A0' : char;
         span.style.animationDelay = `${0.5 + i * 0.04}s`;
         title.appendChild(span);
@@ -1516,6 +1400,7 @@ function initLanyardBadge() {
     const strap = document.getElementById('lanyardStrap');
     const card = document.getElementById('lanyard-card');
     const metallicFrame = card ? card.querySelector('.card-frame-shell') : null;
+    const hardwareEl = pendulum ? pendulum.querySelector('.lanyard-hardware') : null;
 
     if (!wrapper || !pendulum || !card) return;
 
@@ -1524,6 +1409,10 @@ function initLanyardBadge() {
         return window.innerWidth <= 900 ? 190 : 260; // Mobile dây dài 190px giúp thẻ treo xuống rộng rãi, dễ tương tác
     }
     let BASE_STRAP_LEN = getBaseStrapLen();
+    if (strap) {
+        strap.style.height = `${BASE_STRAP_LEN}px`;
+        strap.style.transformOrigin = 'top center';
+    }
     let currentStrapLen = BASE_STRAP_LEN;
     let targetStrapLen = BASE_STRAP_LEN;
     let prevStrapLen = BASE_STRAP_LEN;
@@ -1610,6 +1499,9 @@ function initLanyardBadge() {
 
     window.addEventListener('resize', () => {
         BASE_STRAP_LEN = getBaseStrapLen();
+        if (strap) {
+            strap.style.height = `${BASE_STRAP_LEN}px`;
+        }
         if (!isDragging) {
             targetStrapLen = BASE_STRAP_LEN;
         }
@@ -1762,12 +1654,18 @@ function initLanyardBadge() {
         const targetGlarePos = 50 - currentAngle * 1.2 + tiltY * 1.5;
         glarePos += (targetGlarePos - glarePos) * 0.18 * dtNorm;
 
-        // Áp dụng GPU Transforms
+        // Áp dụng GPU Transforms (Zero-Reflow Lanyard Physics)
         pendulum.style.transform = `rotate(${currentAngle.toFixed(2)}deg)`;
-        card.style.transform = `rotate(${secondaryAngle.toFixed(2)}deg)`;
+        const scaleY = currentStrapLen / BASE_STRAP_LEN;
         if (strap) {
-            strap.style.height = `${currentStrapLen.toFixed(1)}px`;
+            strap.style.transformOrigin = 'top center';
+            strap.style.transform = `scaleY(${scaleY.toFixed(4)})`;
         }
+        const deltaY = (currentStrapLen - BASE_STRAP_LEN).toFixed(2);
+        if (hardwareEl) {
+            hardwareEl.style.transform = `translateY(${deltaY}px)`;
+        }
+        card.style.transform = `translateY(${deltaY}px) rotate(${secondaryAngle.toFixed(2)}deg)`;
         if (metallicFrame) {
             metallicFrame.style.transform = `perspective(1000px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg)`;
         }
@@ -2042,40 +1940,3 @@ window.addEventListener('load', () => {
     }
 });
 
-// ==========================================
-// BẢO VỆ BẢN QUYỀN - CHỐNG SAO CHÉP & F12
-// ==========================================
-
-// 1. Chặn chuột phải (nhưng cho phép trên input/textarea để paste)
-document.addEventListener('contextmenu', event => {
-    if (event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
-        event.preventDefault();
-    }
-});
-
-// 2. Chặn các phím tắt F12, Ctrl+U, Ctrl+Shift+I, v.v.
-document.addEventListener('keydown', (e) => {
-    // Không block nếu đang gõ trong form
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-
-    // Chặn F12
-    if (e.key === 'F12') {
-        e.preventDefault();
-    }
-    // Chặn Ctrl+Shift+I (Mở DevTools)
-    if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) {
-        e.preventDefault();
-    }
-    // Chặn Ctrl+Shift+J (Console)
-    if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) {
-        e.preventDefault();
-    }
-    // Chặn Ctrl+U (View Source)
-    if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
-        e.preventDefault();
-    }
-    // Chặn Ctrl+S (Lưu trang web)
-    if (e.ctrlKey && (e.key === 'S' || e.key === 's')) {
-        e.preventDefault();
-    }
-});
