@@ -360,7 +360,7 @@ function initSmoothSnapScroll() {
 
         // If scrolling backward into a section that is taller than viewport,
         // land at its bottom so the user can naturally scroll up through it without skipping content
-        if (!forceTop && index < prevIndex && targetSec.offsetHeight > viewHeight + 10) {
+        if (!forceTop && index < prevIndex && targetSec.offsetHeight > viewHeight + 120) {
             targetY = targetSec.offsetTop + targetSec.offsetHeight - viewHeight;
         }
         targetY = Math.max(0, Math.min(targetY, pageContent.scrollHeight - viewHeight));
@@ -408,7 +408,7 @@ function initSmoothSnapScroll() {
             const maxScrollInSec = secTop + secHeight - viewHeight;
 
             // If section is taller than viewport, allow natural scroll inside before jumping
-            if (secHeight > viewHeight + 10) {
+            if (secHeight > viewHeight + 120) {
                 const currentScroll = pageContent.scrollTop;
                 // Scrolling down and has not reached the bottom of section
                 if (e.deltaY > 0 && currentScroll < maxScrollInSec - 15) {
