@@ -46,22 +46,542 @@ const shortcutSections = [
 ];
 
 const laviemLyrics = [
-    { time: 0,   text: "LAVIEM. (TINH HÀ \"SAY HI\")" },
-    { time: 5,   text: "Trái tim anh chẳng còn cần thiết nữa..." },
-    { time: 10,  text: "Nói chi đến đây cũng thừa, rượu vang pha với cơn mưa" },
-    { time: 18,  text: "Hàng trăm lý do cũng chẳng thể cứu vãn" },
-    { time: 26,  text: "Biết sao hết cho vừa lòng nhau mới thấu đây em" },
-    { time: 33,  text: "Dệt hàng triệu vết thương, tự vùi mình trước gương" },
-    { time: 40,  text: "Nhìn một người đã từng thương, sao nay xa lạ đến bất thường?" },
-    { time: 48,  text: "Cố gắng cũng chỉ bằng không, nước mắt ngược dòng" },
-    { time: 55,  text: "Chảy ngược tận sâu bên trong, nghẹn đắng nơi lồng ngực..." },
-    { time: 65,  text: "Ta chia tay, vì sao em ơi? Điều này anh muốn hỏi lâu rồi" },
-    { time: 75,  text: "Những khung trời kỷ niệm vỡ đôi, có phải vì một câu anh đã lỡ lời?" },
-    { time: 88,  text: "Sau đêm nay, tự ta cho ta, em và anh một đoạn kết mới" },
-    { time: 100, text: "Dù rằng mình còn yêu nhau rất nhiều đấy, nhưng để ở lại thì anh nghĩ là không" },
-    { time: 120, text: "Và sau những cảm xúc nhất thời, người bên em giờ này chẳng còn là anh" },
-    { time: 135, text: "Gửi lại quá khứ, cung đàn đã vỡ..." },
-    { time: 145, text: "Vì những vấn vương ấy chưa kịp thành lời..." }
+    {
+        "time": 0,
+        "text": "Bài hát: LAVIEM - Quang Hùng MasterD, CAPTAIN BOY, Pháp Kiều, CoolKid, Danny Chung"
+    },
+    {
+        "time": 13.99,
+        "text": "Trái tim anh chẳng còn cần thiết nữa,"
+    },
+    {
+        "time": 16.0,
+        "text": "nói chi đến đây cũng thừa"
+    },
+    {
+        "time": 17.86,
+        "text": "Rượu vang pha với cơn mưa"
+    },
+    {
+        "time": 20.65,
+        "text": "Hàng trăm lý do"
+    },
+    {
+        "time": 21.18,
+        "text": "cũng chẳng thể cứu vãn"
+    },
+    {
+        "time": 22.59,
+        "text": "Biết sao hết cho vừa"
+    },
+    {
+        "time": 24.45,
+        "text": "lòng nhau mới thấu đây em"
+    },
+    {
+        "time": 27.13,
+        "text": "Dệt hàng triệu vết thương,"
+    },
+    {
+        "time": 28.56,
+        "text": "tự vùi mình trước gương"
+    },
+    {
+        "time": 30.2,
+        "text": "Nhìn một người đã từng thương"
+    },
+    {
+        "time": 31.44,
+        "text": "sao nay xa lạ đến bất thường"
+    },
+    {
+        "time": 33.54,
+        "text": "Cố gắng cũng chỉ bằng không,"
+    },
+    {
+        "time": 35.24,
+        "text": "nước mắt ngược dòng"
+    },
+    {
+        "time": 37.51,
+        "text": "Chảy ngược tận sâu bên trong"
+    },
+    {
+        "time": 38.6,
+        "text": "nghẹn đắng nơi lồng ngực"
+    },
+    {
+        "time": 41.59,
+        "text": "Ta chia tay, vì sao em ơi?"
+    },
+    {
+        "time": 44.32,
+        "text": "Điều này anh muốn hỏi lâu rồi"
+    },
+    {
+        "time": 47.4,
+        "text": "Những khung trời kỷ niệm vỡ đôi"
+    },
+    {
+        "time": 50.74,
+        "text": "Có phải vì một câu anh đã lỡ lời"
+    },
+    {
+        "time": 54.36,
+        "text": "Sau đêm nay,"
+    },
+    {
+        "time": 55.72,
+        "text": "tự ta cho ta"
+    },
+    {
+        "time": 57.4,
+        "text": "Em và anh một đoạn kết mới"
+    },
+    {
+        "time": 60.69,
+        "text": "Dù rằng mình còn yêu nhau"
+    },
+    {
+        "time": 62.3,
+        "text": "rất nhiều đấy"
+    },
+    {
+        "time": 64.06,
+        "text": "Nhưng để ở lại"
+    },
+    {
+        "time": 65.1,
+        "text": "thì anh nghĩ là không"
+    },
+    {
+        "time": 66.97,
+        "text": "Và sau những cảm xúc nhất thời"
+    },
+    {
+        "time": 70.64,
+        "text": "Người bên em giờ này"
+    },
+    {
+        "time": 71.85,
+        "text": "chẳng còn là anh"
+    },
+    {
+        "time": 74.27,
+        "text": "Gửi lại quá khứ"
+    },
+    {
+        "time": 75.43,
+        "text": "cung đàn đã vỡ"
+    },
+    {
+        "time": 77.63,
+        "text": "Vì những vấn vương ấy"
+    },
+    {
+        "time": 78.52,
+        "text": "chưa kịp thành lời"
+    },
+    {
+        "time": 80.07,
+        "text": "Trái tim anh chẳng còn cần thiết nữa,"
+    },
+    {
+        "time": 82.14,
+        "text": "nói chi đến đây cũng thừa"
+    },
+    {
+        "time": 84.06,
+        "text": "Rượu vang pha với cơn mưa"
+    },
+    {
+        "time": 86.68,
+        "text": "Hàng trăm lý do"
+    },
+    {
+        "time": 87.47,
+        "text": "cũng chẳng thể cứu vãn"
+    },
+    {
+        "time": 88.81,
+        "text": "Biết sao hết cho vừa lòng"
+    },
+    {
+        "time": 91.05,
+        "text": "nhau mới thấu đây em"
+    },
+    {
+        "time": 93.44,
+        "text": "Dệt hàng triệu vết thương,"
+    },
+    {
+        "time": 94.78,
+        "text": "tự vùi mình trước gương"
+    },
+    {
+        "time": 96.44,
+        "text": "Nhìn một người đã từng thương"
+    },
+    {
+        "time": 97.81,
+        "text": "sao nay xa lạ đến bất thường"
+    },
+    {
+        "time": 99.83,
+        "text": "Cố gắng cũng chỉ bằng không,"
+    },
+    {
+        "time": 101.46,
+        "text": "nước mắt ngược dòng"
+    },
+    {
+        "time": 103.67,
+        "text": "Chảy ngược tận sâu bên trong"
+    },
+    {
+        "time": 104.9,
+        "text": "nghẹn đắng nơi lồng ngực"
+    },
+    {
+        "time": 106.56,
+        "text": "Tất cả là tại vì em,"
+    },
+    {
+        "time": 107.76,
+        "text": "em, em, em, em"
+    },
+    {
+        "time": 110.57,
+        "text": "Người xa lạ anh từng quen"
+    },
+    {
+        "time": 113.48,
+        "text": "Tất cả là tại vì em,"
+    },
+    {
+        "time": 114.7,
+        "text": "em, em, em, em"
+    },
+    {
+        "time": 117.09,
+        "text": "Kẻ ngốc đang say tình"
+    },
+    {
+        "time": 118.29,
+        "text": "dưới ngọn đèn"
+    },
+    {
+        "time": 119.55,
+        "text": "Tất cả là tại vì em,"
+    },
+    {
+        "time": 121.04,
+        "text": "em, em, em, em"
+    },
+    {
+        "time": 123.77,
+        "text": "Người xa lạ anh từng quen"
+    },
+    {
+        "time": 126.59,
+        "text": "Tất cả là tại vì em,"
+    },
+    {
+        "time": 127.94,
+        "text": "em, em, em, em"
+    },
+    {
+        "time": 130.4,
+        "text": "Kẻ ngốc đang say tình"
+    },
+    {
+        "time": 131.31,
+        "text": "dưới ngọn đèn"
+    },
+    {
+        "time": 134.05,
+        "text": "Lau đôi mi,"
+    },
+    {
+        "time": 134.65,
+        "text": "đây là nước mắt hay mưa"
+    },
+    {
+        "time": 135.44,
+        "text": "Buông đôi tay,"
+    },
+    {
+        "time": 136.16,
+        "text": "anh đâu muốn phải dây dưa"
+    },
+    {
+        "time": 137.11,
+        "text": "Quên đi đôi mắt ấy khi xưa,"
+    },
+    {
+        "time": 138.23,
+        "text": "à chẳng bên nhau được nữa"
+    },
+    {
+        "time": 140.54,
+        "text": "Sau bao lan đau"
+    },
+    {
+        "time": 141.24,
+        "text": "anh lại cho đi và quên"
+    },
+    {
+        "time": 142.17,
+        "text": "Anh ghét nỗi đau,"
+    },
+    {
+        "time": 142.87,
+        "text": "cơn mưa đêm kia và em"
+    },
+    {
+        "time": 143.83,
+        "text": "Ta vội quên rồi,"
+    },
+    {
+        "time": 144.62,
+        "text": "những điều sao thật quen"
+    },
+    {
+        "time": 145.38,
+        "text": "Để nỗi buồn kia gọi tên"
+    },
+    {
+        "time": 146.14,
+        "text": "mỗi khi bài ca bật lên"
+    },
+    {
+        "time": 147.04,
+        "text": "Và sau những cảm xúc nhất thời"
+    },
+    {
+        "time": 150.02,
+        "text": "Người bên em giờ này"
+    },
+    {
+        "time": 151.25,
+        "text": "chẳng còn là anh"
+    },
+    {
+        "time": 153.35,
+        "text": "Gửi lại quá khứ"
+    },
+    {
+        "time": 154.55,
+        "text": "cung đàn đã vỡ"
+    },
+    {
+        "time": 156.84,
+        "text": "Vì những vấn vương ấy"
+    },
+    {
+        "time": 157.78,
+        "text": "chưa kịp thành lời"
+    },
+    {
+        "time": 159.77,
+        "text": "Trái tim anh chẳng còn cần thiết nữa,"
+    },
+    {
+        "time": 161.74,
+        "text": "nói chi đến đây cũng thừa"
+    },
+    {
+        "time": 163.46,
+        "text": "Rượu vang pha với cơn mưa"
+    },
+    {
+        "time": 166.37,
+        "text": "Hàng trăm lý do"
+    },
+    {
+        "time": 166.95,
+        "text": "cũng chẳng thể cứu vãn"
+    },
+    {
+        "time": 168.29,
+        "text": "Biết sao hết cho vừa"
+    },
+    {
+        "time": 170.04,
+        "text": "lòng nhau mới thấu đây em"
+    },
+    {
+        "time": 172.73,
+        "text": "Dệt hàng triệu vết thương,"
+    },
+    {
+        "time": 174.12,
+        "text": "tự vùi mình trước gương"
+    },
+    {
+        "time": 175.8,
+        "text": "Nhìn một người đã từng thương"
+    },
+    {
+        "time": 177.16,
+        "text": "sao nay xa lạ đến bất thường"
+    },
+    {
+        "time": 179.23,
+        "text": "Cố gắng cũng chỉ bằng không,"
+    },
+    {
+        "time": 180.73,
+        "text": "nước mắt ngược dòng"
+    },
+    {
+        "time": 183.22,
+        "text": "Chảy ngược tận sâu bên trong"
+    },
+    {
+        "time": 184.36,
+        "text": "nghẹn đắng nơi lồng ngực"
+    },
+    {
+        "time": 186.1,
+        "text": "..."
+    },
+    {
+        "time": 187.47,
+        "text": "この世にはもう"
+    },
+    {
+        "time": 189.78,
+        "text": "意味なんてない"
+    },
+    {
+        "time": 194.13,
+        "text": "虹よ、さようなら"
+    },
+    {
+        "time": 196.46,
+        "text": "光があれば影もある"
+    },
+    {
+        "time": 201.07,
+        "text": "宿命だから"
+    },
+    {
+        "time": 202.57,
+        "text": "傷をあむ、かがみごし"
+    },
+    {
+        "time": 204.04,
+        "text": "愛した人が、"
+    },
+    {
+        "time": 205.54,
+        "text": "他人のようだ"
+    },
+    {
+        "time": 207.56,
+        "text": "無駄なすべて、今"
+    },
+    {
+        "time": 210.49,
+        "text": "胸の奥で息詰まる"
+    },
+    {
+        "time": 214.15,
+        "text": "Trái tim anh chẳng còn cần thiết nữa,"
+    },
+    {
+        "time": 216.32,
+        "text": "nói chi đến đây cũng thừa"
+    },
+    {
+        "time": 218.12,
+        "text": "Rượu vang pha với cơn mưa"
+    },
+    {
+        "time": 220.65,
+        "text": "Hàng trăm lý do"
+    },
+    {
+        "time": 221.44,
+        "text": "cũng chẳng thể cứu vãn"
+    },
+    {
+        "time": 222.89,
+        "text": "Biết sao hết cho vừa"
+    },
+    {
+        "time": 224.74,
+        "text": "lòng nhau mới thấu đây em"
+    },
+    {
+        "time": 227.26,
+        "text": "Dệt hàng triệu vết thương,"
+    },
+    {
+        "time": 228.86,
+        "text": "tự vùi mình trước gương"
+    },
+    {
+        "time": 230.58,
+        "text": "Nhìn một người đã từng thương"
+    },
+    {
+        "time": 231.78,
+        "text": "sao nay xa lạ đến bất thường"
+    },
+    {
+        "time": 233.89,
+        "text": "Cố gắng cũng chỉ bằng không,"
+    },
+    {
+        "time": 235.44,
+        "text": "nước mắt ngược dòng"
+    },
+    {
+        "time": 238.18,
+        "text": "Chảy ngược tận sâu bên trong"
+    },
+    {
+        "time": 238.92,
+        "text": "nghẹn đắng nơi lồng ngực"
+    },
+    {
+        "time": 240.7,
+        "text": "Tất cả là tại vì em,"
+    },
+    {
+        "time": 241.95,
+        "text": "em, em, em, em"
+    },
+    {
+        "time": 244.73,
+        "text": "Người xa lạ anh từng quen"
+    },
+    {
+        "time": 247.42,
+        "text": "Tất cả là tại vì em,"
+    },
+    {
+        "time": 248.69,
+        "text": "em, em, em, em"
+    },
+    {
+        "time": 251.29,
+        "text": "Kẻ ngốc đang say tình"
+    },
+    {
+        "time": 252.44,
+        "text": "dưới ngọn đèn"
+    },
+    {
+        "time": 254.62,
+        "text": "<Outro>"
+    },
+    {
+        "time": 268.04,
+        "text": "Beat Andy"
+    }
 ];
 
 const audioPlaylist = [
