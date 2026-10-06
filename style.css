@@ -1,7 +1,6 @@
 /* ============================================
-   IMPORTS & CSS CUSTOM PROPERTIES
+   CSS CUSTOM PROPERTIES
    ============================================ */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
   /* High-Tech Luxury Moss Green Color System (Dark Mode Default) */
@@ -95,6 +94,8 @@ body::after {
   pointer-events: none;
   animation: float-glow 25s ease-in-out infinite alternate;
   opacity: 0.6;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 body::before {
@@ -1006,7 +1007,7 @@ textarea {
   border-left: 1.5px solid rgba(255, 255, 255, 0.09);
   border-right: 1.5px solid rgba(255, 255, 255, 0.09);
   border-radius: 2px 2px 0 0;
-  will-change: height;
+  will-change: transform;
   touch-action: none;
 }
 
@@ -1052,6 +1053,7 @@ textarea {
   position: relative;
   z-index: 5;
   margin-top: -1px;
+  will-change: transform;
 }
 
 .hardware-clamp {
@@ -1961,6 +1963,7 @@ body.light-theme #about-section .tech-marquee-bar {
 
 .toggle-qr-btn {
   padding: 0.45rem 1.15rem;
+  min-height: 38px;
   border-radius: 9999px;
   border: none;
   color: #ffffff;
@@ -2043,11 +2046,13 @@ body.light-theme #about-section .tech-marquee-bar {
 .copy-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.35rem 0.85rem;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  min-height: 38px;
   border-radius: 9999px;
   border: none;
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: white;
   cursor: pointer;
@@ -3366,10 +3371,6 @@ body.light-theme .playlist-item.active .playlist-item-title {
     height: 140px;
   }
 
-  #circular-visualizer {
-    width: 190px;
-    height: 190px;
-  }
 
   .about-grid {
     grid-template-columns: 1fr;
@@ -4129,10 +4130,10 @@ html, body {
 
 .snap-section {
   min-height: 100vh;
-  height: 100vh;
+  height: auto !important;
   width: 100%;
   position: relative;
-  overflow: hidden;
+  overflow: visible !important;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -5203,17 +5204,15 @@ body.light-theme .panel-inner {
   }
 
   .snap-section {
-    height: 100vh !important;
-    height: 100dvh !important;
+    height: auto !important;
     min-height: 100vh !important;
     min-height: 100dvh !important;
-    max-height: 100vh !important;
-    max-height: 100dvh !important;
+    max-height: none !important;
     scroll-snap-align: start !important;
-    scroll-snap-stop: always !important;
+    scroll-snap-stop: normal !important;
     padding: 3.8rem 0.85rem 0.85rem 2.2rem !important; /* Safe left-padding for left-docked soundtrack tab */
     position: relative !important;
-    overflow: hidden !important;
+    overflow: visible !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
@@ -5300,8 +5299,12 @@ body.light-theme .panel-inner {
   }
 
   .header-nav .nav-link {
-    font-size: 0.62rem !important;
-    padding: 0.2rem 0.38rem !important;
+    font-size: 0.68rem !important;
+    padding: 0.35rem 0.6rem !important;
+    min-height: 36px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     border-radius: 9999px !important;
     flex-shrink: 0 !important;
     font-weight: 600 !important;
@@ -5320,9 +5323,11 @@ body.light-theme .panel-inner {
   }
 
   #themeToggleBtn {
-    width: 28px !important;
-    height: 28px !important;
-    font-size: 0.78rem !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    font-size: 0.85rem !important;
     padding: 0 !important;
     display: flex !important;
     align-items: center !important;
@@ -6002,9 +6007,13 @@ body.light-theme .panel-inner {
   }
 
   .toggle-qr-btn {
-    padding: 2.5px 5px !important;
-    font-size: 0.62rem !important;
-    border-radius: 6px !important;
+    padding: 0.35rem 0.85rem !important;
+    font-size: 0.72rem !important;
+    min-height: 36px !important;
+    border-radius: 9999px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   .qr-placeholder {
@@ -6031,8 +6040,9 @@ body.light-theme .panel-inner {
   }
 
   .copy-btn {
-    padding: 2px 4px !important;
-    font-size: 0.6rem !important;
+    padding: 0.35rem 0.75rem !important;
+    font-size: 0.72rem !important;
+    min-height: 36px !important;
   }
 
   .contact-footer-wrap {
