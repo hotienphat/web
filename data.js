@@ -594,6 +594,13 @@ const audioPlaylist = [
         lyrics: laviemLyrics
     },
     {
+        title: "SPIN",
+        artist: "Kroi (Steel Ball Run)",
+        src: "./assets/Kroi - SPIN.flac",
+        albumArt: "./assets/spin.jpg",
+        dominantColor: "249, 115, 22" // Vibrant Steel Ball Run Orange glow
+    },
+    {
         title: "Phép Màu (Đàn Cá Gỗ OST)",
         artist: "Mounter x MAYDAYs, Minh Tốc",
         src: "./assets/phepmau.mp3",
@@ -647,8 +654,9 @@ const phepMauLyrics = [
     { time: 255, text: "HẾT" },
 ];
 
-if (audioPlaylist && audioPlaylist[1]) {
-    audioPlaylist[1].lyrics = phepMauLyrics;
+const phepMauTrack = audioPlaylist && audioPlaylist.find(t => t.title && t.title.includes("Phép Màu"));
+if (phepMauTrack) {
+    phepMauTrack.lyrics = phepMauLyrics;
 }
 
 const heroTaglines = [
