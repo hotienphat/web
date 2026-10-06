@@ -289,7 +289,9 @@
         };
 
         let currentSeason = "spring";
-        const leafMeshes = [];
+        const leafData = [];
+        let leafInstancedMesh = null;
+        const swayDummy = new THREE.Object3D();
 
         function createBranch(startPoint, dir, length, radius, level) {
             if (level === 0) return;
@@ -338,44 +340,65 @@
         }
 
         function createLeafCluster(position, baseSize) {
-            const palette = seasonPalettes[currentSeason];
-            const color = palette[Math.floor(Math.random() * palette.length)];
-
-            const leafGeo = (Math.random() > 0.5)
-                ? new THREE.DodecahedronGeometry(baseSize * (0.8 + Math.random() * 0.5), 0)
-                : new THREE.IcosahedronGeometry(baseSize * (0.75 + Math.random() * 0.5), 0);
-
-            const leafMat = new THREE.MeshStandardMaterial({
-                color: color,
-                roughness: 0.45,
-                metalness: 0.1,
-                flatShading: true
-            });
-
-            const leaf = new THREE.Mesh(leafGeo, leafMat);
             const spread = baseSize * 0.7;
-            leaf.position.copy(position).add(new THREE.Vector3(
+            const leafPos = position.clone().add(new THREE.Vector3(
                 (Math.random() - 0.5) * spread,
                 (Math.random() - 0.5) * spread * 0.7,
                 (Math.random() - 0.5) * spread
             ));
-            leaf.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
-            leaf.castShadow = true;
-            leaf.receiveShadow = true;
+            const size = baseSize * (0.8 + Math.random() * 0.4);
+            const rot = new THREE.Euler(
+                Math.random() * Math.PI,
+                Math.random() * Math.PI,
+                Math.random() * Math.PI
+            );
 
-            leaf.userData = {
-                baseScale: 1,
+            leafData.push({
+                position: leafPos,
+                rotation: rot,
+                baseScale: size,
                 swaySpeed: 1.2 + Math.random() * 1.5,
                 swayOffset: Math.random() * Math.PI * 2,
                 paletteIndex: Math.floor(Math.random() * 5)
-            };
-
-            treeGroup.add(leaf);
-            leafMeshes.push(leaf);
+            });
         }
 
         // Build the tree (Trunk starts from origin at y = 0.2)
         createBranch(new THREE.Vector3(0, 0.2, 0), new THREE.Vector3(0, 1, 0), 5.5, 1.0, 5);
+
+        // Build InstancedMesh for all foliage leaves in one single draw call (<15 total tree draw calls)
+        const leafGeo = new THREE.DodecahedronGeometry(1, 0);
+        const leafMat = new THREE.MeshStandardMaterial({
+            roughness: 0.45,
+            metalness: 0.1,
+            flatShading: true
+        });
+
+        leafInstancedMesh = new THREE.InstancedMesh(leafGeo, leafMat, leafData.length);
+        leafInstancedMesh.castShadow = true;
+        leafInstancedMesh.receiveShadow = true;
+
+        const dummyObj = new THREE.Object3D();
+        const dummyColor = new THREE.Color();
+        const initPalette = seasonPalettes[currentSeason] || seasonPalettes.spring;
+
+        for (let i = 0; i < leafData.length; i++) {
+            const d = leafData[i];
+            dummyObj.position.copy(d.position);
+            dummyObj.rotation.copy(d.rotation);
+            dummyObj.scale.set(d.baseScale, d.baseScale, d.baseScale);
+            dummyObj.updateMatrix();
+            leafInstancedMesh.setMatrixAt(i, dummyObj.matrix);
+
+            const colorHex = initPalette[d.paletteIndex % initPalette.length];
+            dummyColor.setHex(colorHex);
+            leafInstancedMesh.setColorAt(i, dummyColor);
+        }
+        leafInstancedMesh.instanceMatrix.needsUpdate = true;
+        if (leafInstancedMesh.instanceColor) {
+            leafInstancedMesh.instanceColor.needsUpdate = true;
+        }
+        treeGroup.add(leafInstancedMesh);
 
         // -------------------------------------------------------------
         // 6. Dynamic Seasonal Particle Atmosphere
@@ -454,11 +477,18 @@
             const palette = seasonPalettes[season] || seasonPalettes.spring;
             const colors = seasonLightColors[season] || seasonLightColors.spring;
 
-            // Transition canopy leaves colors
-            leafMeshes.forEach((leaf) => {
-                const colorHex = palette[leaf.userData.paletteIndex % palette.length];
-                leaf.material.color.setHex(colorHex);
-            });
+            // Transition canopy leaves colors via InstancedMesh
+            if (leafInstancedMesh) {
+                const dummyColor = new THREE.Color();
+                for (let i = 0; i < leafData.length; i++) {
+                    const colorHex = palette[leafData[i].paletteIndex % palette.length];
+                    dummyColor.setHex(colorHex);
+                    leafInstancedMesh.setColorAt(i, dummyColor);
+                }
+                if (leafInstancedMesh.instanceColor) {
+                    leafInstancedMesh.instanceColor.needsUpdate = true;
+                }
+            }
 
             // Update Lights
             canopyLight.color.setHex(colors.canopy);
@@ -619,6 +649,32 @@
                 }
             }
 
+            let mediaPipeLoadPromise = null;
+            function loadMediaPipeHands() {
+                if (typeof window.Hands !== "undefined") return Promise.resolve();
+                if (mediaPipeLoadPromise) return mediaPipeLoadPromise;
+
+                mediaPipeLoadPromise = new Promise((resolve, reject) => {
+                    const existing = document.querySelector('script[data-lib="mediapipe-hands"]');
+                    if (existing) existing.remove();
+
+                    const script = document.createElement("script");
+                    script.setAttribute("data-lib", "mediapipe-hands");
+                    script.src = "https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js";
+                    script.crossOrigin = "anonymous";
+                    script.onload = () => {
+                        resolve();
+                    };
+                    script.onerror = (e) => {
+                        mediaPipeLoadPromise = null; // Allow retry on subsequent user clicks
+                        script.remove();
+                        reject(new Error("Không thể tải thư viện MediaPipe Hands. Vui lòng kiểm tra kết nối mạng."));
+                    };
+                    document.head.appendChild(script);
+                });
+                return mediaPipeLoadPromise;
+            }
+
             // Start Camera Stream
             async function startCamera() {
                 if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -629,6 +685,8 @@
                 try {
                     cameraBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> <span>Đang khởi động...</span>`;
                     cameraBtn.disabled = true;
+
+                    await loadMediaPipeHands();
 
                     const stream = await navigator.mediaDevices.getUserMedia({
                         video: {
@@ -727,7 +785,7 @@
 
             // Initialize MediaPipe Hands Detector
             function setupDetector() {
-                if (typeof window.Hands !== "undefined") {
+                if (typeof window.Hands !== "undefined" && !handsDetector) {
                     try {
                         handsDetector = new window.Hands({
                             locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
@@ -1005,11 +1063,18 @@
                 crystal.rotation.y += 0.015;
             });
 
-            // Foliage Organic Breathing / Sway
-            for (let i = 0; i < leafMeshes.length; i++) {
-                const leaf = leafMeshes[i];
-                const s = 1.0 + Math.sin(time * leaf.userData.swaySpeed + leaf.userData.swayOffset) * 0.035;
-                leaf.scale.set(s, s, s);
+            // Foliage Organic Breathing / Sway via InstancedMesh
+            if (leafInstancedMesh) {
+                for (let i = 0; i < leafData.length; i++) {
+                    const d = leafData[i];
+                    const s = d.baseScale * (1.0 + Math.sin(time * d.swaySpeed + d.swayOffset) * 0.035);
+                    swayDummy.position.copy(d.position);
+                    swayDummy.rotation.copy(d.rotation);
+                    swayDummy.scale.set(s, s, s);
+                    swayDummy.updateMatrix();
+                    leafInstancedMesh.setMatrixAt(i, swayDummy.matrix);
+                }
+                leafInstancedMesh.instanceMatrix.needsUpdate = true;
             }
 
             // Particle Updates
