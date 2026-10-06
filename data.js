@@ -45,13 +45,41 @@ const shortcutSections = [
     },
 ];
 
+const laviemLyrics = [
+    { time: 0,   text: "LAVIEM. (TINH HÀ \"SAY HI\")" },
+    { time: 5,   text: "Trái tim anh chẳng còn cần thiết nữa..." },
+    { time: 10,  text: "Nói chi đến đây cũng thừa, rượu vang pha với cơn mưa" },
+    { time: 18,  text: "Hàng trăm lý do cũng chẳng thể cứu vãn" },
+    { time: 26,  text: "Biết sao hết cho vừa lòng nhau mới thấu đây em" },
+    { time: 33,  text: "Dệt hàng triệu vết thương, tự vùi mình trước gương" },
+    { time: 40,  text: "Nhìn một người đã từng thương, sao nay xa lạ đến bất thường?" },
+    { time: 48,  text: "Cố gắng cũng chỉ bằng không, nước mắt ngược dòng" },
+    { time: 55,  text: "Chảy ngược tận sâu bên trong, nghẹn đắng nơi lồng ngực..." },
+    { time: 65,  text: "Ta chia tay, vì sao em ơi? Điều này anh muốn hỏi lâu rồi" },
+    { time: 75,  text: "Những khung trời kỷ niệm vỡ đôi, có phải vì một câu anh đã lỡ lời?" },
+    { time: 88,  text: "Sau đêm nay, tự ta cho ta, em và anh một đoạn kết mới" },
+    { time: 100, text: "Dù rằng mình còn yêu nhau rất nhiều đấy, nhưng để ở lại thì anh nghĩ là không" },
+    { time: 120, text: "Và sau những cảm xúc nhất thời, người bên em giờ này chẳng còn là anh" },
+    { time: 135, text: "Gửi lại quá khứ, cung đàn đã vỡ..." },
+    { time: 145, text: "Vì những vấn vương ấy chưa kịp thành lời..." }
+];
+
 const audioPlaylist = [
+    {
+        title: "LAVIEM. (TINH HÀ \"SAY HI\")",
+        artist: "Quang Hùng MasterD, Captain Boy, Pháp Kiều, Coolkid & Danny Chung",
+        src: "./assets/Danny Chung - LAVIEM.flac",
+        albumArt: "./assets/LVE.jpg",
+        dominantColor: "99, 102, 241", // Electric Indigo glow
+        lyrics: laviemLyrics
+    },
     {
         title: "Phép Màu (Đàn Cá Gỗ OST)",
         artist: "Mounter x MAYDAYs, Minh Tốc",
         src: "./assets/phepmau.mp3",
         albumArt: "./assets/Phepmaulogo.jpg",
-        dominantColor: "168, 85, 247" // Purple glow default
+        dominantColor: "168, 85, 247", // Purple glow default
+        lyrics: null // Assigned below after phepMauLyrics definition
     },
     {
         title: "Còn Gì Đẹp Hơn (Mưa Đỏ Original Soundtrack)",
@@ -59,13 +87,6 @@ const audioPlaylist = [
         src: "./assets/congidephon.mp3",
         albumArt: "./assets/CGDH.jpg",
         dominantColor: "34, 211, 238" // Cyan glow
-    },
-    {
-        title: "LAVIEM. (TINH HÀ \"SAY HI\")",
-        artist: "Quang Hùng MasterD, Captain Boy, Pháp Kiều, Coolkid & Danny Chung",
-        src: "./assets/Danny Chung - LAVIEM.flac",
-        albumArt: "./assets/LVE.jpg",
-        dominantColor: "99, 102, 241" // Electric Indigo glow
     }
 ];
 
@@ -105,6 +126,10 @@ const phepMauLyrics = [
     { time: 244, text: "Quãng đời mai sau luôn cạnh nhau" },
     { time: 255, text: "HẾT" },
 ];
+
+if (audioPlaylist && audioPlaylist[1]) {
+    audioPlaylist[1].lyrics = phepMauLyrics;
+}
 
 const heroTaglines = [
     "Lập trình viên • Gamer • Người yêu nhạc 🎵",
