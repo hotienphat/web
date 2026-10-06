@@ -36,7 +36,7 @@
   --font-body: 'Inter', sans-serif;
 
   /* Spacing */
-  --section-gap: 7rem;
+  --section-gap: clamp(2rem, 4.5vh, 3.5rem);
   --container-max: 1440px;
   --player-height: 90px;
 
@@ -151,9 +151,11 @@ body.loading {
 }
 
 .container {
+  width: 100%;
   max-width: var(--container-max);
   margin: 0 auto;
   padding: 0 1.5rem;
+  box-sizing: border-box;
 }
 
 img {
@@ -1501,11 +1503,12 @@ body.light-theme .card-nfc-chip {
 .content-section {
   padding: var(--section-gap) 0;
   position: relative;
+  box-sizing: border-box;
 }
 
 .section-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: clamp(1.5rem, 3vh, 2.5rem);
 }
 
 .section-title {
@@ -1546,25 +1549,33 @@ body.light-theme .card-nfc-chip {
 #about-section {
   position: relative;
   overflow: hidden;
+  padding-top: clamp(1rem, 2.5vh, 2rem);
+  padding-bottom: 56px; /* Reserves exact space for anchored tech marquee bar */
+  box-sizing: border-box;
 }
 
 #about-section .about-container {
-  padding-bottom: 72px; /* Reserves space so bottom tech marquee bar never overlaps cards */
+  padding-bottom: 0.5rem;
   max-width: 1250px;
+  width: 100%;
+}
+
+#about-section .section-header {
+  margin-bottom: clamp(0.75rem, 1.8vh, 1.4rem);
 }
 
 .about-grid {
   display: grid;
-  grid-template-columns: 410px 1fr;
-  gap: 3.5rem;
+  grid-template-columns: clamp(260px, 24vw, 360px) 1fr;
+  gap: clamp(1.5rem, 3vw, 3.5rem);
   align-items: center;
 }
 
 /* Avatar Circle Wrapper (Bigger circular presentation with rotating text ring) */
 .avatar-circle-wrapper {
   position: relative;
-  width: 380px;
-  height: 380px;
+  width: clamp(250px, 28vh, 360px);
+  height: clamp(250px, 28vh, 360px);
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -1655,23 +1666,23 @@ body.light-theme .avatar-curved-text {
 
 /* About Text & Spacious Cards (No Clutter, Large & Readable) */
 .about-text-block {
-  padding: 2.2rem 2.4rem;
+  padding: clamp(0.9rem, 1.8vh, 1.6rem) clamp(1.2rem, 2vw, 2rem);
   background: var(--bg-surface);
   border-radius: 24px;
   border: 1px solid var(--border-subtle);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  margin-bottom: 1.5rem;
+  margin-bottom: clamp(0.5rem, 1.2vh, 1rem);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .about-lead {
   font-family: var(--font-heading);
-  font-size: 1.38rem !important;
+  font-size: clamp(1.05rem, 1.6vh, 1.3rem) !important;
   font-weight: 700;
   color: var(--text-primary) !important;
-  line-height: 1.5 !important;
-  margin-bottom: 0.85rem !important;
+  line-height: 1.4 !important;
+  margin-bottom: 0.35rem !important;
 }
 .about-lead strong {
   color: var(--accent-purple-light);
@@ -1682,9 +1693,9 @@ body.light-theme .about-lead strong {
 
 .about-text-block p {
   color: var(--text-secondary);
-  font-size: 1.05rem;
-  line-height: 1.8;
-  margin-bottom: 0.85rem;
+  font-size: clamp(0.85rem, 1.3vh, 0.98rem);
+  line-height: 1.55;
+  margin-bottom: 0.35rem;
 }
 
 .about-text-block p:last-child {
@@ -1694,14 +1705,14 @@ body.light-theme .about-lead strong {
 .about-info-cards {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem; /* Generous gap between cards */
+  gap: clamp(0.45rem, 1vh, 0.85rem);
 }
 
 .info-card {
   display: flex;
   align-items: center;
-  gap: 1.35rem;
-  padding: 1.3rem 1.65rem;
+  gap: clamp(0.75rem, 1.2vw, 1.2rem);
+  padding: clamp(0.55rem, 1.1vh, 0.95rem) clamp(0.9rem, 1.4vw, 1.4rem);
   background: var(--bg-surface);
   border-radius: 20px;
   border: 1px solid var(--border-subtle);
@@ -1718,16 +1729,16 @@ body.light-theme .about-lead strong {
 }
 
 .info-card-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 16px;
+  width: clamp(36px, 4.2vh, 46px);
+  height: clamp(36px, 4.2vh, 46px);
+  border-radius: 14px;
   background: rgba(34, 197, 94, 0.12);
   border: 1px solid rgba(74, 222, 128, 0.28);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--accent-purple-light);
-  font-size: 1.35rem;
+  font-size: clamp(1rem, 1.5vh, 1.25rem);
   flex-shrink: 0;
 }
 body.light-theme .info-card-icon {
@@ -1742,26 +1753,26 @@ body.light-theme .info-card-icon {
 }
 
 .info-card-label {
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--text-muted);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.15rem;
   font-weight: 700;
 }
 
 .info-card-text {
   font-family: var(--font-heading);
-  font-size: 1.12rem;
+  font-size: clamp(0.88rem, 1.4vh, 1.05rem);
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.35;
 }
 
 .info-card-sub {
-  font-size: 0.88rem;
+  font-size: 0.8rem;
   color: var(--accent-cyan);
-  margin-top: 0.2rem;
+  margin-top: 0.15rem;
   font-weight: 500;
 }
 body.light-theme .info-card-sub {
@@ -1907,11 +1918,22 @@ body.light-theme #about-section .tech-marquee-bar {
 /* ============================================
    DONATE SECTION
    ============================================ */
+#donate-section {
+  padding: clamp(1.5rem, 3.8vh, 2.8rem) 0;
+  box-sizing: border-box;
+}
+
+.donate-container {
+  width: 100%;
+  max-width: 1000px;
+}
+
 .donate-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
-  max-width: 800px;
+  max-width: 860px;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -3540,13 +3562,28 @@ main {
 /* ============================================
    3D TREE SECTION (ENHANCED)
    ============================================ */
+.tree-section-container {
+  width: 100%;
+  max-width: 1150px;
+}
+
+#tree-3d-section {
+  padding: clamp(1.2rem, 3vh, 2.2rem) 0;
+  box-sizing: border-box;
+}
+
+#tree-3d-section .section-header {
+  margin-bottom: clamp(0.75rem, 1.8vh, 1.25rem);
+}
+
 .tree-3d-wrapper {
   position: relative;
   width: 100%;
-  height: 620px;
+  max-width: 1100px;
+  height: clamp(440px, 54vh, 580px);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  margin-top: 2rem;
+  margin: 0.75rem auto 0;
   background: radial-gradient(circle at 50% 35%, rgba(30, 27, 75, 0.45) 0%, rgba(10, 10, 20, 0.95) 100%);
   border: 1px solid rgba(168, 85, 247, 0.25);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 60px rgba(168, 85, 247, 0.05);
@@ -3626,12 +3663,22 @@ main {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  color: var(--text-secondary);
+  color: #e2e8f0;
   font-size: 0.82rem;
   font-weight: 400;
   pointer-events: none;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   transition: opacity 0.3s ease;
+  white-space: nowrap;
+}
+
+@media (max-width: 1150px) {
+  .tree-hint-badge .desktop-only-text {
+    display: none;
+  }
+  .tree-hint-badge .mobile-only-text {
+    display: inline !important;
+  }
 }
 
 .tree-hint-badge i {
@@ -3647,6 +3694,7 @@ main {
   z-index: 4;
   display: flex;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 .tree-tool-btn {
@@ -4033,6 +4081,33 @@ body.light-theme .tree-gesture-feedback {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
+body.light-theme .tree-hint-badge {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(15, 23, 42, 0.12);
+  color: #1e293b;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+body.light-theme .tree-tool-btn {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(15, 23, 42, 0.12);
+  color: #334155;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+body.light-theme .tree-tool-btn:hover {
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.98);
+  border-color: #059669;
+}
+
+body.light-theme .tree-tool-btn.active {
+  color: #059669;
+  border-color: rgba(5, 150, 105, 0.4);
+  background: rgba(5, 150, 105, 0.12);
+  box-shadow: 0 0 15px rgba(5, 150, 105, 0.2);
+}
+
 body.light-theme .gesture-modal-card {
   background: rgba(255, 255, 255, 0.95);
   border-color: rgba(168, 85, 247, 0.3);
@@ -4139,6 +4214,10 @@ html, body {
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
+}
+
+.snap-section > .container {
+  width: 100%;
 }
 
 /* ============================================================================
