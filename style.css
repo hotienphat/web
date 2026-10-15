@@ -1,9 +1,5 @@
-/* ============================================
-   CSS CUSTOM PROPERTIES
-   ============================================ */
-
 :root {
-  /* High-Tech Luxury Moss Green Color System (Dark Mode Default) */
+
   --bg-primary: #070c08;
   --bg-secondary: #0c150e;
   --bg-surface: rgba(14, 25, 17, 0.72);
@@ -14,11 +10,11 @@
   --text-secondary: #a3c4a8;
   --text-muted: #56725b;
 
-  --accent-purple: #22c55e;        /* Moss Green Primary */
-  --accent-purple-light: #4ade80;  /* Luminous Neon Sage */
-  --accent-cyan: #34d399;          /* Cyber Mint Moss */
-  --accent-pink: #84cc16;          /* Vibrant Olive Moss */
-  --accent-blue: #10b981;          /* Forest Emerald */
+  --accent-purple: #22c55e;
+  --accent-purple-light: #4ade80;
+  --accent-cyan: #34d399;
+  --accent-pink: #84cc16;
+  --accent-blue: #10b981;
   --accent-moss: #22c55e;
   --accent-moss-light: #4ade80;
   --accent-olive: #84cc16;
@@ -31,30 +27,23 @@
   --border-subtle: rgba(74, 122, 85, 0.22);
   --border-hover: rgba(34, 197, 94, 0.55);
 
-  /* Typography */
   --font-heading: 'Space Grotesk', sans-serif;
   --font-body: 'Inter', sans-serif;
 
-  /* Spacing */
   --section-gap: clamp(2rem, 4.5vh, 3.5rem);
   --container-max: 1440px;
   --player-height: 90px;
 
-  /* Transitions */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* @property for animated gradient border */
 @property --border-angle {
   syntax: '<angle>';
   initial-value: 0deg;
   inherits: false;
 }
 
-/* ============================================
-   RESET & BASE
-   ============================================ */
 *,
 *::before,
 *::after {
@@ -78,10 +67,9 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   position: relative;
-  /* For pseudo-elements */
+
 }
 
-/* Vivid Animated Background Glow */
 body::before,
 body::after {
   content: '';
@@ -169,9 +157,6 @@ a {
   text-decoration: none;
 }
 
-/* ============================================
-   NOISE OVERLAY
-   ============================================ */
 .noise-overlay {
   position: fixed;
   inset: 0;
@@ -182,9 +167,6 @@ a {
   background-repeat: repeat;
 }
 
-/* ============================================
-   CANVASES (Particles & Cursor Trail)
-   ============================================ */
 #particles-canvas,
 #cursor-trail-canvas {
   position: fixed;
@@ -197,9 +179,6 @@ a {
   z-index: 9997;
 }
 
-/* ============================================
-   CUSTOM SCROLLBAR
-   ============================================ */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -217,9 +196,6 @@ a {
   background: var(--accent-purple-light);
 }
 
-/* ============================================
-   CUSTOM CURSOR
-   ============================================ */
 html,
 body {
   cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><defs><filter id="glow"><feGaussianBlur stdDeviation="1.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><polygon points="10,2 18,10 10,18 2,10" fill="%23c4b5fd" opacity="0.9" style="filter:url(%23glow);"/><polygon points="10,2 18,10 10,18 2,10" stroke="%23a78bfa" stroke-width="1" fill="none"/></svg>') 10 10, auto;
@@ -238,7 +214,6 @@ input[type="radio"] {
   cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><defs><filter id="dropshadow" height="130%25"><feGaussianBlur in="SourceAlpha" stdDeviation="1"/><feOffset dx="0.5" dy="0.5" result="offsetblur"/><feComponentTransfer><feFuncA type="linear" slope="0.7"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path fill="%23a78bfa" d="M4.22 22.39L12.83 13.78C13.16 13.45 13.16 12.92 12.83 12.59L4.22 4.01C3.89 3.68 3.89 3.15 4.22 2.82C4.55 2.49 5.08 2.49 5.41 2.82L14.02 11.43C15.04 12.45 15.04 13.91 14.02 14.93L5.41 23.54C5.08 23.87 4.55 23.87 4.22 23.54C3.89 23.21 3.89 22.72 4.22 22.39Z" style="filter:url(%23dropshadow);" transform="rotate(-45 12 12) translate(0, -1)"/></svg>') 5 2, pointer;
 }
 
-/* Accessibility Focus States */
 :focus-visible {
   outline: 2px solid var(--accent-cyan);
   outline-offset: 3px;
@@ -257,9 +232,6 @@ textarea {
   cursor: text;
 }
 
-/* ============================================
-   LOADING SCREEN
-   ============================================ */
 #loading-screen {
   position: fixed;
   inset: 0;
@@ -312,9 +284,6 @@ textarea {
   text-transform: uppercase;
 }
 
-/* ============================================
-   TOP FLOATING DOCK (CAPSULE HEADER + DYNAMIC LYRICS PILL)
-   ============================================ */
 .top-nav-dock {
   position: fixed;
   top: 1.25rem;
@@ -354,7 +323,6 @@ textarea {
   width: 100%;
 }
 
-/* Dynamic Island Live Lyrics Capsule (Bên cạnh thanh điều hướng) */
 .nav-lyrics-pill {
   position: relative;
   pointer-events: none;
@@ -377,7 +345,6 @@ textarea {
   white-space: nowrap;
 }
 
-/* Khi đang phát bài có lời (Phép Màu), thanh điều hướng dạt qua 1 bên và thanh lyrics bung ra */
 .top-nav-dock.has-lyrics .nav-lyrics-pill {
   pointer-events: auto;
   opacity: 1;
@@ -393,7 +360,6 @@ textarea {
   min-width: 0;
 }
 
-/* Live Equalizer Waves */
 .lyrics-pill-wave {
   display: flex;
   align-items: center;
@@ -536,7 +502,6 @@ textarea {
   color: #ffffff;
 }
 
-/* Nav Menu */
 .header-nav {
   display: flex;
   align-items: center;
@@ -577,14 +542,12 @@ textarea {
   width: 100%;
 }
 
-/* Header Actions */
 .header-actions {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-/* Header Actions (All items unified with identical 38px height) */
 .header-actions .search-container {
   height: 38px;
   width: 175px;
@@ -680,11 +643,6 @@ textarea {
   transform: translateY(-1px);
 }
 
-
-
-/* ============================================
-   HERO SECTION (MÀN HÌNH CHÍNH - REFERENCE MATCH)
-   ============================================ */
 #hero-section.hero-page {
   position: relative;
   height: 100vh;
@@ -696,7 +654,6 @@ textarea {
   padding: 0;
 }
 
-/* Giant Typography Marquee (Strictly Behind Portrait) */
 .hero-marquee-wrapper {
   position: absolute;
   top: 48%;
@@ -729,7 +686,6 @@ textarea {
   100% { transform: translateX(-50%); }
 }
 
-/* Center Cutout Portrait (Anchored to Bottom Edge) */
 .hero-portrait-stage {
   position: absolute;
   bottom: 0;
@@ -786,7 +742,6 @@ textarea {
   opacity: 0.75;
 }
 
-/* Left Corner: Vertical HOPHAT + Editorial Bio Badge */
 .hero-bottom-left {
   position: absolute;
   bottom: 2.5rem;
@@ -906,7 +861,6 @@ textarea {
   box-shadow: 0 8px 25px var(--glow-purple);
 }
 
-/* Right Corner: Vertical SCROLL DOWN */
 .hero-bottom-right {
   position: absolute;
   bottom: 2.5rem;
@@ -958,9 +912,6 @@ textarea {
   100% { transform: translateY(260%); }
 }
 
-/* ============================================================================
-   HANGING LANYARD ID BADGE (PHONG CÁCH TỐI GIẢN CAO CẤP & ÁNH KIM PHẢN CHIẾU THẬT)
-   ============================================================================ */
 .hero-lanyard-wrapper {
   position: absolute;
   top: 0;
@@ -993,13 +944,12 @@ textarea {
   touch-action: none;
 }
 
-/* 1. Fabric Lanyard Strap (Dây vải dệt thanh lịch, dài tự nhiên) */
 .lanyard-strap {
   position: relative;
   width: 26px;
   height: 260px;
   background: #0d120f;
-  box-shadow: 
+  box-shadow:
     -4px 10px 25px rgba(0, 0, 0, 0.6),
     inset 0 0 5px rgba(0, 0, 0, 0.9);
   display: flex;
@@ -1017,7 +967,7 @@ textarea {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: 
+  background-image:
     repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.05) 0px, rgba(255, 255, 255, 0.05) 2px, transparent 2px, transparent 4px),
     repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.35) 0px, rgba(0, 0, 0, 0.35) 2px, transparent 2px, transparent 4px);
   opacity: 0.9;
@@ -1047,7 +997,6 @@ textarea {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-/* 2. Metallic Hardware Clasp (Móc kẹp kim loại phay xước) */
 .lanyard-hardware {
   display: flex;
   flex-direction: column;
@@ -1101,7 +1050,6 @@ textarea {
   z-index: 6;
 }
 
-/* 3. Upgraded Minimalist ID Card Badge */
 .lanyard-card {
   position: relative;
   width: 242px;
@@ -1119,7 +1067,6 @@ textarea {
   cursor: grabbing;
 }
 
-/* Slot Hole at top of badge */
 .card-slot-wrap {
   position: absolute;
   top: -6px;
@@ -1142,7 +1089,6 @@ textarea {
   border: 1.5px solid #cbd5e1;
 }
 
-/* High-End Metallic Mirror Bezel Frame (Viền nhôm bạc ánh gương thật) */
 .card-frame-shell {
   position: relative;
   padding: 6px;
@@ -1157,7 +1103,7 @@ textarea {
     #ffffff 84%,
     #94a3b8 100%
   );
-  box-shadow: 
+  box-shadow:
     0 30px 65px -10px rgba(0, 0, 0, 0.85),
     0 0 0 1px rgba(255, 255, 255, 0.25),
     inset 0 1.5px 2px rgba(255, 255, 255, 0.95),
@@ -1167,7 +1113,6 @@ textarea {
   transform-style: preserve-3d;
 }
 
-/* Holographic Iridescent Foil Layer (Ánh xà cừ 7 màu chuyển sắc) */
 .card-holographic-foil {
   position: absolute;
   inset: 0;
@@ -1190,7 +1135,6 @@ textarea {
   will-change: background;
 }
 
-/* Subtle Realistic Glass Specular Sheen (Ánh gương quét nhẹ tự nhiên) */
 .card-specular-glare {
   position: absolute;
   inset: 0;
@@ -1198,7 +1142,7 @@ textarea {
   pointer-events: none;
   z-index: 12;
   transform: translateZ(8px);
-  background: 
+  background:
     radial-gradient(
       circle 280px at var(--glare-x, 50%) var(--glare-y, 30%),
       rgba(255, 255, 255, 0.24) 0%,
@@ -1218,7 +1162,6 @@ textarea {
   will-change: background;
 }
 
-/* Card Content Wrap (Tối giản, cao cấp) */
 .card-content-wrap {
   background: #090e0b;
   border-radius: 15px;
@@ -1232,7 +1175,6 @@ textarea {
   z-index: 5;
 }
 
-/* Top Header Bar */
 .card-header-bar {
   display: flex;
   align-items: center;
@@ -1277,7 +1219,6 @@ textarea {
   text-transform: uppercase;
 }
 
-/* Large Portrait Photo Container */
 .card-photo-box {
   width: 100%;
   height: 280px;
@@ -1300,7 +1241,6 @@ textarea {
   -webkit-user-drag: none;
 }
 
-/* Cyber / VIP Corner Brackets */
 .photo-corner {
   position: absolute;
   width: 8px;
@@ -1314,7 +1254,6 @@ textarea {
 .photo-corner-bl { bottom: 6px; left: 6px; border-bottom: 1.5px solid; border-left: 1.5px solid; }
 .photo-corner-br { bottom: 6px; right: 6px; border-bottom: 1.5px solid; border-right: 1.5px solid; }
 
-/* Clean Minimalist Nameplate */
 .card-nameplate {
   display: flex;
   flex-direction: column;
@@ -1356,7 +1295,6 @@ textarea {
   text-shadow: 0 0 10px rgba(52, 211, 153, 0.35);
 }
 
-/* Bottom Authenticity Barcode & Security Strip */
 .card-footer-bar {
   display: flex;
   align-items: center;
@@ -1398,9 +1336,6 @@ textarea {
   justify-content: center;
 }
 
-/* ============================================================================
-   LANYARD LIGHT THEME OVERRIDES (STUDIO PORCELAIN)
-   ============================================================================ */
 body.light-theme .lanyard-strap {
   background: #0f172a;
 }
@@ -1460,9 +1395,6 @@ body.light-theme .card-nfc-chip {
   color: #059669;
 }
 
-/* ============================================================================
-   LANYARD RESPONSIVE ADJUSTMENTS
-   ============================================================================ */
 @media (max-width: 1280px) {
   .hero-lanyard-wrapper {
     right: 3rem;
@@ -1497,9 +1429,6 @@ body.light-theme .card-nfc-chip {
   }
 }
 
-/* ============================================
-   CONTENT SECTIONS
-   ============================================ */
 .content-section {
   padding: var(--section-gap) 0;
   position: relative;
@@ -1534,7 +1463,6 @@ body.light-theme .card-nfc-chip {
   margin-right: auto;
 }
 
-/* Section divider */
 .section-divider {
   width: 60px;
   height: 3px;
@@ -1543,14 +1471,11 @@ body.light-theme .card-nfc-chip {
   margin: 1.5rem auto 0;
 }
 
-/* ============================================
-   ABOUT SECTION: LARGE CIRCULAR AVATAR & ROOMY CONTENT
-   ============================================ */
 #about-section {
   position: relative;
   overflow: hidden;
   padding-top: clamp(1rem, 2.5vh, 2rem);
-  padding-bottom: 56px; /* Reserves exact space for anchored tech marquee bar */
+  padding-bottom: 56px;
   box-sizing: border-box;
 }
 
@@ -1571,7 +1496,6 @@ body.light-theme .card-nfc-chip {
   align-items: center;
 }
 
-/* Avatar Circle Wrapper (Bigger circular presentation with rotating text ring) */
 .avatar-circle-wrapper {
   position: relative;
   width: clamp(250px, 28vh, 360px);
@@ -1664,7 +1588,6 @@ body.light-theme .avatar-curved-text {
   transform: scale(1.08);
 }
 
-/* About Text & Spacious Cards (No Clutter, Large & Readable) */
 .about-text-block {
   padding: clamp(0.9rem, 1.8vh, 1.6rem) clamp(1.2rem, 2vw, 2rem);
   background: var(--bg-surface);
@@ -1779,7 +1702,6 @@ body.light-theme .info-card-sub {
   color: #059669;
 }
 
-/* Tech Marquee Bar Anchored at Bottom of About Section (Always Visible) */
 #about-section .tech-marquee-bar {
   position: absolute;
   bottom: 0;
@@ -1798,9 +1720,6 @@ body.light-theme #about-section .tech-marquee-bar {
   border-top: 1px solid rgba(15, 23, 42, 0.08) !important;
 }
 
-/* ============================================
-   SHORTCUT CARDS
-   ============================================ */
 #shortcutsContainer {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -1905,7 +1824,6 @@ body.light-theme #about-section .tech-marquee-bar {
   color: var(--text-primary);
 }
 
-/* Ripple effect */
 .ripple-effect {
   position: absolute;
   border-radius: 50%;
@@ -1915,9 +1833,6 @@ body.light-theme #about-section .tech-marquee-bar {
   pointer-events: none;
 }
 
-/* ============================================
-   DONATE SECTION
-   ============================================ */
 #donate-section {
   padding: clamp(1.5rem, 3.8vh, 2.8rem) 0;
   box-sizing: border-box;
@@ -2115,10 +2030,6 @@ body.light-theme #about-section .tech-marquee-bar {
   display: block;
 }
 
-/* ============================================
-   MUSIC PLAYER
-   ============================================ */
-/* Left-Docked Music Player Button (No Clutter, Clean Vertical Tab) */
 .player-dock-btn {
   position: fixed;
   left: 0;
@@ -2195,7 +2106,6 @@ body.light-theme #about-section .tech-marquee-bar {
   opacity: 0.9;
 }
 
-/* Light theme for dock btn */
 body.light-theme .player-dock-btn {
   background: rgba(255, 255, 255, 0.92);
   border: 1.5px solid rgba(15, 23, 42, 0.1);
@@ -2210,7 +2120,6 @@ body.light-theme .dock-text {
   color: #0f172a;
 }
 
-/* Player Drawer Backdrop */
 .player-drawer-backdrop {
   position: fixed;
   inset: 0;
@@ -2227,7 +2136,6 @@ body.light-theme .dock-text {
   pointer-events: auto;
 }
 
-/* Slide-out Player Drawer */
 .player-drawer {
   position: fixed;
   left: 0;
@@ -2541,7 +2449,7 @@ body.light-theme .playlist-item.active .playlist-item-title {
 
 .album-art {
   width: 42px;
-  /* Reduced from 52px */
+
   height: 42px;
   border-radius: 50%;
   object-fit: cover;
@@ -2558,7 +2466,6 @@ body.light-theme .playlist-item.active .playlist-item-title {
   animation-play-state: paused;
 }
 
-/* Now Playing Indicator */
 .now-playing-indicator {
   display: none;
   gap: 2px;
@@ -2613,7 +2520,6 @@ body.light-theme .playlist-item.active .playlist-item-title {
   text-overflow: ellipsis;
 }
 
-/* Player Controls */
 .player-controls {
   display: flex;
   flex-direction: column;
@@ -2667,7 +2573,6 @@ body.light-theme .playlist-item.active .playlist-item-title {
   box-shadow: 0 0 20px var(--glow-purple);
 }
 
-/* Progress Bar */
 .progress-wrapper {
   display: flex;
   align-items: center;
@@ -2736,7 +2641,6 @@ body.light-theme .playlist-item.active .playlist-item-title {
   border-radius: 2px;
 }
 
-/* Volume */
 .volume-controls {
   display: flex;
   align-items: center;
@@ -2748,11 +2652,6 @@ body.light-theme .playlist-item.active .playlist-item-title {
   width: 80px;
 }
 
-
-
-/* ============================================
-   ACCESS MODAL
-   ============================================ */
 #access-modal {
   position: fixed;
   inset: 0;
@@ -2819,9 +2718,6 @@ body.light-theme .playlist-item.active .playlist-item-title {
   transform: scale(0.97);
 }
 
-/* ============================================
-   FOOTER
-   ============================================ */
 #main-footer {
   padding: 2rem 0;
   padding-bottom: calc(var(--player-height) + 2rem);
@@ -2831,9 +2727,6 @@ body.light-theme .playlist-item.active .playlist-item-title {
   border-top: 1px solid var(--border-subtle);
 }
 
-/* ============================================
-   SEARCH SUGGESTIONS
-   ============================================ */
 .suggestions-dropdown {
   position: absolute;
   top: 100%;
@@ -2864,9 +2757,6 @@ body.light-theme .playlist-item.active .playlist-item-title {
   color: var(--text-primary);
 }
 
-/* ============================================
-   SCROLL REVEAL ANIMATIONS
-   ============================================ */
 .reveal-element {
   opacity: 0;
   transform: translateY(40px);
@@ -2878,12 +2768,10 @@ body.light-theme .playlist-item.active .playlist-item-title {
   transform: translateY(0);
 }
 
-/* Custom Utilities */
 .hidden {
   display: none !important;
 }
 
-/* Stagger children */
 .reveal-stagger>* {
   opacity: 0;
   transform: translateY(30px);
@@ -2949,9 +2837,6 @@ body.light-theme .playlist-item.active .playlist-item-title {
   transform: translateX(0);
 }
 
-/* ============================================
-   KEYFRAME ANIMATIONS
-   ============================================ */
 @keyframes logo-pulse {
 
   0%,
@@ -3063,9 +2948,6 @@ body.light-theme .playlist-item.active .playlist-item-title {
   }
 }
 
-/* ============================================
-   SKILLS SECTION
-   ============================================ */
 .skills-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -3115,9 +2997,6 @@ body.light-theme .playlist-item.active .playlist-item-title {
   color: var(--text-primary);
 }
 
-/* ============================================
-   PROJECTS SECTION
-   ============================================ */
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -3221,9 +3100,6 @@ body.light-theme .playlist-item.active .playlist-item-title {
   transform: translateX(4px);
 }
 
-/* ============================================
-   CONTACT SECTION
-   ============================================ */
 .contact-container {
   max-width: 700px;
   margin: 0 auto;
@@ -3375,9 +3251,6 @@ body.light-theme .playlist-item.active .playlist-item-title {
   }
 }
 
-/* ============================================
-   RESPONSIVE
-   ============================================ */
 @media (max-width: 768px) {
   :root {
     --section-gap: 3.5rem;
@@ -3392,7 +3265,6 @@ body.light-theme .playlist-item.active .playlist-item-title {
     width: 140px;
     height: 140px;
   }
-
 
   .about-grid {
     grid-template-columns: 1fr;
@@ -3516,9 +3388,6 @@ body.light-theme .playlist-item.active .playlist-item-title {
   }
 }
 
-/* ============================================
-   REDUCED MOTION
-   ============================================ */
 @media (prefers-reduced-motion: reduce) {
 
   *,
@@ -3543,7 +3412,6 @@ body.light-theme .playlist-item.active .playlist-item-title {
   }
 }
 
-/* Page content initial state */
 #page-content {
   opacity: 0;
   transition: opacity 0.6s var(--ease-out-expo);
@@ -3555,13 +3423,10 @@ body.light-theme .playlist-item.active .playlist-item-title {
   display: none !important;
 }
 
-/* Ensure body padding for fixed player */
 main {
   padding-bottom: calc(var(--player-height) + 2rem);
 }
-/* ============================================
-   3D TREE SECTION (ENHANCED)
-   ============================================ */
+
 .tree-section-container {
   width: 100%;
   max-width: 1150px;
@@ -3611,7 +3476,6 @@ main {
   outline: none;
 }
 
-/* Tree Loader */
 .tree-loader {
   position: absolute;
   inset: 0;
@@ -3648,7 +3512,6 @@ main {
   to { transform: rotate(360deg); }
 }
 
-/* Tree Hint Badge */
 .tree-hint-badge {
   position: absolute;
   top: 18px;
@@ -3686,7 +3549,6 @@ main {
   font-size: 0.9rem;
 }
 
-/* Top Toolbar */
 .tree-top-toolbar {
   position: absolute;
   top: 18px;
@@ -3734,7 +3596,6 @@ main {
   box-shadow: 0 0 15px rgba(34, 211, 238, 0.2);
 }
 
-/* Bottom Season Controls */
 .tree-controls {
   position: absolute;
   bottom: 24px;
@@ -3780,7 +3641,6 @@ main {
   transform: translateY(0);
 }
 
-/* Specific Season Glow Themes */
 .season-btn[data-season="spring"].active {
   color: #ff9ebb;
   background: rgba(255, 158, 187, 0.15);
@@ -3813,7 +3673,6 @@ main {
   font-weight: 600;
 }
 
-/* Tree Camera & Gesture Control Styles */
 .tree-cam-btn {
   background: rgba(16, 185, 129, 0.15);
   border-color: rgba(16, 185, 129, 0.4);
@@ -3871,7 +3730,6 @@ main {
   box-shadow: 0 0 14px rgba(34, 211, 238, 0.35);
 }
 
-/* Gesture Live Feedback Pill */
 .tree-gesture-feedback {
   position: absolute;
   top: 62px;
@@ -3900,7 +3758,6 @@ main {
   to { opacity: 1; transform: translate(-50%, 0); }
 }
 
-/* Mini PIP Camera Preview */
 .tree-pip-wrapper {
   position: absolute;
   bottom: 18px;
@@ -3951,7 +3808,6 @@ main {
   display: none;
 }
 
-/* Gesture Help Modal */
 .tree-gesture-modal {
   position: absolute;
   inset: 0;
@@ -4073,7 +3929,6 @@ main {
   margin-top: 0.2rem;
 }
 
-/* Light Theme Adaptations */
 body.light-theme .tree-gesture-feedback {
   background: rgba(255, 255, 255, 0.9);
   color: #1e293b;
@@ -4127,20 +3982,19 @@ body.light-theme .gesture-item-info p {
   color: #475569;
 }
 
-/* Responsive Styles for 3D Tree */
 @media (max-width: 768px) {
   .tree-3d-wrapper {
     height: 480px;
     margin-top: 1.5rem;
   }
-  
+
   .tree-hint-badge {
     top: 12px;
     left: 12px;
     font-size: 0.75rem;
     padding: 5px 10px;
   }
-  
+
   .tree-top-toolbar {
     top: 12px;
     right: 12px;
@@ -4161,7 +4015,7 @@ body.light-theme .gesture-item-info p {
     padding: 6px 10px;
     width: auto;
   }
-  
+
   .season-btn {
     padding: 6px 12px;
     font-size: 0.8rem;
@@ -4180,12 +4034,6 @@ body.light-theme .gesture-item-info p {
   }
 }
 
-
-/* ============================================================================
-   NEW EXPERIENCE: FULL-PAGE SNAP, THEME RIPPLE, MARQUEE, OCTAGON, BENTO & ACCORDION
-   ============================================================================ */
-
-/* 1. Full-page Snapping */
 html, body {
   height: 100%;
   overflow: hidden;
@@ -4197,7 +4045,7 @@ html, body {
   overflow-y: scroll;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  scroll-behavior: auto !important; /* Butter smooth 144Hz GSAP physics */
+  scroll-behavior: auto !important;
 }
 .snap-container::-webkit-scrollbar {
   display: none;
@@ -4220,27 +4068,24 @@ html, body {
   width: 100%;
 }
 
-/* ============================================================================
-   2. UNIFIED TONE SYSTEM: ARCHITECTURAL SAGE MOSS (LIGHT THEME)
-   ============================================================================ */
 html.light-theme,
 body.light-theme {
-  /* Studio Porcelain & Emerald Accents - Modern, Crisp, High-Contrast & Eye-friendly */
+
   --bg-primary: #f8fafc;
   --bg-secondary: #f1f5f9;
   --bg-surface: rgba(255, 255, 255, 0.88);
   --bg-surface-hover: rgba(255, 255, 255, 0.98);
   --bg-glass: rgba(255, 255, 255, 0.92);
 
-  --text-primary: #0f172a;       /* Deep slate-900: sharp, rich, 100% readable */
-  --text-secondary: #334155;     /* Slate-700: excellent contrast ratio */
-  --text-muted: #64748b;         /* Slate-500: clear, readable metadata */
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
 
-  --accent-purple: #059669;        /* Vibrant Emerald */
-  --accent-purple-light: #047857;  /* Deep Emerald */
-  --accent-cyan: #0284c7;          /* Sky Blue */
-  --accent-pink: #d97706;          /* Warm Amber */
-  --accent-blue: #2563eb;          /* Royal Blue */
+  --accent-purple: #059669;
+  --accent-purple-light: #047857;
+  --accent-cyan: #0284c7;
+  --accent-pink: #d97706;
+  --accent-blue: #2563eb;
   --accent-primary: #059669;
   --accent-secondary: #10b981;
   --accent-subtle: rgba(5, 150, 105, 0.08);
@@ -4257,7 +4102,7 @@ body.light-theme {
   --hero-marquee-stroke: rgba(15, 23, 42, 0.16);
 
   background-color: #f8fafc;
-  background-image: 
+  background-image:
     radial-gradient(ellipse 65% 50% at 15% 10%, rgba(16, 185, 129, 0.08) 0%, transparent 60%),
     radial-gradient(ellipse 60% 45% at 85% 15%, rgba(99, 102, 241, 0.06) 0%, transparent 60%),
     radial-gradient(ellipse 70% 55% at 50% 85%, rgba(14, 165, 233, 0.06) 0%, transparent 65%),
@@ -4268,13 +4113,11 @@ body.light-theme {
   animation: none;
 }
 
-/* Disable harsh dark-mode glowing halos in light mode */
 body.light-theme::before,
 body.light-theme::after {
   display: none;
 }
 
-/* Smooth color transitions when toggling theme */
 body,
 .floating-header,
 .nav-lyrics-pill,
@@ -4293,7 +4136,6 @@ body,
   transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
-/* Mute background particle canvas in light mode */
 body.light-theme #particles-canvas {
   opacity: 0.12;
   filter: grayscale(1) contrast(2) invert(1);
@@ -4302,7 +4144,6 @@ body.light-theme #cursor-trail-canvas {
   opacity: 0.15;
 }
 
-/* Light Theme Navigation & Dynamic Island Lyrics Capsule */
 body.light-theme .floating-header {
   background: rgba(255, 255, 255, 0.88);
   border: 1px solid rgba(15, 23, 42, 0.09);
@@ -4359,7 +4200,6 @@ body.light-theme .hire-me-btn {
   box-shadow: 0 4px 14px rgba(5, 150, 105, 0.25);
 }
 
-/* Dynamic Island Live Lyrics Pill in Light Theme */
 body.light-theme .nav-lyrics-pill {
   background: rgba(255, 255, 255, 0.92);
   border: 1px solid rgba(5, 150, 105, 0.35);
@@ -4392,7 +4232,6 @@ body.light-theme .lyrics-pill-close-btn:hover {
   background: rgba(15, 23, 42, 0.1);
 }
 
-/* Light Theme Refinements Across Sections */
 body.light-theme .gradient-text {
   background: linear-gradient(135deg, #0f172a 15%, #059669 65%, #0284c7 100%);
   -webkit-background-clip: text;
@@ -4429,7 +4268,6 @@ body.light-theme .section-divider {
   background: linear-gradient(90deg, transparent, #059669, transparent);
 }
 
-/* Bento Cards in Light Theme */
 body.light-theme .bento-card {
   background: rgba(255, 255, 255, 0.88);
   border-color: rgba(15, 23, 42, 0.08);
@@ -4467,7 +4305,6 @@ body.light-theme .bento-pill-link:hover {
   box-shadow: 0 4px 15px rgba(5, 150, 105, 0.25);
 }
 
-/* Horizontal Accordion in Light Theme */
 body.light-theme .accordion-panel {
   background: rgba(255, 255, 255, 0.88);
   border-color: rgba(15, 23, 42, 0.08);
@@ -4523,7 +4360,6 @@ body.light-theme .panel-action-btn.secondary:hover {
   background: rgba(15, 23, 42, 0.1);
 }
 
-/* About Section & Info Cards in Light Theme */
 body.light-theme .about-text-block {
   background: rgba(255, 255, 255, 0.88);
   border-color: rgba(15, 23, 42, 0.08);
@@ -4567,7 +4403,6 @@ body.light-theme .info-card-icon {
   color: #059669;
 }
 
-/* Tree Section Season Controls in Light Theme */
 body.light-theme .tree-controls {
   background: rgba(255, 255, 255, 0.9) !important;
   border: 1px solid rgba(15, 23, 42, 0.09) !important;
@@ -4589,7 +4424,6 @@ body.light-theme .season-btn.active {
   box-shadow: 0 4px 15px rgba(5, 150, 105, 0.35);
 }
 
-/* Donate Section in Light Theme */
 body.light-theme .donate-card {
   background: rgba(255, 255, 255, 0.88);
   border: 1px solid rgba(15, 23, 42, 0.08);
@@ -4627,8 +4461,6 @@ body.light-theme .donate-info-value {
   color: #0f172a;
 }
 
-
-/* 3. Header & Theme Toggle Button */
 .header-right {
   display: flex;
   align-items: center;
@@ -4647,9 +4479,7 @@ body.light-theme .donate-info-value {
   font-size: 0.85rem;
   margin-right: 0.5rem;
 }
-/* ============================================
-   THEME TOGGLE BUTTON (MATCHES 38px HEADER ROW)
-   ============================================ */
+
 .theme-toggle-btn {
   width: 38px;
   height: 38px;
@@ -4682,7 +4512,6 @@ body.light-theme .theme-toggle-btn {
 body.light-theme .theme-icon-sun { display: block; }
 body.light-theme .theme-icon-moon { display: none; }
 
-/* Native View Transitions API (Expand on Dark->Light & Collapse/Thu Lại on Light->Dark) */
 ::view-transition {
   background-color: var(--bg-primary);
 }
@@ -4698,9 +4527,6 @@ body.light-theme .theme-icon-moon { display: none; }
   overflow: clip;
 }
 
-/* Default (When html is dark, i.e. transitioning TO dark):
-   Old view (Light) is on TOP (z-index 999999) and collapses into the button (THU LẠI!)
-   New view (Dark) is at BOTTOM (z-index 1) and is revealed as the light circle shrinks */
 ::view-transition-old(root) {
   z-index: 999999;
 }
@@ -4708,9 +4534,6 @@ body.light-theme .theme-icon-moon { display: none; }
   z-index: 1;
 }
 
-/* When html has .light-theme (i.e. transitioning TO light):
-   New view (Light) is on TOP (z-index 999999) and expands from the button (LAN TỎA!)
-   Old view (Dark) is at BOTTOM (z-index 1) */
 html.light-theme::view-transition-old(root),
 .light-theme::view-transition-old(root) {
   z-index: 1;
@@ -4720,7 +4543,6 @@ html.light-theme::view-transition-new(root),
   z-index: 999999;
 }
 
-/* Silence CSS transitions during View Transitions snapshot capture to eliminate intermediate flashes */
 html.theme-transitioning,
 html.theme-transitioning *,
 html.theme-transitioning *::before,
@@ -4728,7 +4550,6 @@ html.theme-transitioning *::after {
   transition: none !important;
 }
 
-/* 5. Intro Animation Overlay (Replaces static welcome popup) */
 .intro-overlay {
   position: fixed;
   inset: 0;
@@ -4826,7 +4647,6 @@ html.theme-transitioning *::after {
   100% { transform: scale(4.8); opacity: 0; border-width: 1px; }
 }
 
-/* 7. About Section: Octagon Frame & 360° Rotating Circular Text */
 .about-container {
   width: 100%;
   max-width: 1200px;
@@ -4910,7 +4730,6 @@ body.light-theme .octagon-curved-text {
   margin-bottom: 0.75rem;
 }
 
-/* 8. Infinite Marquee Icon Bar (100vw) */
 .tech-marquee-bar {
   width: 100%;
   height: 56px;
@@ -4962,7 +4781,6 @@ body.light-theme .tech-marquee-bar {
   100% { transform: translateX(-50%); }
 }
 
-/* 9. Bento Grid (Trang 3) */
 .shortcuts-container {
   width: 100%;
   max-width: 1200px;
@@ -5058,7 +4876,6 @@ body.light-theme .bento-pill-link {
   box-shadow: 0 4px 15px rgba(168, 85, 247, 0.35);
 }
 
-/* 10. Horizontal Hover Accordion (Trang 4) */
 .projects-container {
   width: 100%;
   max-width: 1200px;
@@ -5226,7 +5043,6 @@ body.light-theme .panel-inner {
   transform: translateY(-2px);
 }
 
-/* Contact Footer in last snap section */
 .contact-footer-wrap {
   text-align: center;
   margin-top: 2rem;
@@ -5252,7 +5068,6 @@ body.light-theme .panel-inner {
   color: var(--text-muted);
 }
 
-/* Utility responsive visibility classes */
 .desktop-only-text {
   display: inline;
 }
@@ -5260,10 +5075,6 @@ body.light-theme .panel-inner {
   display: none;
 }
 
-/* ============================================================================
-   RESPONSIVE DESIGN SUITE: 1:1 DESKTOP-TO-MOBILE PROPORTIONAL SCALING (<= 900px)
-   Preserve 100% of Desktop UI features & visual hierarchy, scaled to fit mobile viewports
-   ============================================================================ */
 @media (max-width: 900px) {
   .desktop-only-text {
     display: none !important;
@@ -5272,7 +5083,6 @@ body.light-theme .panel-inner {
     display: inline !important;
   }
 
-  /* 1. Full-Page Snap Experience Preserved with Hardware Momentum */
   html, body {
     height: 100% !important;
     height: 100dvh !important;
@@ -5295,7 +5105,7 @@ body.light-theme .panel-inner {
     max-height: none !important;
     scroll-snap-align: start !important;
     scroll-snap-stop: normal !important;
-    padding: 3.8rem 0.85rem 0.85rem 2.2rem !important; /* Safe left-padding for left-docked soundtrack tab */
+    padding: 3.8rem 0.85rem 0.85rem 2.2rem !important;
     position: relative !important;
     overflow: visible !important;
     display: flex !important;
@@ -5304,7 +5114,6 @@ body.light-theme .panel-inner {
     box-sizing: border-box !important;
   }
 
-  /* When live lyrics pill is active, provide extra top breathing room */
   .top-nav-dock.has-lyrics + .snap-container .snap-section,
   .top-nav-dock.has-lyrics ~ .snap-container .snap-section {
     padding-top: 4.8rem !important;
@@ -5317,7 +5126,6 @@ body.light-theme .panel-inner {
     box-sizing: border-box !important;
   }
 
-  /* 2. Floating Capsule Header: Full Desktop Nav scaled with horizontal pill scroll */
   .top-nav-dock {
     top: 0.5rem !important;
     left: 50% !important;
@@ -5364,7 +5172,6 @@ body.light-theme .panel-inner {
     letter-spacing: 0.3px !important;
   }
 
-  /* Desktop Nav Links visible, scrollable horizontally with hidden scrollbar */
   .header-nav {
     display: flex !important;
     align-items: center !important;
@@ -5421,7 +5228,6 @@ body.light-theme .panel-inner {
     border-radius: 50% !important;
   }
 
-  /* Live Lyrics Capsule on Mobile - Compact & Centered, leaves room for top-right lanyard badge */
   .top-nav-dock.has-lyrics {
     flex-direction: column !important;
     align-items: center !important;
@@ -5445,7 +5251,6 @@ body.light-theme .panel-inner {
     display: none !important;
   }
 
-  /* 3. Hanging Lanyard ID Badge: Centered with longer strap for touch & gyroscope */
   .hero-lanyard-wrapper {
     display: block !important;
     position: absolute !important;
@@ -5463,7 +5268,6 @@ body.light-theme .panel-inner {
     height: 190px !important;
   }
 
-  /* 4. Left-Docked Soundtrack Button: Retained Exactly Like Desktop */
   .player-dock-btn {
     position: fixed !important;
     left: 0 !important;
@@ -5505,7 +5309,6 @@ body.light-theme .panel-inner {
     width: 2px !important;
   }
 
-  /* Music Drawer on Mobile */
   .player-drawer {
     width: min(360px, 90vw) !important;
     max-width: 90vw !important;
@@ -5516,13 +5319,11 @@ body.light-theme .panel-inner {
     z-index: 10001 !important;
   }
 
-  /* 5. Section 1: Hero Section (Editorial Split Magazine Layout) */
   #hero-section.hero-page {
     justify-content: flex-end !important;
     padding-bottom: 1.5rem !important;
   }
 
-  /* Cutout portrait sits comfortably on the right half */
   .hero-portrait-stage {
     position: absolute !important;
     bottom: 0 !important;
@@ -5562,7 +5363,6 @@ body.light-theme .panel-inner {
     opacity: 0.16 !important;
   }
 
-  /* Hero Info Box sits cleanly on the left half without colliding with portrait */
   .hero-bottom-left {
     position: absolute !important;
     bottom: 1.5rem !important;
@@ -5629,7 +5429,6 @@ body.light-theme .panel-inner {
     width: 2px !important;
   }
 
-  /* 6. Section Headers - Clean, Tight & Elegant */
   .section-header {
     margin-bottom: 0.55rem !important;
     text-align: center !important;
@@ -5655,7 +5454,6 @@ body.light-theme .panel-inner {
     height: 2px !important;
   }
 
-  /* 7. Section 2: About Section */
   #about-section .about-container {
     display: flex !important;
     flex-direction: column !important;
@@ -5766,7 +5564,6 @@ body.light-theme .panel-inner {
     display: none !important;
   }
 
-  /* Full-Bleed Edge-to-Edge Marquee on Mobile (Tràn viền 100% như trên PC) */
   .tech-marquee-bar {
     position: absolute !important;
     bottom: 0 !important;
@@ -5787,7 +5584,6 @@ body.light-theme .panel-inner {
     gap: 0.3rem !important;
   }
 
-  /* 8. Section 3: Bento Grid Shortcuts (2x2 Balanced Matrix) */
   .bento-grid {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
@@ -5846,7 +5642,6 @@ body.light-theme .panel-inner {
     font-size: 0.66rem !important;
   }
 
-  /* 9. Section 4: Projects Accordion (Vertical Stack with Active Expand) */
   .horizontal-accordion {
     flex-direction: column !important;
     height: clamp(330px, 52vh, 420px) !important;
@@ -5869,7 +5664,6 @@ body.light-theme .panel-inner {
     cursor: default !important;
   }
 
-  /* Collapsed Panel: Visible Number & Title */
   .accordion-panel:not(.active) .panel-inner {
     padding: 0 0.85rem !important;
     height: 44px !important;
@@ -5918,7 +5712,6 @@ body.light-theme .panel-inner {
     display: none !important;
   }
 
-  /* Active Panel: Expanded */
   .accordion-panel.active .panel-inner {
     padding: 0.65rem 0.8rem !important;
     height: 100% !important;
@@ -5997,7 +5790,6 @@ body.light-theme .panel-inner {
     gap: 0.3rem !important;
   }
 
-  /* 10. Section 5: 3D Tree Section (Three.js WebGL Interactive) */
   #tree-3d-section {
     padding-top: 3.5rem !important;
     padding-bottom: 1rem !important;
@@ -6064,7 +5856,6 @@ body.light-theme .panel-inner {
     border-radius: 9999px !important;
   }
 
-  /* 11. Section 6: Donate Section & Contact Footer */
   #donate-section {
     padding-top: 3.5rem !important;
     padding-bottom: 1rem !important;
@@ -6144,7 +5935,6 @@ body.light-theme .panel-inner {
     font-size: 0.62rem !important;
   }
 
-  /* 12. Hide Obsolete Desktop Scroll Indicators */
   .scroll-vertical-container,
   .scroll-vertical-label,
   .vertical-accent-text,

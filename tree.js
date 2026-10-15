@@ -1,11 +1,6 @@
-// ============================================================================
-// THREE.JS INTERACTIVE 3D TREE OF SEASONS (ENHANCED)
-// ============================================================================
-
 (function () {
     "use strict";
 
-    // Wait until DOM is ready
     function onReady(fn) {
         if (document.readyState === "complete" || document.readyState === "interactive") {
             setTimeout(fn, 1);
@@ -18,7 +13,6 @@
         const container = document.getElementById("tree-canvas-container");
         if (!container) return;
 
-        // Ensure THREE is loaded; if not yet available, retry with exponential backoff
         let retries = 0;
         const maxRetries = 25;
         function checkThreeAndInit() {
@@ -43,9 +37,6 @@
         const rotateBtn = document.getElementById("treeRotateToggleBtn");
         const seasonBtns = document.querySelectorAll(".season-btn");
 
-        // -------------------------------------------------------------
-        // 1. Scene, Camera, Renderer Setup
-        // -------------------------------------------------------------
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x0a0a16, 0.016);
 
@@ -71,14 +62,10 @@
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = 1.1;
 
-        // Clear container and append canvas
         container.innerHTML = "";
         if (loader) container.appendChild(loader);
         container.appendChild(renderer.domElement);
 
-        // -------------------------------------------------------------
-        // 2. Camera Controls (OrbitControls or Custom Fallback)
-        // -------------------------------------------------------------
         let controls = null;
         let isAutoRotating = true;
         let isUserInteracting = false;
@@ -89,7 +76,7 @@
             controls.dampingFactor = 0.06;
             controls.autoRotate = true;
             controls.autoRotateSpeed = 0.9;
-            controls.maxPolarAngle = Math.PI / 2 + 0.05; // Don't flip below base
+            controls.maxPolarAngle = Math.PI / 2 + 0.05;
             controls.minPolarAngle = 0.15;
             controls.minDistance = 12;
             controls.maxDistance = 50;
@@ -106,7 +93,7 @@
                 }, 2000);
             });
         } else {
-            // Safe built-in fallback controls if OrbitControls script was blocked
+
             let isDragging = false;
             let prevMouseX = 0;
             let prevMouseY = 0;
@@ -154,13 +141,9 @@
             };
         }
 
-        // -------------------------------------------------------------
-        // 3. Lighting System
-        // -------------------------------------------------------------
         const ambientLight = new THREE.AmbientLight(0xd4d4f7, 0.6);
         scene.add(ambientLight);
 
-        // Sunlight / Directional Light with Shadows
         const dirLight = new THREE.DirectionalLight(0xfff8ee, 1.1);
         dirLight.position.set(16, 28, 16);
         dirLight.castShadow = true;
@@ -175,23 +158,17 @@
         dirLight.shadow.bias = -0.0005;
         scene.add(dirLight);
 
-        // Seasonal Canopy Point Light
         const canopyLight = new THREE.PointLight(0xff70a6, 2.2, 35, 1.8);
         canopyLight.position.set(0, 9, 0);
         scene.add(canopyLight);
 
-        // Floating Island Underglow Light
         const underLight = new THREE.PointLight(0x8b5cf6, 1.8, 30, 2);
         underLight.position.set(0, -4, 0);
         scene.add(underLight);
 
-        // -------------------------------------------------------------
-        // 4. Floating Island Pedestal & Futuristic Cyber Ring
-        // -------------------------------------------------------------
         const islandGroup = new THREE.Group();
         scene.add(islandGroup);
 
-        // Main floating rock island
         const islandGeo = new THREE.CylinderGeometry(13, 10.5, 2.2, 28);
         const islandMat = new THREE.MeshStandardMaterial({
             color: 0x16152a,
@@ -204,7 +181,6 @@
         islandMesh.receiveShadow = true;
         islandGroup.add(islandMesh);
 
-        // Upper grass/moss disc
         const grassGeo = new THREE.CylinderGeometry(12.8, 12.8, 0.35, 28);
         const grassMat = new THREE.MeshStandardMaterial({
             color: 0x232042,
@@ -216,7 +192,6 @@
         grassMesh.receiveShadow = true;
         islandGroup.add(grassMesh);
 
-        // Glowing Neon Torus Ring around the island
         const ringGeo = new THREE.TorusGeometry(13.6, 0.18, 16, 48);
         const ringMat = new THREE.MeshStandardMaterial({
             color: 0xa855f7,
@@ -229,7 +204,6 @@
         ringMesh.position.y = -0.5;
         islandGroup.add(ringMesh);
 
-        // Floating Satellite Crystals orbiting the island
         const crystalGroup = new THREE.Group();
         islandGroup.add(crystalGroup);
         const crystalGeo = new THREE.OctahedronGeometry(0.7, 0);
@@ -260,9 +234,6 @@
             crystals.push(crystal);
         }
 
-        // -------------------------------------------------------------
-        // 5. Stylized Low-Poly Bonsai Tree Generation
-        // -------------------------------------------------------------
         const treeGroup = new THREE.Group();
         scene.add(treeGroup);
 
@@ -273,7 +244,6 @@
             flatShading: true
         });
 
-        // 4-Season Leaf Palettes
         const seasonPalettes = {
             spring: [0xff9ebb, 0xff70a6, 0xffb7c5, 0xfce7f3, 0xf472b6],
             summer: [0x10b981, 0x059669, 0x34d399, 0x6ee7b7, 0x047857],
@@ -301,14 +271,12 @@
             branch.castShadow = true;
             branch.receiveShadow = true;
 
-            // Center and orient cylinder along direction vector
             branch.position.copy(startPoint).add(dir.clone().multiplyScalar(length / 2));
             branch.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
             treeGroup.add(branch);
 
             const endPoint = startPoint.clone().add(dir.clone().multiplyScalar(length));
 
-            // Generate foliage clusters at medium and high branch levels
             if (level <= 3) {
                 const clusterCount = level === 1 ? 4 : (level === 2 ? 3 : 2);
                 for (let c = 0; c < clusterCount; c++) {
@@ -326,7 +294,7 @@
                 ).normalize();
 
                 const newDir = dir.clone().applyAxisAngle(axis, (Math.random() - 0.5) * spreadAngle + 0.3).normalize();
-                newDir.y = Math.max(0.15, newDir.y); // Tend upwards
+                newDir.y = Math.max(0.15, newDir.y);
                 newDir.normalize();
 
                 createBranch(
@@ -363,10 +331,8 @@
             });
         }
 
-        // Build the tree (Trunk starts from origin at y = 0.2)
         createBranch(new THREE.Vector3(0, 0.2, 0), new THREE.Vector3(0, 1, 0), 5.5, 1.0, 5);
 
-        // Build InstancedMesh for all foliage leaves in one single draw call (<15 total tree draw calls)
         const leafGeo = new THREE.DodecahedronGeometry(1, 0);
         const leafMat = new THREE.MeshStandardMaterial({
             roughness: 0.45,
@@ -400,9 +366,6 @@
         }
         treeGroup.add(leafInstancedMesh);
 
-        // -------------------------------------------------------------
-        // 6. Dynamic Seasonal Particle Atmosphere
-        // -------------------------------------------------------------
         const particleCount = 200;
         const particleGroup = new THREE.Group();
         scene.add(particleGroup);
@@ -445,22 +408,22 @@
             particleMeshes.forEach((p, idx) => {
                 const mat = p.material;
                 if (season === "spring") {
-                    // Cherry Blossom Petals
+
                     mat.color.setHex(idx % 2 === 0 ? 0xffb7c5 : 0xff70a6);
                     p.scale.set(1, 1.4, 1);
                     p.userData.vy = -0.035 - Math.random() * 0.03;
                 } else if (season === "summer") {
-                    // Fireflies rising and drifting
+
                     mat.color.setHex(idx % 2 === 0 ? 0x34d399 : 0xfef08a);
                     p.scale.set(0.7, 0.7, 0.7);
-                    p.userData.vy = 0.02 + Math.random() * 0.025; // Rise up
+                    p.userData.vy = 0.02 + Math.random() * 0.025;
                 } else if (season === "autumn") {
-                    // Falling Golden Maple Leaves
+
                     mat.color.setHex([0xf59e0b, 0xf97316, 0xef4444][idx % 3]);
                     p.scale.set(1.2, 1.5, 1);
                     p.userData.vy = -0.045 - Math.random() * 0.04;
                 } else if (season === "winter") {
-                    // Snowflakes
+
                     mat.color.setHex(idx % 3 === 0 ? 0x93c5fd : 0xffffff);
                     p.scale.set(0.6, 0.6, 0.6);
                     p.userData.vy = -0.025 - Math.random() * 0.03;
@@ -469,15 +432,11 @@
         }
         updateParticleAppearance(currentSeason);
 
-        // -------------------------------------------------------------
-        // 7. Season Transition Logic
-        // -------------------------------------------------------------
         function applySeason(season) {
             currentSeason = season;
             const palette = seasonPalettes[season] || seasonPalettes.spring;
             const colors = seasonLightColors[season] || seasonLightColors.spring;
 
-            // Transition canopy leaves colors via InstancedMesh
             if (leafInstancedMesh) {
                 const dummyColor = new THREE.Color();
                 for (let i = 0; i < leafData.length; i++) {
@@ -490,16 +449,13 @@
                 }
             }
 
-            // Update Lights
             canopyLight.color.setHex(colors.canopy);
             ringMat.color.setHex(colors.ring);
             ringMat.emissive.setHex(colors.ring);
             ambientLight.color.setHex(colors.ambient);
 
-            // Update Particles
             updateParticleAppearance(season);
 
-            // Update Buttons active class
             seasonBtns.forEach((btn) => {
                 if (btn.getAttribute("data-season") === season) {
                     btn.classList.add("active");
@@ -518,9 +474,6 @@
             });
         });
 
-        // -------------------------------------------------------------
-        // 8. Toolbar Controls (Auto-Rotate & Reset)
-        // -------------------------------------------------------------
         if (rotateBtn) {
             rotateBtn.addEventListener("click", () => {
                 isAutoRotating = !isAutoRotating;
@@ -545,12 +498,12 @@
                 const startPos = camera.position.clone();
                 const startTarget = controls.target ? controls.target.clone() : defaultTarget.clone();
                 const startTime = performance.now();
-                const duration = 900; // ms
+                const duration = 900;
 
                 function stepReset(now) {
                     const elapsed = now - startTime;
                     const progress = Math.min(1, elapsed / duration);
-                    // Cubic ease out
+
                     const ease = 1 - Math.pow(1 - progress, 3);
 
                     camera.position.lerpVectors(startPos, defaultCamPos, ease);
@@ -570,9 +523,6 @@
             });
         }
 
-        // -------------------------------------------------------------
-        // 8.1 Hand Gesture Camera Controller (MediaPipe Hands / AI Vision)
-        // -------------------------------------------------------------
         initHandGestureController();
 
         function initHandGestureController() {
@@ -599,7 +549,6 @@
             let lastSeasonSwitchTime = 0;
             let feedbackTimeout = null;
 
-            // Hand skeleton topology for PIP rendering
             const HAND_CONNECTIONS = [
                 [0, 1], [1, 2], [2, 3], [3, 4],
                 [0, 5], [5, 6], [6, 7], [7, 8],
@@ -609,7 +558,6 @@
                 [0, 17]
             ];
 
-            // Modal Interactions
             if (guideBtn && guideModal) {
                 guideBtn.addEventListener("click", () => {
                     guideModal.style.display = "flex";
@@ -666,7 +614,7 @@
                         resolve();
                     };
                     script.onerror = (e) => {
-                        mediaPipeLoadPromise = null; // Allow retry on subsequent user clicks
+                        mediaPipeLoadPromise = null;
                         script.remove();
                         reject(new Error("Không thể tải thư viện MediaPipe Hands. Vui lòng kiểm tra kết nối mạng."));
                     };
@@ -675,7 +623,6 @@
                 return mediaPipeLoadPromise;
             }
 
-            // Start Camera Stream
             async function startCamera() {
                 if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
                     alert("Trình duyệt hoặc môi trường của bạn không hỗ trợ truy cập Camera trực tiếp. Vui lòng kiểm tra quyền camera hoặc thử trên Chrome / Safari.");
@@ -704,7 +651,6 @@
                         await pipVideo.play();
                     }
 
-                    // Once permission granted, hide the request button as requested: "khi nào cấp cái nút đó mới ẩn đi"
                     cameraBtn.style.display = "none";
                     cameraBtn.disabled = false;
                     cameraBtn.innerHTML = `<i class="fas fa-video"></i> <span>Camera AI</span>`;
@@ -715,7 +661,6 @@
 
                     showFeedback("🖐️", "Đã bật Camera. Hãy đưa bàn tay vào khung hình!", 3500);
 
-                    // Pause auto rotation to allow fluid manual gesture navigation
                     isAutoRotating = false;
                     if (controls) controls.autoRotate = false;
                     if (rotateBtn) {
@@ -733,7 +678,6 @@
                 }
             }
 
-            // Stop Camera Stream
             function stopCamera() {
                 isTracking = false;
                 isProcessing = false;
@@ -760,7 +704,6 @@
                 if (feedbackEl) feedbackEl.style.display = "none";
                 if (pipDot) pipDot.style.display = "none";
 
-                // Resume auto-rotation
                 isAutoRotating = true;
                 if (controls) controls.autoRotate = true;
                 if (rotateBtn) {
@@ -773,7 +716,6 @@
             if (stopBtn) stopBtn.addEventListener("click", stopCamera);
             window.addEventListener("beforeunload", stopCamera);
 
-            // Dedicated offscreen processing canvas for 97% lighter MediaPipe ingestion
             const procCanvas = document.createElement("canvas");
             procCanvas.width = 240;
             procCanvas.height = 180;
@@ -781,9 +723,8 @@
 
             let isProcessing = false;
             let lastProcessTime = 0;
-            const INFER_INTERVAL = 66; // 15 FPS: ultra-responsive yet zero frame drops
+            const INFER_INTERVAL = 66;
 
-            // Initialize MediaPipe Hands Detector
             function setupDetector() {
                 if (typeof window.Hands !== "undefined" && !handsDetector) {
                     try {
@@ -793,7 +734,7 @@
 
                         handsDetector.setOptions({
                             maxNumHands: 1,
-                            modelComplexity: 0, // Lite model for mobile & instant inference!
+                            modelComplexity: 0,
                             minDetectionConfidence: 0.5,
                             minTrackingConfidence: 0.5
                         });
@@ -827,7 +768,6 @@
                 animLoopId = requestAnimationFrame(loop);
             }
 
-            // Process Hand Results
             function onHandResults(results) {
                 if (!isTracking) return;
 
@@ -849,7 +789,6 @@
 
                 const landmarks = results.multiHandLandmarks[0];
 
-                // Draw skeleton in PIP canvas
                 if (ctx) {
                     ctx.save();
                     ctx.lineWidth = 2.5;
@@ -857,7 +796,6 @@
                     ctx.shadowColor = "#22d3ee";
                     ctx.shadowBlur = 6;
 
-                    // Draw bones
                     HAND_CONNECTIONS.forEach(([i, j]) => {
                         const p1 = landmarks[i];
                         const p2 = landmarks[j];
@@ -867,7 +805,6 @@
                         ctx.stroke();
                     });
 
-                    // Draw joints
                     ctx.fillStyle = "rgba(168, 85, 247, 0.95)";
                     ctx.shadowColor = "#a855f7";
                     ctx.shadowBlur = 8;
@@ -879,21 +816,17 @@
                     ctx.restore();
                 }
 
-                // Calculate Palm Center
-                // Note: Video is mirrored with scaleX(-1). We invert X to make user's physical movement match screen direction.
                 const rawPalmX = (landmarks[0].x + landmarks[9].x) * 0.5;
                 const rawPalmY = (landmarks[0].y + landmarks[9].y) * 0.5;
-                const userX = 1 - rawPalmX; // 0 = user left, 1 = user right
-                const userY = rawPalmY;     // 0 = user top, 1 = user bottom
+                const userX = 1 - rawPalmX;
+                const userY = rawPalmY;
 
-                // Position PIP hand dot
                 if (pipDot) {
                     pipDot.style.display = "block";
                     pipDot.style.left = `${rawPalmX * 100}%`;
                     pipDot.style.top = `${rawPalmY * 100}%`;
                 }
 
-                // Detect Finger Count (Extended Fingers)
                 const wrist = landmarks[0];
                 function isFingerExtended(tipIdx, pipIdx) {
                     const tip = landmarks[tipIdx];
@@ -917,10 +850,8 @@
 
                 const extendedCount = [thumbExtended, indexExtended, middleExtended, ringExtended, pinkyExtended].filter(Boolean).length;
 
-                // Hand Span / Scale (Distance from camera for Zoom)
                 const handSpan = Math.hypot(landmarks[9].x - landmarks[0].x, landmarks[9].y - landmarks[0].y);
 
-                // 1. Season Switching via Extended Finger Count (debounced)
                 const now = performance.now();
                 if (now - lastSeasonSwitchTime > 1200) {
                     if (extendedCount === 1) {
@@ -944,8 +875,6 @@
                     }
                 }
 
-                // 2. Camera Rotation (Pan/Tilt) via Hand Position Joystick
-                // Deadband around center (0.42 to 0.58)
                 const dx = userX - 0.5;
                 const dy = userY - 0.5;
                 const deadband = 0.07;
@@ -966,7 +895,6 @@
                     phi = Math.max(0.2, Math.min(Math.PI / 2 + 0.05, phi + steerY));
                 }
 
-                // 3. Zoom In / Zoom Out via Hand Span
                 if (handSpan > 0.28) {
                     radius = Math.max(13, radius - 0.38);
                     showFeedback("🔍", "Phóng to (Tay lại gần)", 1000);
@@ -983,7 +911,7 @@
                 camera.lookAt(target);
             }
         }
-        // -------------------------------------------------------------
+
         function handleResize() {
             if (!container) return;
             const w = container.clientWidth;
@@ -1007,20 +935,15 @@
         }
         window.addEventListener("resize", handleResize);
 
-        // Hide loader once setup is complete and first frame is ready
         if (loader) {
             setTimeout(() => {
                 loader.classList.add("hidden");
             }, 300);
         }
 
-        // -------------------------------------------------------------
-        // 10. Animation Loop & Visibility Caching
-        // -------------------------------------------------------------
         let isSceneVisible = true;
         let animationFrameId = null;
 
-        // Use IntersectionObserver to pause rendering when scrolled out of view
         if ("IntersectionObserver" in window) {
             const io = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
@@ -1046,14 +969,11 @@
             const delta = clock.getDelta();
             const time = clock.getElapsedTime();
 
-            // Update Controls
             if (controls) controls.update();
 
-            // Subtle Island Float Bobbing
             islandGroup.position.y = Math.sin(time * 0.8) * 0.2;
             treeGroup.position.y = islandGroup.position.y;
 
-            // Crystals orbit & bob around island
             crystals.forEach((crystal) => {
                 crystal.userData.angle += crystal.userData.speed * delta;
                 crystal.position.x = Math.cos(crystal.userData.angle) * crystal.userData.dist;
@@ -1063,7 +983,6 @@
                 crystal.rotation.y += 0.015;
             });
 
-            // Foliage Organic Breathing / Sway via InstancedMesh
             if (leafInstancedMesh) {
                 for (let i = 0; i < leafData.length; i++) {
                     const d = leafData[i];
@@ -1077,7 +996,6 @@
                 leafInstancedMesh.instanceMatrix.needsUpdate = true;
             }
 
-            // Particle Updates
             const pBoxLimit = 16;
             for (let i = 0; i < particleMeshes.length; i++) {
                 const p = particleMeshes[i];
@@ -1091,16 +1009,15 @@
                 p.rotation.y += u.rotSpeedY;
                 p.rotation.z += u.rotSpeedZ;
 
-                // Bounds wrap around
                 if (currentSeason === "summer") {
-                    // Fireflies rising: wrap when too high
+
                     if (p.position.y > 25) {
                         p.position.y = -1;
                         p.position.x = (Math.random() - 0.5) * 28;
                         p.position.z = (Math.random() - 0.5) * 28;
                     }
                 } else {
-                    // Falling particles: wrap when hitting ground
+
                     if (p.position.y < -2) {
                         p.position.y = 22 + Math.random() * 5;
                         p.position.x = (Math.random() - 0.5) * 30;

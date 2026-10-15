@@ -1,34 +1,21 @@
-// ============================================
-// DATA CONFIGURATION MOVED TO data.js
-// ============================================
-
-// ============================================
-// GLOBAL STATE
-// ============================================
 let currentTrackIndex = 0;
 let currentLyricIndex = -1;
 let audioPlayer;
 
-// Music player DOM refs
 let playPauseMusicBtn, stopMusicBtn, musicProgressBar, albumArtElement;
 let currentTimeEl, durationEl, songTitleEl, songArtistEl;
 let volumeBtn, volumeSlider, prevTrackBtn, nextTrackBtn;
 let topNavDock, navLyricsPill, currentLyricEl, nextLyricEl, navLyricsTrackName, nowPlayingIndicator;
 let isLyricsEnabled = true;
 
-// Search
 let searchInput, suggestionsDropdown, searchKeywords = [];
 let activeSuggestionIndex = -1;
 
-// ============================================
-// PARTICLE SYSTEM
-// ============================================
 class ParticleSystem {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
         if (!this.canvas) return;
 
-        // Disable on mobile/touch screens or if prefers reduced motion (saves massive battery & avoids jank)
         const isMobile = window.innerWidth <= 900 || ('ontouchstart' in window);
         if (isMobile || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             this.canvas.style.display = 'none';
@@ -76,9 +63,9 @@ class ParticleSystem {
             this.particles.push({
                 x: Math.random() * this.canvas.width,
                 y: Math.random() * this.canvas.height,
-                vx: (Math.random() - 0.5) * 1.0, // Tăng tốc độ bay
+                vx: (Math.random() - 0.5) * 1.0,
                 vy: (Math.random() - 0.5) * 1.0,
-                radius: Math.random() * 2 + 1, // Kích thước hạt to hơn chút
+                radius: Math.random() * 2 + 1,
                 opacity: Math.random() * 0.7 + 0.3,
                 color: Math.random() > 0.6 ? '34, 197, 94' : (Math.random() > 0.3 ? '74, 222, 128' : '132, 204, 22')
             });
@@ -91,23 +78,19 @@ class ParticleSystem {
         for (let i = 0; i < this.particles.length; i++) {
             const p = this.particles[i];
 
-            // Update position
             p.x += p.vx;
             p.y += p.vy;
 
-            // Wrap around edges
             if (p.x < 0) p.x = this.canvas.width;
             if (p.x > this.canvas.width) p.x = 0;
             if (p.y < 0) p.y = this.canvas.height;
             if (p.y > this.canvas.height) p.y = 0;
 
-            // Draw particle
             this.ctx.beginPath();
             this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
             this.ctx.fillStyle = `rgba(${p.color}, ${p.opacity})`;
             this.ctx.fill();
 
-            // Draw connections
             for (let j = i + 1; j < this.particles.length; j++) {
                 const p2 = this.particles[j];
                 const dx = p.x - p2.x;
@@ -115,18 +98,17 @@ class ParticleSystem {
                 const dist = Math.sqrt(dx * dx + dy * dy);
 
                 if (dist < this.connectionDistance) {
-                    const lineOpacity = (1 - dist / this.connectionDistance) * 0.3; // Rõ đường nối hơn
+                    const lineOpacity = (1 - dist / this.connectionDistance) * 0.3;
                     this.ctx.beginPath();
                     this.ctx.moveTo(p.x, p.y);
                     this.ctx.lineTo(p2.x, p2.y);
-                    // Dùng màu mix giữa 2 hạt cho đường nối
+
                     this.ctx.strokeStyle = `rgba(168, 85, 247, ${lineOpacity})`;
                     this.ctx.lineWidth = 0.8;
                     this.ctx.stroke();
                 }
             }
 
-            // Mouse interaction — gentle push
             const mdx = p.x - this.mouseX;
             const mdy = p.y - this.mouseY;
             const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
@@ -136,7 +118,6 @@ class ParticleSystem {
                 p.vy += mdy * force;
             }
 
-            // Dampen velocity
             p.vx *= 0.99;
             p.vy *= 0.99;
         }
@@ -145,14 +126,11 @@ class ParticleSystem {
     }
 }
 
-// ============================================
-// CURSOR TRAIL
-// ============================================
 class CursorTrail {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
         if (!this.canvas) return;
-        // Disable on touch devices, mobile screens, or if prefers reduced motion
+
         const isMobile = window.innerWidth <= 900 || ('ontouchstart' in window);
         if (isMobile || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             this.canvas.style.display = 'none';
@@ -203,9 +181,6 @@ class CursorTrail {
     }
 }
 
-// ============================================
-// SCROLL REVEAL (IntersectionObserver)
-// ============================================
 function initScrollReveal() {
     const revealElements = document.querySelectorAll('.reveal-element, .reveal-left, .reveal-right, .reveal-stagger');
     if (!revealElements.length) return;
@@ -225,9 +200,6 @@ function initScrollReveal() {
     revealElements.forEach(el => observer.observe(el));
 }
 
-// ============================================
-// TYPEWRITER EFFECT
-// ============================================
 function typewriterEffect(elementId, texts, speed = 60, pause = 2000) {
     const el = document.getElementById(elementId);
     if (!el) return;
@@ -246,7 +218,6 @@ function typewriterEffect(elementId, texts, speed = 60, pause = 2000) {
             charIndex++;
         }
 
-        // Update text content, keep cursor
         el.textContent = currentText.substring(0, charIndex);
         if (cursorSpan) {
             cursorSpan = document.createElement('span');
@@ -268,20 +239,9 @@ function typewriterEffect(elementId, texts, speed = 60, pause = 2000) {
         setTimeout(type, nextDelay);
     }
 
-    // Start after a delay for hero animation (reduced for faster loading)
     setTimeout(type, 800);
 }
 
-// ============================================
-// 3D TILT EFFECT (Cleaned - Bento Grid uses CSS)
-// ============================================
-function init3DTilt() {
-    // Obsolete: Bento Grid uses hardware-accelerated CSS hover transitions
-}
-
-// ============================================
-// RIPPLE EFFECT
-// ============================================
 function addRipple(e) {
     const target = e.currentTarget;
     const rect = target.getBoundingClientRect();
@@ -295,9 +255,6 @@ function addRipple(e) {
     setTimeout(() => ripple.remove(), 600);
 }
 
-// ============================================
-// 144Hz BUTTERY SMOOTH GSAP SNAP CONTROLLER
-// ============================================
 function initSmoothSnapScroll() {
     const pageContent = document.getElementById('page-content');
     if (!pageContent) return;
@@ -310,17 +267,14 @@ function initSmoothSnapScroll() {
     let touchStartY = 0;
     let touchStartTime = 0;
 
-    // Detect section based on current scroll position using viewport focal region and offsetTop
     function getNearestSectionIndex() {
         const scrollY = pageContent.scrollTop;
         const viewHeight = window.innerHeight;
 
-        // Bottom of the page: activate the last section
         if (scrollY + viewHeight >= pageContent.scrollHeight - 20) {
             return sections.length - 1;
         }
 
-        // Viewport focal line at 40% from top to prevent premature switching while inside tall sections
         const focalY = scrollY + viewHeight * 0.4;
         for (let i = 0; i < sections.length; i++) {
             const secTop = sections[i].offsetTop;
@@ -330,7 +284,6 @@ function initSmoothSnapScroll() {
             }
         }
 
-        // Fallback to nearest section top
         let closestIdx = 0;
         let minDiff = Infinity;
         for (let i = 0; i < sections.length; i++) {
@@ -345,7 +298,6 @@ function initSmoothSnapScroll() {
 
     currentSectionIndex = getNearestSectionIndex();
 
-    // Smooth navigation with GSAP (144fps interpolation)
     function goToSection(index, duration = 0.85, forceTop = false) {
         if (index < 0 || index >= sections.length) return;
         if (isAnimating) return;
@@ -358,8 +310,6 @@ function initSmoothSnapScroll() {
         const viewHeight = window.innerHeight;
         let targetY = targetSec.offsetTop;
 
-        // If scrolling backward into a section that is taller than viewport,
-        // land at its bottom so the user can naturally scroll up through it without skipping content
         if (!forceTop && index < prevIndex && targetSec.offsetHeight > viewHeight + 120) {
             targetY = targetSec.offsetTop + targetSec.offsetHeight - viewHeight;
         }
@@ -393,12 +343,10 @@ function initSmoothSnapScroll() {
         }
     }
 
-    // Intercept wheel events completely to eliminate 144Hz browser snap stutter on desktop,
-    // while allowing natural scrolling inside sections that exceed viewport height.
     window.addEventListener('wheel', (e) => {
-        if (window.innerWidth <= 900) return; // Allow natural scrolling on mobile/tablet screens
+        if (window.innerWidth <= 900) return;
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-        if (e.target.closest('#playerPanel') || e.target.closest('#mobileNavSheet')) return; // Allow smooth scrolling inside drawers
+        if (e.target.closest('#playerPanel') || e.target.closest('#mobileNavSheet')) return;
 
         const currentSec = sections[currentSectionIndex];
         if (currentSec) {
@@ -407,14 +355,13 @@ function initSmoothSnapScroll() {
             const viewHeight = window.innerHeight;
             const maxScrollInSec = secTop + secHeight - viewHeight;
 
-            // If section is taller than viewport, allow natural scroll inside before jumping
             if (secHeight > viewHeight + 120) {
                 const currentScroll = pageContent.scrollTop;
-                // Scrolling down and has not reached the bottom of section
+
                 if (e.deltaY > 0 && currentScroll < maxScrollInSec - 15) {
                     return;
                 }
-                // Scrolling up and has not reached the top of section
+
                 if (e.deltaY < 0 && currentScroll > secTop + 15) {
                     return;
                 }
@@ -437,15 +384,14 @@ function initSmoothSnapScroll() {
         }
     }, { passive: false });
 
-    // Touch support (Active only on large desktop touchscreens, NEVER hijack mobile phone scrolling)
     window.addEventListener('touchstart', (e) => {
-        if (window.innerWidth <= 900) return; // Natural touch scrolling on mobile
+        if (window.innerWidth <= 900) return;
         touchStartY = e.touches[0].clientY;
         touchStartTime = Date.now();
     }, { passive: true });
 
     window.addEventListener('touchend', (e) => {
-        if (window.innerWidth <= 900) return; // Natural touch scrolling on mobile
+        if (window.innerWidth <= 900) return;
         if (isAnimating) return;
         const touchEndY = e.changedTouches[0].clientY;
         const diffY = touchStartY - touchEndY;
@@ -464,7 +410,6 @@ function initSmoothSnapScroll() {
         }
     }, { passive: true });
 
-    // Keyboard navigation (Arrow keys, Space, PageUp/Down)
     window.addEventListener('keydown', (e) => {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
@@ -483,7 +428,6 @@ function initSmoothSnapScroll() {
         }
     });
 
-    // Wire up Floating Nav Links
     const navLinks = document.querySelectorAll('.header-nav .nav-link, .header-brand');
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
@@ -505,7 +449,6 @@ function initSmoothSnapScroll() {
         });
     });
 
-    // Wire up Scroll Down indicators
     const scrollDownBtn = document.querySelector('.hero-bottom-right, .scroll-vertical-indicator, .scroll-indicator');
     if (scrollDownBtn) {
         scrollDownBtn.style.cursor = 'pointer';
@@ -518,7 +461,6 @@ function initSmoothSnapScroll() {
         });
     }
 
-    // Update active nav styling
     function updateActiveNav(idx) {
         if (sections[idx]) {
             const secId = sections[idx].getAttribute('id');
@@ -535,7 +477,6 @@ function initSmoothSnapScroll() {
         }
     }
 
-    // Scroll Morphing (linked continuously to 144fps scroll)
     function handleScrollMorph(scrollY) {
         const heroCutout = document.getElementById('heroCutoutImg');
         const circleWrapper = document.getElementById('avatarCircleWrapper');
@@ -578,11 +519,6 @@ function initSmoothSnapScroll() {
     window.goToSection = goToSection;
 }
 
-// Bento grid is rendered directly in HTML with modern semantic layout
-
-// ============================================
-// SEARCH SUGGESTIONS
-// ============================================
 function generateSearchKeywords() {
     const keywords = new Set();
     shortcutSections.forEach(section => {
@@ -662,7 +598,6 @@ function performSearch() {
     if (!raw) return;
     const query = raw.toLowerCase();
 
-    // Internal section mappings
     const sectionMap = [
         { keys: ["về bản thân", "about", "hồ tiến phát", "fot", "thông tin cá nhân"], target: "#about-section" },
         { keys: ["dự án", "project", "projects", "kỷ luật", "kỷ luật online", "trực nề nếp", "nề nếp", "tạo khung", "giám thị", "random"], target: "#projects-section" },
@@ -682,7 +617,6 @@ function performSearch() {
         }
     }
 
-    // Shortcut URLs matching
     if (typeof shortcutSections !== 'undefined') {
         for (const sec of shortcutSections) {
             const found = sec.shortcuts.find(s => s.name.toLowerCase() === query);
@@ -694,7 +628,6 @@ function performSearch() {
         }
     }
 
-    // Default to Google search
     window.open(`https://www.google.com/search?q=${encodeURIComponent(raw)}`, '_blank');
     if (suggestionsDropdown) suggestionsDropdown.classList.add('hidden');
 }
@@ -717,14 +650,8 @@ function initSearchSuggestions() {
     });
 }
 
-
-
-// ============================================
-// MUSIC PLAYER
-// ============================================
 function initMusicPlayer() {
     audioPlayer = new Audio();
-    // Removed crossOrigin="anonymous" to fix local file:// playback
 
     playPauseMusicBtn = document.getElementById('playPauseMusicBtn');
     stopMusicBtn = document.getElementById('stopMusicBtn');
@@ -745,7 +672,6 @@ function initMusicPlayer() {
     navLyricsTrackName = document.getElementById('navLyricsTrackName');
     const navLyricsCloseBtn = document.getElementById('navLyricsCloseBtn');
 
-    // Docked Tab & Slide-Out Drawer Logic
     const playerDockBtn = document.getElementById('playerDockBtn');
     const playerDrawerBackdrop = document.getElementById('playerDrawerBackdrop');
     const playerPanel = document.getElementById('playerPanel');
@@ -827,7 +753,6 @@ function initMusicPlayer() {
     updateTrackButtonsState();
     updateVolumeIcon();
 
-    // Toggle Lyrics Button in Drawer
     if (toggleLyricsBtn) {
         toggleLyricsBtn.addEventListener('click', () => {
             isLyricsEnabled = !isLyricsEnabled;
@@ -836,7 +761,6 @@ function initMusicPlayer() {
         });
     }
 
-    // Close Lyrics Button in Nav Pill
     if (navLyricsCloseBtn) {
         navLyricsCloseBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -973,7 +897,6 @@ function stopAudio() {
     if (bubbleArt) { bubbleArt.classList.remove('spinning'); bubbleArt.classList.remove('paused'); }
     if (nowPlayingIndicator) nowPlayingIndicator.classList.remove('active');
 
-    // Reset lyrics
     if (topNavDock) topNavDock.classList.remove('has-lyrics');
     if (currentLyricEl) { currentLyricEl.textContent = ''; currentLyricEl.classList.remove('active'); }
     if (nextLyricEl) { nextLyricEl.textContent = ''; }
@@ -1074,10 +997,6 @@ function updateTrackButtonsState() {
     });
 }
 
-// ============================================
-// LYRICS (INTEGRATED INTO DYNAMIC TOP NAV CAPSULE)
-// ============================================
-// Update Lyrics UI
 function updateLyrics(time) {
     if (!isLyricsEnabled || !audioPlayer) {
         if (topNavDock) topNavDock.classList.remove('has-lyrics');
@@ -1133,11 +1052,6 @@ function updateLyrics(time) {
     }
 }
 
-
-
-// ============================================
-// DONATE SECTION
-// ============================================
 function initDonateSection() {
     document.querySelectorAll('.toggle-qr-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -1195,9 +1109,6 @@ function initCopyButtons() {
     }
 }
 
-// ============================================
-// SPLIT TEXT ANIMATION (Hero Title)
-// ============================================
 function splitTextAnimation() {
     const title = document.getElementById('hero-title');
     if (!title) return;
@@ -1219,19 +1130,10 @@ function splitTextAnimation() {
     });
 }
 
-// ============================================
-// PAGE INITIALIZATION
-// ============================================
-// ============================================
-// ============================================
-// ============================================
-// THEME TOGGLE (EXPAND & COLLAPSE / THU LẠI VỀ TÂM NÚT)
-// ============================================
 function initThemeToggle() {
     const themeBtn = document.getElementById('themeToggleBtn');
     if (!themeBtn) return;
 
-    // Restore saved theme on both html and body
     if (localStorage.getItem('fot_theme') === 'light') {
         document.documentElement.classList.add('light-theme');
         document.body.classList.add('light-theme');
@@ -1245,12 +1147,10 @@ function initThemeToggle() {
         const willBeLight = !document.documentElement.classList.contains('light-theme');
         isThemeTransitioning = true;
 
-        // Spin the theme button icon gracefully
         if (window.gsap) {
             gsap.to(themeBtn, { rotate: willBeLight ? '+=180' : '-=180', duration: 0.45, ease: 'power2.out' });
         }
 
-        // Get exact center of the theme button as the origin of ripple
         const rect = themeBtn.getBoundingClientRect();
         const x = rect.left + rect.width / 2;
         const y = rect.top + rect.height / 2;
@@ -1259,9 +1159,8 @@ function initThemeToggle() {
             Math.max(y, window.innerHeight - y)
         );
 
-        // Native View Transition API (Chrome, Edge, Safari 18+)
         if (document.startViewTransition) {
-            // Mute CSS background-color transitions so snapshot captures immediate target colors
+
             document.documentElement.classList.add('theme-transitioning');
 
             let transition;
@@ -1282,7 +1181,7 @@ function initThemeToggle() {
 
             transition.ready.then(() => {
                 if (willBeLight) {
-                    // TỐI -> SÁNG: Vòng tròn sáng lan tỏa từ tâm nút ra toàn màn hình (Expand)
+
                     document.documentElement.animate(
                         {
                             clipPath: [
@@ -1298,8 +1197,7 @@ function initThemeToggle() {
                         }
                     );
                 } else {
-                    // SÁNG -> TỐI: Vòng tròn sáng thu nhỏ lại (THU LẠI) về tâm nút!
-                    // fill: 'forwards' và opacity [1, 1, 0] giữ clipPath ở 0px, triệt tiêu 100% nháy trắng
+
                     document.documentElement.animate(
                         {
                             clipPath: [
@@ -1325,7 +1223,7 @@ function initThemeToggle() {
                 isThemeTransitioning = false;
             });
         } else {
-            // Fallback for browsers without View Transitions
+
             fallbackCircularThemeToggle(willBeLight, x, y, endRadius, () => {
                 isThemeTransitioning = false;
             });
@@ -1341,7 +1239,7 @@ function fallbackCircularThemeToggle(willBeLight, x, y, endRadius, onComplete) {
     overlay.style.pointerEvents = 'none';
 
     if (willBeLight) {
-        // Tối -> Sáng: Lan tỏa ra
+
         overlay.style.backgroundColor = '#dfe6df';
         overlay.style.clipPath = `circle(0px at ${x}px ${y}px)`;
         document.body.appendChild(overlay);
@@ -1356,7 +1254,7 @@ function fallbackCircularThemeToggle(willBeLight, x, y, endRadius, onComplete) {
             if (typeof onComplete === 'function') onComplete();
         }, 500);
     } else {
-        // Sáng -> Tối: Thu lại về tâm nút
+
         overlay.style.backgroundColor = '#dfe6df';
         overlay.style.clipPath = `circle(${endRadius}px at ${x}px ${y}px)`;
         document.body.appendChild(overlay);
@@ -1373,9 +1271,6 @@ function fallbackCircularThemeToggle(willBeLight, x, y, endRadius, onComplete) {
     }
 }
 
-// ============================================
-// HORIZONTAL ACCORDION (PROJECTS SECTION)
-// ============================================
 function initHorizontalAccordion() {
     const panels = document.querySelectorAll('.accordion-panel');
     if (!panels.length) return;
@@ -1390,10 +1285,6 @@ function initHorizontalAccordion() {
     });
 }
 
-
-// ============================================
-// HANGING LANYARD ID BADGE (144Hz REAL-TIME SPRING PHYSICS & TACTILE DIRECT DRAG)
-// ============================================
 function initLanyardBadge() {
     const wrapper = document.getElementById('hero-lanyard-wrapper');
     const pendulum = document.getElementById('lanyard-pendulum');
@@ -1405,9 +1296,8 @@ function initLanyardBadge() {
 
     if (!wrapper || !pendulum || !card) return;
 
-    // Simulation Configuration & State
     function getBaseStrapLen() {
-        return window.innerWidth <= 900 ? 190 : 260; // Mobile dây dài 190px giúp thẻ treo xuống rộng rãi, dễ tương tác
+        return window.innerWidth <= 900 ? 190 : 260;
     }
     let BASE_STRAP_LEN = getBaseStrapLen();
     if (strap) {
@@ -1417,13 +1307,13 @@ function initLanyardBadge() {
     let currentStrapLen = BASE_STRAP_LEN;
     let targetStrapLen = BASE_STRAP_LEN;
     let prevStrapLen = BASE_STRAP_LEN;
-    let strapVelocity = 0; // px/sec
+    let strapVelocity = 0;
 
     let isDragging = false;
-    let currentAngle = 0; // CSS angle: negative is tilted right, positive is tilted left
+    let currentAngle = 0;
     let targetAngle = 0;
     let prevAngle = 0;
-    let angularVelocity = 0; // deg/sec
+    let angularVelocity = 0;
     let secondaryAngle = 0;
 
     let tiltX = 0, tiltY = 0;
@@ -1436,7 +1326,6 @@ function initLanyardBadge() {
     let pointerX = 0, pointerY = 0;
     let mousePctX = 50, mousePctY = 30;
 
-    // Mobile Con Quay Hồi Chuyển (DeviceOrientation Gyroscope)
     let isGyroActive = false;
     let targetGyroAngle = 0;
     let gyroPitch = 0;
@@ -1445,13 +1334,9 @@ function initLanyardBadge() {
         if (e.gamma === null || e.gamma === undefined) return;
         isGyroActive = true;
 
-        // e.gamma: trục nghiêng trái/phải [-90, 90] độ.
-        // Nghiêng điện thoại sang phải (gamma > 0) -> thẻ bị trọng lực kéo sang phải (-gamma trong CSS rotate)
-        // Nghiêng điện thoại sang trái (gamma < 0) -> thẻ bị trọng lực kéo sang trái (+gamma trong CSS rotate)
         const clampedGamma = Math.max(-50, Math.min(50, e.gamma));
         targetGyroAngle = -clampedGamma * 0.85;
 
-        // e.beta: trục nghiêng trước/sau [-180, 180] độ. Cầm thông thường khoảng 45 độ.
         const clampedBeta = Math.max(10, Math.min(80, e.beta || 45));
         gyroPitch = (clampedBeta - 45) * 0.35;
     }
@@ -1474,7 +1359,6 @@ function initLanyardBadge() {
         }
     }
 
-    // Hero Visibility Observer to stop physics ticker when scrolled away (Saves 100% CPU when browsing other sections)
     let isHeroVisible = true;
     if ('IntersectionObserver' in window) {
         const heroObserver = new IntersectionObserver((entries) => {
@@ -1513,7 +1397,6 @@ function initLanyardBadge() {
         updateAnchor();
     }, { passive: true });
 
-    // Drop-in Animation on load ("Thả dây đeo thẻ mượt mà từ trên xuống")
     const isMobile = window.innerWidth <= 900;
     if (window.gsap) {
         gsap.set(wrapper, { y: -750, opacity: 0, xPercent: isMobile ? -50 : 0 });
@@ -1537,43 +1420,35 @@ function initLanyardBadge() {
         updateAnchor();
     }
 
-    // Real-Time 144Hz Physics Engine via GSAP Ticker / RAF
     function physicsTick(time, deltaTime) {
         if (!wrapper.isConnected || !isHeroVisible) return;
 
-        const dtSec = Math.min((deltaTime || 16.67) / 1000, 0.05); // Frame delta in seconds
-        const dtNorm = Math.min((deltaTime || 16.67) / 16.67, 2.5); // Normalized frame step
+        const dtSec = Math.min((deltaTime || 16.67) / 1000, 0.05);
+        const dtNorm = Math.min((deltaTime || 16.67) / 16.67, 2.5);
 
         if (isDragging) {
-            // Direct 1:1 Drag Tracking (Kéo trái qua trái, kéo phải qua phải, kéo tự do mọi hướng)
+
             const dx = pointerX - anchorX;
             const dy = pointerY - anchorY;
 
-            // rawPointerAngle: dx > 0 (phải) -> dương; dx < 0 (trái) -> âm
             const rawPointerAngle = Math.atan2(dx, Math.max(30, dy)) * (180 / Math.PI);
 
-            // Trong CSS rotate(): góc âm quay ngược chiều kim đồng hồ (hướng sang PHẢI),
-            // góc dương quay cùng chiều kim đồng hồ (hướng sang TRÁI).
             const currentPointerAngle = -rawPointerAngle;
             const desiredAngle = currentPointerAngle + grabAngleOffset;
 
-            // Cho phép kéo tự do góc siêu rộng (tới ±88 độ) không bị chặn cứng
             targetAngle = Math.max(-88, Math.min(88, desiredAngle));
 
-            // Follow tức thì không delay
             prevAngle = currentAngle;
             currentAngle += (targetAngle - currentAngle) * Math.min(1.0, 0.85 * dtNorm);
 
-            // Đo gia tốc vận tốc góc
             const instVelocity = (currentAngle - prevAngle) / Math.max(0.001, dtSec);
             angularVelocity = angularVelocity * 0.35 + instVelocity * 0.65;
 
-            // Độ co giãn đàn hồi khi kéo dây xuống hoặc kéo lên
             const currentDist = Math.hypot(dx, dy);
             const isMob = window.innerWidth <= 900;
             const minStrap = isMob ? 120 : 170;
             const maxStrap = isMob ? 340 : 460;
-            const restReach = BASE_STRAP_LEN + (isMob ? 100 : 150); // khoảng cách từ chốt neo tới điểm cầm thẻ
+            const restReach = BASE_STRAP_LEN + (isMob ? 100 : 150);
             if (currentDist > restReach) {
                 targetStrapLen = BASE_STRAP_LEN + (currentDist - restReach) * 0.72;
             } else {
@@ -1586,48 +1461,41 @@ function initLanyardBadge() {
             const instStrapVel = (currentStrapLen - prevStrapLen) / Math.max(0.001, dtSec);
             strapVelocity = strapVelocity * 0.35 + instStrapVel * 0.65;
 
-            // 3D tilt nghiêng theo hướng văng kéo
             targetTiltY = Math.max(-18, Math.min(18, -angularVelocity * 0.04));
             targetTiltX = Math.max(-12, Math.min(12, -Math.abs(angularVelocity) * 0.018 + (currentStrapLen - BASE_STRAP_LEN) * 0.05));
         } else {
-            // Vật lý con lắc tự do (Pendulum Harmonic Gravity) + Con Quay Hồi Chuyển Điện Thoại
+
             const thetaRad = currentAngle * (Math.PI / 180);
             const effLength = Math.max(0.3, currentStrapLen / 500.0);
             const gConst = 9.81 / effLength;
             const gravityTorque = -Math.sin(thetaRad) * gConst * (180 / Math.PI) * 0.45;
 
-            // Lực kéo từ con quay hồi chuyển điện thoại (Gyroscope Gravity Pull)
             let gyroTorque = 0;
             if (isGyroActive) {
                 gyroTorque = (targetGyroAngle - currentAngle) * 3.8;
             }
 
-            // Gió nhẹ tự nhiên đung đưa khi thẻ đứng yên
             const ambientBreeze = Math.sin(Date.now() * 0.0015) * 1.5;
             const breezeTorque = (ambientBreeze - currentAngle) * (isGyroActive ? 0.6 : 2.8);
 
             const totalAcc = gravityTorque + gyroTorque + breezeTorque;
             angularVelocity += totalAcc * dtSec;
 
-            // Lực cản không khí
             const airDamping = Math.pow(0.982, dtNorm);
             angularVelocity *= airDamping;
             currentAngle += angularVelocity * dtSec;
 
-            // Lực đàn hồi kéo dây về chiều dài ban đầu (Boing / Spring damping)
             const springForce = -(currentStrapLen - BASE_STRAP_LEN) * 125.0;
             const dampingForce = -strapVelocity * 8.5;
             const strapAcc = springForce + dampingForce;
             strapVelocity += strapAcc * dtSec;
             currentStrapLen += strapVelocity * dtSec;
 
-            // Triệt tiêu rung siêu vi
             if (Math.abs(currentStrapLen - BASE_STRAP_LEN) < 0.2 && Math.abs(strapVelocity) < 0.5) {
                 currentStrapLen = BASE_STRAP_LEN;
                 strapVelocity = 0;
             }
 
-            // 3D tilt theo nhịp văng con lắc và con quay hồi chuyển
             const swingTiltY = Math.max(-14, Math.min(14, -angularVelocity * 0.035));
             const swingTiltX = Math.max(-8, Math.min(8, -Math.abs(angularVelocity) * 0.015));
 
@@ -1640,22 +1508,18 @@ function initLanyardBadge() {
             }
         }
 
-        // Độ lắc linh hoạt của móc treo kim loại (secondary flex hinge)
         const targetSecondary = -angularVelocity * 0.014 - currentAngle * 0.12;
         secondaryAngle += (targetSecondary - secondaryAngle) * Math.min(1.0, 0.35 * dtNorm);
 
-        // Nội suy độ nghiêng 3D mượt mà
         tiltX += (targetTiltX - tiltX) * 0.18 * dtNorm;
         tiltY += (targetTiltY - tiltY) * 0.18 * dtNorm;
 
-        // Quét vệt phản quang mặt kính & ánh xà cừ 7 màu theo ánh sáng
         const targetGlareAngle = 125 - currentAngle * 0.8 + tiltX * 0.6;
         glareAngle += (targetGlareAngle - glareAngle) * 0.18 * dtNorm;
 
         const targetGlarePos = 50 - currentAngle * 1.2 + tiltY * 1.5;
         glarePos += (targetGlarePos - glarePos) * 0.18 * dtNorm;
 
-        // Áp dụng GPU Transforms (Zero-Reflow Lanyard Physics)
         pendulum.style.transform = `rotate(${currentAngle.toFixed(2)}deg)`;
         const scaleY = currentStrapLen / BASE_STRAP_LEN;
         if (strap) {
@@ -1689,7 +1553,6 @@ function initLanyardBadge() {
         requestAnimationFrame(loop);
     }
 
-    // Dynamic Mouse Hover 3D Parallax & Specular Light Tracking
     window.addEventListener('mousemove', (e) => {
         if (!wrapper.isConnected || !isHeroVisible || window.innerWidth <= 900) return;
         const rect = card.getBoundingClientRect();
@@ -1699,7 +1562,6 @@ function initLanyardBadge() {
         const dy = e.clientY - cardCenterY;
         const distance = Math.hypot(dx, dy);
 
-        // Tọa độ điểm sáng trên mặt thẻ
         mousePctX = Math.min(100, Math.max(0, ((e.clientX - rect.left) / rect.width) * 100));
         mousePctY = Math.min(100, Math.max(0, ((e.clientY - rect.top) / rect.height) * 100));
 
@@ -1712,7 +1574,6 @@ function initLanyardBadge() {
         }
     }, { passive: true });
 
-    // Pointer Events API (Khóa chạm mượt mà trên Chuột, Cảm ứng điện thoại, Bút Stylus)
     function onPointerDown(e) {
         e.preventDefault();
         isDragging = true;
@@ -1724,7 +1585,6 @@ function initLanyardBadge() {
         const dx = pointerX - anchorX;
         const dy = pointerY - anchorY;
 
-        // Tính góc chạm tại thời điểm nhấn để không bị giật (Zero-Jump Grab)
         const rawPointerAngle = Math.atan2(dx, Math.max(30, dy)) * (180 / Math.PI);
         const currentPointerAngle = -rawPointerAngle;
 
@@ -1761,7 +1621,6 @@ function initLanyardBadge() {
             } catch (_) {}
         }
 
-        // Truyền lực văng quán tính khi thả tay
         angularVelocity = Math.max(-700, Math.min(700, angularVelocity));
         strapVelocity = Math.max(-600, Math.min(600, strapVelocity));
     }
@@ -1775,14 +1634,10 @@ function initLanyardBadge() {
         strap.addEventListener('pointerdown', onPointerDown);
     }
 
-    // Dynamic re-anchoring on viewport resize or scroll
     window.addEventListener('resize', updateAnchor, { passive: true });
     window.addEventListener('scroll', updateAnchor, { passive: true });
 }
 
-// ============================================
-// BACKGROUND MUSIC (LAVIEM AUTO-PLAY ON BOOT)
-// ============================================
 function startBackgroundMusic() {
     if (!audioPlayer) return;
 
@@ -1795,14 +1650,14 @@ function startBackgroundMusic() {
         const playPromise = audioPlayer.play();
         if (playPromise !== undefined) {
             playPromise.then(() => {
-                console.log("🎵 LAVIEM background music playing successfully!");
+
                 updatePlayPauseIcon();
             }).catch(err => {
                 console.warn("Autoplay blocked by browser policy. Queuing playback on first user gesture:", err);
                 const unlockOnGesture = () => {
                     if (audioPlayer && (audioPlayer.paused || audioPlayer.ended)) {
                         audioPlayer.play().then(() => {
-                            console.log("🎵 LAVIEM unlocked and playing!");
+
                             updatePlayPauseIcon();
                         }).catch(e => console.warn("Unlock play error:", e));
                     }
@@ -1820,9 +1675,6 @@ function startBackgroundMusic() {
     }
 }
 
-// ============================================
-// INTRO ANIMATION & SYNCHRONIZED STARTUP FLOW
-// ============================================
 function initIntroAnimation() {
     const introOverlay = document.getElementById('intro-overlay');
     const pageContent = document.getElementById('page-content');
@@ -1848,20 +1700,16 @@ function initIntroAnimation() {
         if (hasTransitioned) return;
         hasTransitioned = true;
 
-        // 1. Boot background music (LAVIEM) upon circle landing
         startBackgroundMusic();
 
-        // 2. Seamlessly fade out intro overlay
         introOverlay.classList.add('fade-out');
         document.body.classList.remove('loading');
 
-        // 3. Kick off hero typography animations smoothly as page content appears
         setTimeout(() => {
             splitTextAnimation();
             typewriterEffect('hero-tagline', heroTaglines, 50, 2500);
         }, 100);
 
-        // 4. Remove overlay from DOM once fade-out completes
         setTimeout(() => {
             if (introOverlay && introOverlay.parentNode) {
                 introOverlay.remove();
@@ -1869,60 +1717,42 @@ function initIntroAnimation() {
         }, 550);
     };
 
-    // User can click or tap anywhere on the intro overlay to immediately skip and unlock audio
     introOverlay.addEventListener('pointerdown', finishStartup);
     introOverlay.addEventListener('click', finishStartup);
 
-    // Synchronized with circle landing:
-    // introAvatarPop completes at 0.95s (when circle settles/lands firmly down)
-    // Shockwave emits at 0.92s
-    // Exactly at 1000ms (as the circle places down), trigger finishStartup!
     setTimeout(finishStartup, 1000);
 }
 
-// ============================================
-// PAGE INITIALIZATION
-// ============================================
 function initializePageApp() {
-    // Hanging Lanyard Badge with metallic reflections & physics
+
     initLanyardBadge();
 
-    // If there is no intro overlay, start typography animations immediately
     const introOverlay = document.getElementById('intro-overlay');
     if (!introOverlay) {
         splitTextAnimation();
         typewriterEffect('hero-tagline', heroTaglines, 50, 2500);
     }
 
-    // Music player
     initMusicPlayer();
 
-    // Search
     initSearchSuggestions();
 
-    // Theme toggle with native GPU View Transition
     initThemeToggle();
 
-    // Horizontal Accordion
     initHorizontalAccordion();
 
-    // Donate
     initDonateSection();
     initCopyButtons();
 
-    // 144Hz Buttery Smooth Snap Controller
     initSmoothSnapScroll();
 
-    // Scroll reveal (after DOM is populated)
     requestAnimationFrame(() => {
         initScrollReveal();
     });
 
-    // Footer year
     const yearEl = document.getElementById('currentYear');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-    // Search button
     const searchBtn = document.getElementById('searchButton');
     if (searchBtn) searchBtn.addEventListener('click', performSearch);
 
@@ -1933,29 +1763,21 @@ function initializePageApp() {
         });
     }
 
-    console.log("✨ Page application initialized!");
 }
 
-// ============================================
-// BOOT FLOW & DOM READY
-// ============================================
 function bootPortfolioExperience() {
     const pageContent = document.getElementById('page-content');
     if (pageContent) {
         pageContent.classList.remove('hidden');
     }
 
-    // Initialize background effects immediately
     new ParticleSystem('particles-canvas');
     new CursorTrail('cursor-trail-canvas');
 
-    // Initialize full app logic and music player
     initializePageApp();
 
-    // Trigger synchronized dynamic Intro Animation & Startup
     initIntroAnimation();
 
-    // Contact Form AJAX Submission
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', function (e) {
@@ -1963,7 +1785,6 @@ function bootPortfolioExperience() {
             const submitBtn = contactForm.querySelector('.submit-btn');
             const originalBtnHtml = submitBtn.innerHTML;
 
-            // Loading state
             submitBtn.innerHTML = 'Đang gửi... <i class="fas fa-spinner fa-spin"></i>';
             submitBtn.disabled = true;
             submitBtn.style.opacity = '0.7';
@@ -1979,7 +1800,7 @@ function bootPortfolioExperience() {
             })
                 .then(response => {
                     if (response.ok) {
-                        // Success state
+
                         submitBtn.innerHTML = 'Đã gửi thành công <i class="fas fa-check"></i>';
                         submitBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
                         submitBtn.style.opacity = '1';
@@ -1989,7 +1810,7 @@ function bootPortfolioExperience() {
                     }
                 })
                 .catch(error => {
-                    // Error state
+
                     submitBtn.innerHTML = 'Gửi lỗi! Thử lại <i class="fas fa-times"></i>';
                     submitBtn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
                 })

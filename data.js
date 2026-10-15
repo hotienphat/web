@@ -1,7 +1,3 @@
-// ============================================
-// DATA CONFIGURATION
-// ============================================
-
 const shortcutSections = [
     {
         title: "MẠNG XÃ HỘI",
@@ -590,7 +586,7 @@ const audioPlaylist = [
         artist: "Quang Hùng MasterD, Captain Boy, Pháp Kiều, Coolkid & Danny Chung",
         src: "./assets/Danny Chung - LAVIEM.flac",
         albumArt: "./assets/LVE.jpg",
-        dominantColor: "99, 102, 241", // Electric Indigo glow
+        dominantColor: "99, 102, 241",
         lyrics: laviemLyrics
     },
     {
@@ -598,22 +594,22 @@ const audioPlaylist = [
         artist: "Kroi (Steel Ball Run)",
         src: "./assets/Kroi - SPIN.flac",
         albumArt: "./assets/spin.jpg",
-        dominantColor: "249, 115, 22" // Vibrant Steel Ball Run Orange glow
+        dominantColor: "249, 115, 22"
     },
     {
         title: "Phép Màu (Đàn Cá Gỗ OST)",
         artist: "Mounter x MAYDAYs, Minh Tốc",
         src: "./assets/phepmau.mp3",
         albumArt: "./assets/Phepmaulogo.jpg",
-        dominantColor: "168, 85, 247", // Purple glow default
-        lyrics: null // Assigned below after phepMauLyrics definition
+        dominantColor: "168, 85, 247",
+        lyrics: null
     },
     {
         title: "Còn Gì Đẹp Hơn (Mưa Đỏ Original Soundtrack)",
         artist: "Nguyễn Hùng",
         src: "./assets/congidephon.mp3",
         albumArt: "./assets/CGDH.jpg",
-        dominantColor: "34, 211, 238" // Cyan glow
+        dominantColor: "34, 211, 238"
     }
 ];
 

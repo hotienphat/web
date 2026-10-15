@@ -40,7 +40,6 @@
         })();
     </script>
 
-    <!-- ===== INTRO ANIMATION OVERLAY (THAY THẾ MODAL TĨNH) ===== -->
     <div id="intro-overlay" class="intro-overlay">
         <div class="intro-flash"></div>
         <div class="intro-avatar-popup">
@@ -55,22 +54,19 @@
         <div class="intro-shockwave"></div>
     </div>
 
-    <!-- ===== BACKGROUND CANVASES ===== -->
     <canvas id="particles-canvas" aria-hidden="true"></canvas>
     <canvas id="cursor-trail-canvas" aria-hidden="true"></canvas>
     <div class="noise-overlay" aria-hidden="true"></div>
 
-    <!-- ===== TOP FLOATING DOCK (HEADER + DYNAMIC LYRICS CAPSULE) ===== -->
     <div id="topNavDock" class="top-nav-dock">
         <header id="main-header" class="floating-header">
             <div class="header-inner">
-                <!-- Brand / Logo -->
+
                 <a href="#hero-section" class="header-brand" aria-label="Lake Fot Home">
                     <span class="brand-badge">LF</span>
                     <span class="brand-name">LAKE FOT</span>
                 </a>
 
-                <!-- Navigation Links (Centered) -->
                 <nav class="header-nav" aria-label="Điều hướng">
                     <a href="#hero-section" class="nav-link active">HOME</a>
                     <a href="#about-section" class="nav-link">ABOUT</a>
@@ -80,9 +76,8 @@
                     <a href="#donate-section" class="nav-link">DONATE</a>
                 </nav>
 
-                <!-- Actions (Right) -->
                 <div class="header-actions">
-                    <!-- Search (Sleek unified pill with balanced 38px height) -->
+
                     <div class="search-container">
                         <i class="fas fa-search search-lead-icon" aria-hidden="true"></i>
                         <input type="text" id="searchInput" aria-label="Tìm kiếm" placeholder="Tìm nhanh..."
@@ -93,13 +88,11 @@
                         <div id="suggestionsDropdown" class="suggestions-dropdown hidden"></div>
                     </div>
 
-                    <!-- Theme Toggle Button -->
                     <button id="themeToggleBtn" class="theme-toggle-btn" title="Chuyển chế độ Sáng / Tối" aria-label="Đổi giao diện">
                         <i class="fas fa-sun theme-icon-sun"></i>
                         <i class="fas fa-moon theme-icon-moon"></i>
                     </button>
 
-                    <!-- Hire Me / Contact CTA Button -->
                     <a href="https://www.facebook.com/KaedeharaKazuha0805" target="_blank" rel="noopener noreferrer" class="hire-me-btn">
                         <span>Hire Me</span>
                     </a>
@@ -107,7 +100,6 @@
             </div>
         </header>
 
-        <!-- Dynamic Island Live Lyrics Capsule -->
         <div id="navLyricsPill" class="nav-lyrics-pill" aria-label="Lời bài hát trực tiếp">
             <div class="lyrics-pill-inner">
                 <div class="lyrics-pill-wave" aria-hidden="true">
@@ -130,14 +122,10 @@
         </div>
     </div>
 
-    <!-- ===== MAIN SNAP CONTAINER ===== -->
     <div id="page-content" class="snap-container">
 
-        <!-- =========================================================
-             TRANG 1: HERO SECTION (MÀN HÌNH CHÍNH - REFERENCE MATCH)
-             ========================================================= -->
         <section id="hero-section" class="snap-section hero-page">
-            <!-- Background Gigantic Typography Marquee (Behind Portrait) -->
+
             <div class="hero-marquee-wrapper" aria-hidden="true">
                 <div class="hero-marquee-track">
                     <span>LAKE FOT • HO TIEN PHAT • LAKE FOT • HO TIEN PHAT • </span>
@@ -145,13 +133,11 @@
                 </div>
             </div>
 
-            <!-- Center Cutout Portrait (Anchored to Bottom Edge) -->
             <div class="hero-portrait-stage" id="heroPortraitStage">
                 <div class="hero-spotlight" aria-hidden="true"></div>
                 <img src="./assets/xoaphong.png" alt="Hồ Tiến Phát - Lake Fot" id="heroCutoutImg" class="hero-cutout-img">
             </div>
 
-            <!-- Left Corner: Vertical HOPHAT & Editorial Bio Badge -->
             <div class="hero-bottom-left">
                 <div class="vertical-accent-text" aria-hidden="true">
                     <span>HOPHAT</span>
@@ -186,7 +172,6 @@
                 </div>
             </div>
 
-            <!-- Right Corner: SCROLL DOWN Vertical Text & Indicator -->
             <div class="hero-bottom-right">
                 <div class="scroll-vertical-indicator">
                     <span class="scroll-vertical-label">SCROLL DOWN</span>
@@ -196,12 +181,11 @@
                 </div>
             </div>
 
-            <!-- ===== HANGING LANYARD ID BADGE (DÂY ĐEO THẺ PHONG CÁCH TỐI GIẢN CAO CẤP) ===== -->
             <div id="hero-lanyard-wrapper" class="hero-lanyard-wrapper" aria-label="Thẻ nhân viên Lake Fot">
-                <!-- Stable unrotated ceiling pivot pin -->
+
                 <div id="lanyard-anchor-pin" class="lanyard-anchor-pin" aria-hidden="true"></div>
                 <div id="lanyard-pendulum" class="lanyard-pendulum">
-                    <!-- 1. The Fabric Strap (Dây đeo vải dệt đen thanh lịch, dài tự nhiên) -->
+
                     <div class="lanyard-strap" id="lanyardStrap">
                         <div class="lanyard-strap-stitch left"></div>
                         <div class="lanyard-strap-stitch right"></div>
@@ -210,7 +194,6 @@
                         </div>
                     </div>
 
-                    <!-- 2. Metallic Hardware Clasp (Móc kẹp kim loại phay xước cao cấp) -->
                     <div class="lanyard-hardware">
                         <div class="hardware-clamp">
                             <div class="hardware-clamp-shine"></div>
@@ -219,24 +202,20 @@
                         <div class="hardware-hook"></div>
                     </div>
 
-                    <!-- 3. Minimalist Metallic Badge Holder (Khung thẻ viền kim loại ánh gương sang trọng) -->
                     <div id="lanyard-card" class="lanyard-card" title="Kéo tự do để đung đưa hoặc nhún thẻ">
-                        <!-- Top Slot Hole (Lỗ xỏ thẻ kim loại) -->
+
                         <div class="card-slot-wrap">
                             <div class="card-slot-hole"></div>
                         </div>
 
-                        <!-- Metallic Frame Shell (Viền kim loại nhôm ánh gương phản chiếu thật) -->
                         <div class="card-frame-shell">
-                            <!-- Holographic Iridescent Foil (Ánh xà cừ 7 màu phản chiếu theo góc nghiêng) -->
+
                             <div class="card-holographic-foil" aria-hidden="true"></div>
 
-                            <!-- Subtle Realistic Glass Specular Glare (Vệt phản quang mặt kính tự nhiên) -->
                             <div class="card-specular-glare" aria-hidden="true"></div>
 
-                            <!-- Card Inner Wrap -->
                             <div class="card-content-wrap">
-                                <!-- Top Status Header -->
+
                                 <div class="card-header-bar">
                                     <div class="badge-status-pill">
                                         <span class="badge-status-dot"></span>
@@ -245,7 +224,6 @@
                                     <div class="badge-edition-tag">LF // 2026</div>
                                 </div>
 
-                                <!-- Large Hero Portrait Photo -->
                                 <div class="card-photo-box">
                                     <img src="./assets/hinhthe.jpg" alt="Hồ Tiến Phát - Portrait" class="card-portrait-img" id="cardAvatarImg" onerror="this.src='./assets/anhthe.jpg'">
                                     <div class="photo-corner photo-corner-tl"></div>
@@ -254,7 +232,6 @@
                                     <div class="photo-corner photo-corner-br"></div>
                                 </div>
 
-                                <!-- Clean Minimalist Nameplate -->
                                 <div class="card-nameplate">
                                     <h3 class="card-name-text">HỒ TIẾN PHÁT</h3>
                                     <div class="card-role-badge">
@@ -262,7 +239,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Bottom Authenticity Barcode & Security Strip -->
                                 <div class="card-footer-bar">
                                     <div class="card-barcode" aria-hidden="true">
                                         <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
@@ -279,9 +255,6 @@
             </div>
         </section>
 
-        <!-- =========================================================
-             TRANG 2: ABOUT SECTION (MORPHING SANG HÌNH TRÒN & MARQUEE BAR)
-             ========================================================= -->
         <section id="about-section" class="snap-section content-section">
             <div class="container about-container">
                 <div class="section-header reveal-element">
@@ -290,10 +263,10 @@
                 </div>
 
                 <div class="about-grid">
-                    <!-- Left: Large Circular Frame + Rotating Curved Text SVG -->
+
                     <div class="about-visual-col reveal-left">
                         <div class="avatar-circle-wrapper" id="avatarCircleWrapper">
-                            <!-- Rotating Curved Text SVG around Circle -->
+
                             <div class="avatar-text-ring">
                                 <svg viewBox="0 0 380 380" class="rotating-text-svg">
                                     <defs>
@@ -307,7 +280,7 @@
                                 </svg>
                             </div>
                             <div class="avatar-circle-glow"></div>
-                            <!-- Circular Frame with Uncropped/Original Portrait (Bigger & Circular) -->
+
                             <div class="avatar-circle-frame">
                                 <div class="avatar-circle-inner">
                                     <img src="./assets/avt.png" alt="Hồ Tiến Phát - Original" class="avatar-circle-img">
@@ -316,7 +289,6 @@
                         </div>
                     </div>
 
-                    <!-- Right: Roomy Bio Content with Spacious Cards -->
                     <div class="about-info-col reveal-right">
                         <div class="about-text-block">
                             <p class="about-lead">Xin chào! Mình là <strong>Hồ Tiến Phát (Lake Fot)</strong>.</p>
@@ -353,7 +325,6 @@
                 </div>
             </div>
 
-            <!-- PHÂN ĐOẠN: INFINITE TECH MARQUEE BAR (ALWAYS VISIBLE AT BOTTOM OF ABOUT) -->
             <div class="tech-marquee-bar" aria-label="Kỹ năng và công nghệ">
                 <div class="tech-marquee-track">
                     <span class="marquee-item"><i class="fab fa-react" style="color: #61DAFB;"></i> React</span>
@@ -374,7 +345,7 @@
                     <span class="marquee-sep">•</span>
                     <span class="marquee-item"><i class="fas fa-wind" style="color: #38bdf8;"></i> Tailwind CSS</span>
                     <span class="marquee-sep">•</span>
-                    <!-- Duplicate for continuous 100vw loop -->
+
                     <span class="marquee-item"><i class="fab fa-react" style="color: #61DAFB;"></i> React</span>
                     <span class="marquee-sep">•</span>
                     <span class="marquee-item"><i class="fab fa-js" style="color: #F7DF1E;"></i> JavaScript</span>
@@ -397,9 +368,6 @@
             </div>
         </section>
 
-        <!-- =========================================================
-             TRANG 3: LIÊN KẾT NHANH (BENTO GRID HIỆN ĐẠI)
-             ========================================================= -->
         <section id="shortcuts-section" class="snap-section content-section">
             <div class="container shortcuts-container">
                 <div class="section-header reveal-element">
@@ -409,7 +377,7 @@
                 </div>
 
                 <div class="bento-grid reveal-element">
-                    <!-- Bento 1: Mạng Xã Hội -->
+
                     <div class="bento-card bento-social">
                         <div class="bento-card-header">
                             <div class="bento-card-icon"><i class="fas fa-share-nodes"></i></div>
@@ -434,7 +402,6 @@
                         </div>
                     </div>
 
-                    <!-- Bento 2: Góc Học Tập -->
                     <div class="bento-card bento-study">
                         <div class="bento-card-header">
                             <div class="bento-card-icon"><i class="fas fa-graduation-cap"></i></div>
@@ -459,7 +426,6 @@
                         </div>
                     </div>
 
-                    <!-- Bento 3: Giải Trí & Chill -->
                     <div class="bento-card bento-chill">
                         <div class="bento-card-header">
                             <div class="bento-card-icon"><i class="fas fa-gamepad"></i></div>
@@ -484,7 +450,6 @@
                         </div>
                     </div>
 
-                    <!-- Bento 4: Google & Công Cụ -->
                     <div class="bento-card bento-tools">
                         <div class="bento-card-header">
                             <div class="bento-card-icon"><i class="fab fa-google"></i></div>
@@ -509,9 +474,6 @@
             </div>
         </section>
 
-        <!-- =========================================================
-             TRANG 4: DỰ ÁN NỔI BẬT (HORIZONTAL HOVER ACCORDION)
-             ========================================================= -->
         <section id="projects-section" class="snap-section content-section">
             <div class="container projects-container">
                 <div class="section-header reveal-element">
@@ -523,9 +485,8 @@
                     <div class="section-divider"></div>
                 </div>
 
-                <!-- Horizontal Hover Accordion -->
                 <div class="horizontal-accordion reveal-element">
-                    <!-- Project Panel 1 -->
+
                     <div class="accordion-panel active" data-index="0">
                         <div class="panel-glow" style="background: radial-gradient(circle at center, rgba(168,85,247,0.3), transparent 70%);"></div>
                         <div class="panel-inner">
@@ -552,7 +513,6 @@
                         </div>
                     </div>
 
-                    <!-- Project Panel 2 -->
                     <div class="accordion-panel" data-index="1">
                         <div class="panel-glow" style="background: radial-gradient(circle at center, rgba(34,211,238,0.3), transparent 70%);"></div>
                         <div class="panel-inner">
@@ -579,7 +539,6 @@
                         </div>
                     </div>
 
-                    <!-- Project Panel 3 -->
                     <div class="accordion-panel" data-index="2">
                         <div class="panel-glow" style="background: radial-gradient(circle at center, rgba(236,72,153,0.3), transparent 70%);"></div>
                         <div class="panel-inner">
@@ -606,7 +565,6 @@
                         </div>
                     </div>
 
-                    <!-- Project Panel 4 -->
                     <div class="accordion-panel" data-index="3">
                         <div class="panel-glow" style="background: radial-gradient(circle at center, rgba(16,185,129,0.3), transparent 70%);"></div>
                         <div class="panel-inner">
@@ -636,9 +594,6 @@
             </div>
         </section>
 
-        <!-- =========================================================
-             TRANG 5: CÂY 3D TƯƠNG TÁC (THREE.JS WEBGL)
-             ========================================================= -->
         <section id="tree-3d-section" class="snap-section content-section">
             <div class="container tree-section-container">
                 <div class="section-header reveal-element">
@@ -646,22 +601,22 @@
                     <p class="section-subtitle">Mô hình cây 3D được vẽ trực tiếp bằng Three.js &bull; Xoay, thu phóng và chuyển đổi 4 mùa</p>
                     <div class="section-divider"></div>
                 </div>
-                
+
                 <div class="tree-3d-wrapper reveal-element">
                     <div class="tree-hint-badge">
                         <i class="fas fa-hand-pointer"></i> <span><span class="desktop-only-text">Kéo để xoay &bull; Cuộn để phóng to</span><span class="mobile-only-text">Chạm & kéo để xoay 3D</span></span>
                     </div>
 
                     <div class="tree-top-toolbar">
-                        <!-- Nút Bật Camera Điều Khiển Bằng Tay -->
+
                         <button id="treeCameraBtn" class="tree-tool-btn tree-cam-btn" title="Bật điều khiển cử chỉ tay qua Camera" aria-label="Bật camera cử chỉ tay">
                             <i class="fas fa-video"></i> <span>Camera AI</span>
                         </button>
-                        <!-- Nút Tắt Camera (chỉ hiện khi đã cấp quyền & đang hoạt động) -->
+
                         <button id="treeStopCamBtn" class="tree-tool-btn tree-cam-stop-btn" title="Tắt Camera" style="display:none;" aria-label="Tắt camera">
                             <span class="cam-dot-pulse"></span> <i class="fas fa-video-slash"></i> <span>Tắt Cam</span>
                         </button>
-                        <!-- Nút Hướng Dẫn Cử Chỉ Nhỏ Gọn (không ảnh hưởng trải nghiệm) -->
+
                         <button id="treeGestureGuideBtn" class="tree-tool-btn tree-guide-btn" title="Hướng dẫn điều khiển bằng tay" aria-label="Hướng dẫn cử chỉ tay">
                             <i class="fas fa-hand-sparkles"></i>
                         </button>
@@ -673,19 +628,16 @@
                         </button>
                     </div>
 
-                    <!-- Gesture Tracking Live Feedback Pill -->
                     <div id="treeGestureFeedback" class="tree-gesture-feedback" style="display: none;">
                         <span class="gesture-icon">🖐️</span> <span id="treeGestureText" class="gesture-text">Đang nhận diện bàn tay...</span>
                     </div>
 
-                    <!-- Mini PIP Camera Preview (Góc dưới bên trái) -->
                     <div id="treePipWrapper" class="tree-pip-wrapper" style="display: none;" title="Bàn tay điều khiển (Camera cục bộ bảo mật)">
                         <video id="treePipVideo" class="tree-pip-video" playsinline muted autoplay></video>
                         <canvas id="treePipCanvas" class="tree-pip-canvas"></canvas>
                         <div class="pip-hand-dot" id="pipHandDot"></div>
                     </div>
 
-                    <!-- Modal Hướng Dẫn Cử Chỉ Tay Nhỏ Gọn -->
                     <div id="treeGestureModal" class="tree-gesture-modal" style="display: none;">
                         <div class="gesture-modal-backdrop" id="gestureModalBackdrop"></div>
                         <div class="gesture-modal-card glass-panel">
@@ -742,9 +694,6 @@
             </div>
         </section>
 
-        <!-- =========================================================
-             TRANG 6: ỦNG HỘ & LIÊN HỆ
-             ========================================================= -->
         <section id="donate-section" class="snap-section content-section">
             <div class="container donate-container">
                 <div class="section-header reveal-element">
@@ -753,7 +702,7 @@
                     <div class="section-divider"></div>
                 </div>
                 <div class="donate-grid">
-                    <!-- Momo -->
+
                     <div class="donate-card momo-card reveal-left">
                         <div class="donate-card-header">
                             <div class="donate-card-title">
@@ -779,7 +728,6 @@
                         </div>
                     </div>
 
-                    <!-- Bank -->
                     <div class="donate-card bank-card reveal-right">
                         <div class="donate-card-header">
                             <div class="donate-card-title">
@@ -814,7 +762,6 @@
                     </div>
                 </div>
 
-                <!-- Footer note inside last snap page -->
                 <div class="contact-footer-wrap">
                     <p style="color: var(--text-secondary); margin-bottom: 0.5rem; font-size: 0.95rem;">Gửi email liên hệ trực tiếp cho mình qua:</p>
                     <a href="mailto:tienfot208@gmail.com" class="footer-email-link">
@@ -827,7 +774,6 @@
 
     </div>
 
-    <!-- ===== LEFT-DOCKED VERTICAL MUSIC TAB (NO CLUTTER) ===== -->
     <button id="playerDockBtn" class="player-dock-btn" title="Mở Danh Sách Nhạc" aria-label="Mở danh sách nhạc">
         <div class="dock-equalizer">
             <span></span><span></span><span></span><span></span>
@@ -835,7 +781,6 @@
         <span class="dock-text">SOUNDTRACK</span>
     </button>
 
-    <!-- ===== SLIDE-OUT CYBER MOSS MUSIC DRAWER ===== -->
     <div id="playerDrawerBackdrop" class="player-drawer-backdrop"></div>
     <div id="playerPanel" class="player-drawer">
         <div class="drawer-header">
@@ -848,7 +793,6 @@
             </button>
         </div>
 
-        <!-- Currently Playing Card -->
         <div class="drawer-now-playing">
             <div class="now-playing-art-wrap">
                 <img id="albumArt" src="./assets/LVE.jpg" alt="LAVIEM." class="drawer-album-art">
@@ -861,14 +805,12 @@
                 <p class="song-artist" id="songArtist">Quang Hùng MasterD, Captain Boy, Pháp Kiều, Coolkid &amp; Danny Chung</p>
             </div>
 
-            <!-- Progress Bar -->
             <div class="drawer-progress-box">
                 <span id="currentTime">0:00</span>
                 <input type="range" id="musicProgressBar" value="0" step="1">
                 <span id="durationTime">0:00</span>
             </div>
 
-            <!-- Controls -->
             <div class="drawer-controls">
                 <button id="prevTrackBtn" title="Bài trước" aria-label="Bài trước" class="music-control-button">
                     <i class="fas fa-backward-step fa-lg"></i>
@@ -887,7 +829,6 @@
                 </button>
             </div>
 
-            <!-- Volume -->
             <div class="drawer-volume-box">
                 <button id="volumeBtn" title="Tắt/Mở tiếng" aria-label="Tắt/Mở tiếng" class="music-control-button">
                     <i class="fas fa-volume-high"></i>
@@ -896,16 +837,14 @@
             </div>
         </div>
 
-        <!-- Playlist Track List -->
         <div class="drawer-playlist-section">
             <h5 class="playlist-section-title">DANH SÁCH BÀI HÁT</h5>
             <div id="playlistList" class="playlist-track-list">
-                <!-- Dynamically generated from audioPlaylist -->
+
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
