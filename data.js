@@ -656,6 +656,7 @@ if (phepMauTrack) {
 }
 
 const heroTaglines = [
+    "Xây dựng công cụ web từ nhu cầu thực tế 💻",
     "Lập trình viên • Gamer • Người yêu nhạc 🎵",
     "Đến từ Lâm Đồng, Việt Nam 🇻🇳",
     "Chào mừng đến không gian số của mình ✨"

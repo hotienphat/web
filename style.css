@@ -1662,6 +1662,11 @@ body.light-theme .about-lead strong {
   margin-bottom: 0.35rem;
 }
 
+.about-text-block p:not(.about-lead) strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
 .about-text-block p:last-child {
   margin-bottom: 0;
 }
