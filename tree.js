@@ -15,6 +15,8 @@
 
         let retries = 0;
         const maxRetries = 25;
+        let hasStartedInit = false;
+
         function checkThreeAndInit() {
             if (typeof THREE !== "undefined") {
                 initTreeExperience(container);
@@ -27,7 +29,23 @@
                 if (loader) loader.innerHTML = `<span style="color:#ef4444;">Không thể tải Three.js. Vui lòng thử tải lại trang.</span>`;
             }
         }
-        checkThreeAndInit();
+
+        function startDeferredTreeInit() {
+            if (hasStartedInit) return;
+            hasStartedInit = true;
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(() => checkThreeAndInit(), { timeout: 500 });
+            } else {
+                setTimeout(checkThreeAndInit, 120);
+            }
+        }
+
+        if (window.__introFinished || !document.getElementById("intro-overlay")) {
+            startDeferredTreeInit();
+        } else {
+            window.addEventListener("intro:finished", startDeferredTreeInit, { once: true });
+            setTimeout(startDeferredTreeInit, 1700);
+        }
     });
 
     function initTreeExperience(container) {

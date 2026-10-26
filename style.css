@@ -310,8 +310,8 @@ textarea {
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
-  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-              background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  will-change: transform, opacity;
   white-space: nowrap;
 }
 
@@ -708,7 +708,7 @@ textarea {
   object-fit: contain;
   object-position: bottom center;
   filter: drop-shadow(0 20px 45px rgba(0, 0, 0, 0.45));
-  transition: transform 0.4s var(--ease-out-back);
+  will-change: transform, opacity;
   user-select: none;
   -webkit-user-drag: none;
   cursor: pointer;
@@ -824,6 +824,17 @@ textarea {
   color: #ffffff;
   margin: 0;
   text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.hero-title .char {
+  display: inline-block;
+  opacity: 0;
+  transform: translate3d(0, 20px, 0) scale(0.92);
+  will-change: transform, opacity;
+}
+
+.hero-title.reveal-chars .char {
+  animation: char-reveal 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .hero-bottom-left .hero-tagline {
@@ -2924,9 +2935,13 @@ body.light-theme .playlist-item.active .playlist-item-title {
 }
 
 @keyframes char-reveal {
-  to {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0) scale(0.92);
+  }
+  100% {
     opacity: 1;
-    transform: translateY(0) rotateX(0deg);
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
@@ -4600,27 +4615,41 @@ html.theme-transitioning *::after {
   position: fixed;
   inset: 0;
   z-index: 10000;
-  background: #030308;
+  background: radial-gradient(circle at center, #0c1710 0%, #050a06 75%);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   overflow: hidden;
-  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s ease;
+  will-change: opacity;
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+body.light-theme .intro-overlay {
+  background: radial-gradient(circle at center, #f8fafc 0%, #e2e8f0 85%);
 }
 .intro-overlay.fade-out {
   opacity: 0;
   pointer-events: none;
-  visibility: hidden;
+}
+.intro-overlay.fade-out .intro-avatar-popup {
+  transform: translate3d(0, -14px, 0) scale(1.06);
+  opacity: 0;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .intro-flash {
   position: absolute;
-  width: 600px;
-  height: 600px;
+  width: 760px;
+  height: 760px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.6) 0%, rgba(34, 211, 238, 0.35) 50%, transparent 70%);
-  filter: blur(100px);
-  animation: introFlashAnim 0.95s ease-out forwards;
+  background: radial-gradient(
+    circle,
+    rgba(34, 197, 94, 0.36) 0%,
+    rgba(52, 211, 153, 0.22) 28%,
+    rgba(168, 85, 247, 0.12) 52%,
+    transparent 72%
+  );
+  will-change: transform, opacity;
+  animation: introFlashAnim 0.88s 0.12s cubic-bezier(0.16, 1, 0.3, 1) both;
   pointer-events: none;
 }
 .intro-avatar-popup {
@@ -4629,7 +4658,7 @@ html.theme-transitioning *::after {
   display: flex;
   flex-direction: column;
   align-items: center;
-  animation: introAvatarPop 0.95s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
 }
 .intro-avatar-ring {
   width: 170px;
@@ -4637,14 +4666,16 @@ html.theme-transitioning *::after {
   border-radius: 50%;
   padding: 4px;
   background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan), var(--accent-pink));
-  box-shadow: 0 0 50px rgba(168, 85, 247, 0.7);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.65), 0 0 42px rgba(34, 197, 94, 0.45);
+  will-change: transform, opacity;
+  animation: introAvatarPop 0.68s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .intro-avatar-ring img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
-  background: #000;
+  background: #060b07;
 }
 .intro-title-wrap {
   margin-top: 1rem;
@@ -4654,43 +4685,53 @@ html.theme-transitioning *::after {
   font-family: var(--font-heading);
   font-size: 1.6rem;
   font-weight: 800;
+  letter-spacing: 0.06em;
   background: linear-gradient(135deg, var(--accent-purple-light), var(--accent-cyan));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: block;
+  will-change: transform, opacity;
+  animation: introTextReveal 0.58s 0.12s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .intro-sub {
+  display: block;
+  margin-top: 0.2rem;
   font-family: monospace;
   font-size: 0.75rem;
   color: var(--text-muted);
   letter-spacing: 0.28em;
+  will-change: transform, opacity;
+  animation: introTextReveal 0.58s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .intro-shockwave {
   position: absolute;
-  width: 260px;
-  height: 260px;
+  width: 176px;
+  height: 176px;
+  margin-top: -28px;
   border-radius: 50%;
-  border: 3px solid rgba(34, 211, 238, 0.9);
-  box-shadow: 0 0 50px rgba(34, 211, 238, 0.75), inset 0 0 30px rgba(168, 85, 247, 0.5);
-  animation: introShockAnim 0.75s 0.92s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  opacity: 0;
+  border: 2px solid rgba(52, 211, 153, 0.85);
+  box-shadow: 0 0 36px rgba(52, 211, 153, 0.55), inset 0 0 24px rgba(34, 197, 94, 0.35);
+  will-change: transform, opacity;
+  animation: introShockAnim 0.76s 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
   pointer-events: none;
 }
 @keyframes introFlashAnim {
-  0% { transform: scale(0.5); opacity: 0; }
-  45% { transform: scale(1.2); opacity: 0.9; }
-  100% { transform: scale(2.2); opacity: 0; }
+  0% { transform: translate3d(0, 0, 0) scale(0.35); opacity: 0; }
+  35% { opacity: 0.95; }
+  100% { transform: translate3d(0, 0, 0) scale(1.65); opacity: 0; }
 }
 @keyframes introAvatarPop {
-  0% { transform: translateY(85vh) scale(0.35) rotate(-6deg); opacity: 0; }
-  20% { opacity: 1; }
-  60% { transform: translateY(-16px) scale(1.12) rotate(2deg); }
-  100% { transform: translateY(0) scale(1) rotate(0deg); }
+  0% { transform: translate3d(0, 36px, 0) scale(0.68); opacity: 0; }
+  100% { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
+}
+@keyframes introTextReveal {
+  0% { transform: translate3d(0, 14px, 0); opacity: 0; }
+  100% { transform: translate3d(0, 0, 0); opacity: 1; }
 }
 @keyframes introShockAnim {
-  0% { transform: scale(0.25); opacity: 1; border-width: 6px; }
-  40% { opacity: 0.85; }
-  100% { transform: scale(4.8); opacity: 0; border-width: 1px; }
+  0% { transform: translate3d(0, 0, 0) scale(0.88); opacity: 0; }
+  18% { opacity: 0.9; }
+  100% { transform: translate3d(0, 0, 0) scale(3.15); opacity: 0; }
 }
 
 .about-container {

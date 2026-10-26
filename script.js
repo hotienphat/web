@@ -1109,9 +1109,9 @@ function initCopyButtons() {
     }
 }
 
-function splitTextAnimation() {
+function prepareHeroTitleChars() {
     const title = document.getElementById('hero-title');
-    if (!title) return;
+    if (!title || title.dataset.charsPrepared === 'true') return;
 
     const text = (title.getAttribute('aria-label') || title.textContent).trim();
     if (!title.getAttribute('aria-label')) {
@@ -1119,15 +1119,23 @@ function splitTextAnimation() {
     }
     title.textContent = '';
     title.style.opacity = '1';
+    title.dataset.charsPrepared = 'true';
 
     [...text].forEach((char, i) => {
         const span = document.createElement('span');
         span.className = 'char';
         span.setAttribute('aria-hidden', 'true');
         span.textContent = char === ' ' ? '\u00A0' : char;
-        span.style.animationDelay = `${0.5 + i * 0.04}s`;
+        span.style.animationDelay = `${0.06 + i * 0.026}s`;
         title.appendChild(span);
     });
+}
+
+function splitTextAnimation() {
+    const title = document.getElementById('hero-title');
+    if (!title) return;
+    prepareHeroTitleChars();
+    title.classList.add('reveal-chars');
 }
 
 function initThemeToggle() {
@@ -1398,30 +1406,46 @@ function initLanyardBadge() {
     }, { passive: true });
 
     const isMobile = window.innerWidth <= 900;
-    if (window.gsap) {
-        gsap.set(wrapper, { y: -750, opacity: 0, xPercent: isMobile ? -50 : 0 });
-        currentAngle = -16;
-        angularVelocity = 85;
+    let hasLanyardEntered = false;
 
-        gsap.to(wrapper, {
-            y: 0,
-            xPercent: isMobile ? -50 : 0,
-            opacity: 1,
-            duration: 1.6,
-            ease: "elastic.out(1.02, 0.45)",
-            delay: 1.1,
-            onComplete: () => {
-                updateAnchor();
-            }
-        });
+    if (window.gsap) {
+        gsap.set(wrapper, { y: -420, opacity: 0, xPercent: isMobile ? -50 : 0 });
     } else {
         wrapper.style.transform = isMobile ? 'translateX(-50%)' : 'none';
         wrapper.style.opacity = '1';
+        hasLanyardEntered = true;
         updateAnchor();
     }
 
+    window.triggerLanyardEntrance = () => {
+        if (hasLanyardEntered) return;
+        hasLanyardEntered = true;
+
+        const isMobNow = window.innerWidth <= 900;
+        currentAngle = -14;
+        angularVelocity = 88;
+        currentStrapLen = BASE_STRAP_LEN * 0.85;
+        strapVelocity = 220;
+
+        if (window.gsap) {
+            gsap.to(wrapper, {
+                y: 0,
+                xPercent: isMobNow ? -50 : 0,
+                opacity: 1,
+                duration: 0.92,
+                ease: "power3.out",
+                onComplete: () => {
+                    updateAnchor();
+                }
+            });
+        } else {
+            wrapper.style.opacity = '1';
+            updateAnchor();
+        }
+    };
+
     function physicsTick(time, deltaTime) {
-        if (!wrapper.isConnected || !isHeroVisible) return;
+        if (!wrapper.isConnected || !isHeroVisible || !hasLanyardEntered) return;
 
         const dtSec = Math.min((deltaTime || 16.67) / 1000, 0.05);
         const dtNorm = Math.min((deltaTime || 16.67) / 16.67, 2.5);
@@ -1675,24 +1699,91 @@ function startBackgroundMusic() {
     }
 }
 
+function prepareHeroEntrance() {
+    prepareHeroTitleChars();
+
+    if (!window.gsap) return;
+    const header = document.getElementById('main-header');
+    const marquee = document.querySelector('.hero-marquee-wrapper');
+    const heroCutout = document.getElementById('heroCutoutImg');
+    const statusPill = document.querySelector('.hero-status-pill');
+    const accentText = document.querySelector('.vertical-accent-text');
+    const socialLinks = document.querySelector('.hero-social-links');
+    const scrollHint = document.querySelector('.hero-bottom-right');
+
+    if (header) gsap.set(header, { y: -22, opacity: 0 });
+    if (marquee) gsap.set(marquee, { opacity: 0 });
+    if (heroCutout) gsap.set(heroCutout, { y: 32, scale: 0.94, opacity: 0 });
+    if (statusPill) gsap.set(statusPill, { y: 14, opacity: 0 });
+    if (accentText) gsap.set(accentText, { y: 14, opacity: 0 });
+    if (socialLinks) gsap.set(socialLinks, { y: 16, opacity: 0 });
+    if (scrollHint) gsap.set(scrollHint, { y: 16, opacity: 0 });
+}
+
+function playHeroEntrance() {
+    splitTextAnimation();
+    if (typeof window.triggerLanyardEntrance === 'function') {
+        window.triggerLanyardEntrance();
+    }
+
+    if (window.gsap) {
+        const header = document.getElementById('main-header');
+        const marquee = document.querySelector('.hero-marquee-wrapper');
+        const heroCutout = document.getElementById('heroCutoutImg');
+        const statusPill = document.querySelector('.hero-status-pill');
+        const accentText = document.querySelector('.vertical-accent-text');
+        const socialLinks = document.querySelector('.hero-social-links');
+        const scrollHint = document.querySelector('.hero-bottom-right');
+
+        const tl = gsap.timeline({ defaults: { overwrite: 'auto' } });
+
+        if (marquee) {
+            tl.to(marquee, { opacity: 1, duration: 0.85, ease: "power2.out", clearProps: "opacity" }, 0);
+        }
+        if (heroCutout) {
+            tl.to(heroCutout, { y: 0, scale: 1, opacity: 1, duration: 0.82, ease: "expo.out" }, 0.02);
+        }
+        if (header) {
+            tl.to(header, { y: 0, opacity: 1, duration: 0.68, ease: "expo.out", clearProps: "transform,opacity" }, 0.05);
+        }
+        if (statusPill) {
+            tl.to(statusPill, { y: 0, opacity: 1, duration: 0.56, ease: "power3.out", clearProps: "transform,opacity" }, 0.08);
+        }
+        if (accentText) {
+            tl.to(accentText, { y: 0, opacity: 0.6, duration: 0.56, ease: "power3.out", clearProps: "transform,opacity" }, 0.10);
+        }
+        if (socialLinks) {
+            tl.to(socialLinks, { y: 0, opacity: 1, duration: 0.58, ease: "power3.out", clearProps: "transform,opacity" }, 0.20);
+        }
+        if (scrollHint) {
+            tl.to(scrollHint, { y: 0, opacity: 1, duration: 0.58, ease: "power3.out", clearProps: "transform,opacity" }, 0.24);
+        }
+    }
+
+    setTimeout(() => {
+        typewriterEffect('hero-tagline', heroTaglines, 48, 2500);
+    }, 220);
+}
+
 function initIntroAnimation() {
     const introOverlay = document.getElementById('intro-overlay');
     const pageContent = document.getElementById('page-content');
 
     if (pageContent) {
         pageContent.classList.remove('hidden');
-        requestAnimationFrame(() => {
-            pageContent.style.opacity = '1';
-        });
+        pageContent.style.opacity = '1';
     }
 
     if (!introOverlay) {
         document.body.classList.remove('loading');
-        splitTextAnimation();
-        typewriterEffect('hero-tagline', heroTaglines, 50, 2500);
+        window.__introFinished = true;
+        window.dispatchEvent(new CustomEvent('intro:finished'));
+        playHeroEntrance();
         startBackgroundMusic();
         return;
     }
+
+    prepareHeroEntrance();
 
     let hasTransitioned = false;
 
@@ -1705,33 +1796,26 @@ function initIntroAnimation() {
         introOverlay.classList.add('fade-out');
         document.body.classList.remove('loading');
 
-        setTimeout(() => {
-            splitTextAnimation();
-            typewriterEffect('hero-tagline', heroTaglines, 50, 2500);
-        }, 100);
+        playHeroEntrance();
 
         setTimeout(() => {
             if (introOverlay && introOverlay.parentNode) {
                 introOverlay.remove();
             }
-        }, 550);
+            window.__introFinished = true;
+            window.dispatchEvent(new CustomEvent('intro:finished'));
+        }, 560);
     };
 
     introOverlay.addEventListener('pointerdown', finishStartup);
     introOverlay.addEventListener('click', finishStartup);
 
-    setTimeout(finishStartup, 1000);
+    setTimeout(finishStartup, 940);
 }
 
 function initializePageApp() {
 
     initLanyardBadge();
-
-    const introOverlay = document.getElementById('intro-overlay');
-    if (!introOverlay) {
-        splitTextAnimation();
-        typewriterEffect('hero-tagline', heroTaglines, 50, 2500);
-    }
 
     initMusicPlayer();
 
