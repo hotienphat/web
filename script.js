@@ -525,7 +525,7 @@ function generateSearchKeywords() {
         keywords.add(section.title.toLowerCase());
         section.shortcuts.forEach(s => keywords.add(s.name.toLowerCase()));
     });
-    keywords.add("về bản thân"); keywords.add("thông tin cá nhân");
+    keywords.add("về bản thân"); keywords.add("thông tin cá nhân"); keywords.add("cv"); keywords.add("hồ sơ");
     keywords.add("ủng hộ"); keywords.add("donate");
     keywords.add("momo"); keywords.add("ngân hàng");
     keywords.add("liên hệ"); keywords.add("nhạc"); keywords.add("music player");
@@ -599,7 +599,7 @@ function performSearch() {
     const query = raw.toLowerCase();
 
     const sectionMap = [
-        { keys: ["về bản thân", "about", "hồ tiến phát", "fot", "thông tin cá nhân"], target: "#about-section" },
+        { keys: ["về bản thân", "about", "hồ tiến phát", "fot", "thông tin cá nhân", "cv", "resume", "hồ sơ"], target: "#about-section" },
         { keys: ["dự án", "project", "projects", "kỷ luật", "kỷ luật online", "trực nề nếp", "nề nếp", "tạo khung", "giám thị", "random"], target: "#projects-section" },
         { keys: ["cây 3d", "3d", "tree", "threejs", "bonsai", "mùa"], target: "#tree-3d-section" },
         { keys: ["liên kết", "link", "shortcuts", "bento", "mạng xã hội", "giải trí"], target: "#shortcuts-section" },
